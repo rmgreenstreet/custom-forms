@@ -102,7 +102,8 @@ const userSchema = new Schema({
         type:Boolean,
         default:false
     },
-    resetPasswordToken: String,
+    createAccountToken : String,
+    resetPasswordToken : String,
     resetPasswordExpires: Date
 });
 

@@ -1,8 +1,54 @@
 <%- include("../partials/header") %>
 
 <div class="container mt-5">
-    <h1>Dashboard</h1>
-    
+   
+    <h1>Admin Dashboard</h1>
+    <section id="search" class="my-2">
+        <div class="row shadow-sm">
+            <div class="col">
+                <form action="/dashboard" method="POST" id="search" class="my-2">
+                    <div class="input-group">
+                        <input type="text" name="query" class="form-control" placeholder="Search names or dates" aria-label="Search names or dates">
+                        <div class="input-group-append">
+                            <button class="input-group-text">Search</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+    <section id="stats" class="my-3">
+        <div class="row shadow-sm pb-3 align-items-center">
+            <div class="col" id="amounts-over-time">
+                <h3>Questionnaires Sent Last 6 Months</h3>
+                <div id="chart-container" ></div>
+            </div>
+            <div class="col" id="send-link">
+                <h3>Send A Questionnaire</h3>
+                <form action="/send" method="POST" id="send-link-to-user">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <label for="email" class="input-group-text">Email</label>
+                        </div>
+                        <input type="email" id="email" name="email" class="form-control" required>
+                    </div>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <label for="first-name" class="input-group-text">First Name</label>
+                        </div>
+                        <input type="text" id="first-name" name="first-name" class="form-control" required>
+                    </div>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <label for="last-name" class="input-group-text">Last Name</label>
+                        </div>
+                        <input type="text" id="last-name" name="last-name" class="form-control" required>
+                    </div>
+                    <button type="submit" class="btn btn-secondary mt-2">Send Link</button>
+                </form>
+            </div>
+        </div>
+    </section>
 </div>
 
 <%- include("../partials/footer") %>

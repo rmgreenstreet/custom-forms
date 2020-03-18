@@ -77,8 +77,8 @@ passport.deserializeUser(User.deserializeUser());
 //set local variables middleware
 app.use(function (req,res,next) {
 	res.locals.currentUser = req.user;
-	//set default page title if one is not specified
-	res.locals.title='Surf Shop';
+  //set default page title if one is not specified
+	res.locals.title='Custom Forms';
 	//set success flash message
 	res.locals.success = req.session.success || "";
 	//delete flash message after sending it to the page so it doesn't show again
