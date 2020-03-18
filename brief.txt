@@ -1,0 +1,6 @@
+Three types of users: Owner, Office/Admin, Agent/Employee
+
+when agent/employee completes form, update a property within their user object
+send three emails, one at creation with link to form (which has their token), one at 24 hours and one at 72 hours after created reminding them to complete the form
+Token expiration???
+ - if yes, office/admin can reset
