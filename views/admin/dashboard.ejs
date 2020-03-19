@@ -18,13 +18,13 @@
         </div>
     </section>
     <section id="stats" class="my-3">
-        <div class="row shadow-sm pb-3 align-items-center">
+        <div class="row shadow-sm pb-3">
             <div class="col" id="amounts-over-time">
-                <h3>Questionnaires Sent Last 6 Months</h3>
-                <div id="chart-container" ></div>
+                <h3>Invitations Sent Last 6 Months</h3>
+                <div id="chart-container" ><img src="/images/line-graph-example.svg" alt=""></div>
             </div>
             <div class="col" id="send-link">
-                <h3>Send A Questionnaire</h3>
+                <h3>Send An Invitation</h3>
                 <form action="/send" method="POST" id="send-link-to-user">
                     <div class="input-group">
                         <div class="input-group-prepend">
@@ -46,6 +46,76 @@
                     </div>
                     <button type="submit" class="btn btn-secondary mt-2">Send Link</button>
                 </form>
+            </div>
+        </div>
+    </section>
+    <section>
+        <div class="row shadow-sm my-3">
+            <div class="col">
+                <h3>Recently Sent Invitations</h3>
+                <table class="table">
+                    <thead>
+                      <tr>
+                        <th scope="col" class="border-0 bg-light">
+                          <div class="p-2 px-3 text-uppercase">First Name</div>
+                        </th>
+                        <th scope="col" class="border-0 bg-light">
+                          <div class="py-2 text-uppercase">Last Name</div>
+                        </th>
+                        <th scope="col" class="border-0 bg-light">
+                          <div class="py-2 text-uppercase">Email</div>
+                        </th>
+                        <th scope="col" class="border-0 bg-light">
+                          <div class="py-2 text-uppercase">Date</div>
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                        <%# for(let invitation of invitations) { %>
+                          <tr>
+                            <td class="border-0 align-middle"><strong><%#= item.post.price.toFixed(2) %>John</strong></td>
+                            <td class="border-0 align-middle"><strong><%#= item.post.price.toFixed(2) %>Smith</strong></td>
+                            <td class="border-0 align-middle"><strong><%#= item.quantity %></strong>johnsmith@gmail.com</td>
+                            <td class="border-0 align-middle"><strong><%#= item.quantity %></strong>2020-03-19 10:49</td>
+                            </tr>
+                        <%#} %>
+                    </tbody>
+                  </table>
+            </div>
+        </div>
+    </section>
+    <section>
+        <div class="row shadow-sm my-3">
+            <div class="col">
+                <h3>Recently Completed Invitations</h3>
+                <table class="table">
+                    <thead>
+                      <tr>
+                        <th scope="col" class="border-0 bg-light">
+                          <div class="p-2 px-3 text-uppercase">First Name</div>
+                        </th>
+                        <th scope="col" class="border-0 bg-light">
+                          <div class="py-2 text-uppercase">Last Name</div>
+                        </th>
+                        <th scope="col" class="border-0 bg-light">
+                          <div class="py-2 text-uppercase">Email</div>
+                        </th>
+                        <th scope="col" class="border-0 bg-light">
+                          <div class="py-2 text-uppercase">Date</div>
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                        <%# for(let invitation of invitations) { %>
+                          <tr>
+                            <td class="border-0 align-middle"><strong><%#= item.post.price.toFixed(2) %>Andrew</strong></td>
+                            <td class="border-0 align-middle"><strong><%#= item.post.price.toFixed(2) %>Stone</strong></td>
+                            <td class="border-0 align-middle"><strong><%#= item.quantity %></strong>andytherock@gmail.com</td>
+                            <td class="border-0 align-middle"><strong><%#= item.quantity %></strong>2020-03-17 14:25</td>
+                            </tr>
+                        <%#} %>
+                    </tbody>
+                  </table>
             </div>
         </div>
     </section>

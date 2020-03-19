@@ -1,6 +1,10 @@
 const mongoose = require('mongoose');
 const passportLocalMongoose = require('passport-local-mongoose');
 const Schema = mongoose.Schema;
+const Company = require('./company');
+const Location = require('./location');
+const sgMail = require('@sendgrid/mail');
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 const userSchema = new Schema({
     username:{
@@ -13,69 +17,17 @@ const userSchema = new Schema({
         required:true,
         unique:true
     },
-    companyInfo: {
-        officeNumber:{
-            type:Number,
-            required:true
-        },
-        name:{
-            type:String,
-            required:true
-        },
-        phone:{
-            type:Number,
-            required:true
-        },
-        fax: {
-            type:Number,
-            required:false
-        },
-        address: {
-            streetNumber: {
-                type:Number,
-                required:true
-            },
-            streetName: {
-                type:String,
-                required:true
-            },
-            city: {
-                type:String,
-                required:true
-            },
-            state: {
-                type:String,
-                required:true,
-                minlength:2
-            },
-            postal: {
-                type:String,
-                required:true,
-                minlength:5,
-                maxlength:7
-            }
-        },
-        contacts: [
-            {
-                email:{
-                    type:String,
-                    unique:true,
-                    required:true
-                },
-                firstName:{
-                    type:String,
-                    required:true
-                },
-                lastName:{
-                    type:String,
-                    required:true
-                },
-                title:{
-                    type:String,
-                    required:true
-                }
-            }
-        ]
+    role:{
+        type:String,
+        default:'User'
+    },
+    company: {
+        type:Schema.Types.ObjectId,
+        ref: 'Company'
+    },
+    location: {
+        type:Schema.Types.ObjectId,
+        ref: 'Location'
     },
     image: {
         url: {
@@ -84,16 +36,12 @@ const userSchema = new Schema({
         },
         public_id: String
     },
-    forms: [
-        {
-            type:Schema.Types.ObjectId,
-        }
-    ],
-    role:{
-        type:String,
-        default:'User'
+    isExpedited: {
+        type:Boolean,
+        default:false
     },
-    token:String,
+    totalMonthlyExpedited:Number,
+    formAccessToken:String,
     completedForm:{
         type:Boolean,
         default:false
@@ -102,9 +50,42 @@ const userSchema = new Schema({
         type:Boolean,
         default:false
     },
+    responses: [
+        {
+            type:Schema.Types.ObjectId,
+            ref:'Response'
+        }
+    ],
     createAccountToken : String,
     resetPasswordToken : String,
     resetPasswordExpires: Date
+});
+
+userSchema.method('makeAdmin', async function () {
+    this.role = 'Admin';
+    await this.save();
+});
+
+userSchema.method('markFormCompleted', async function () {
+    this.completedForm = true;
+    await this.save();
+    const msg = await ejs.render('../private/completedForm',this);
+    await sgMail.send(msg);
+});
+
+userSchema.method('markSetupCompleted', async function (attrs = {}) {
+    this.completedSetup = true;
+    await this.save();
+    const userLocation = Location.findById(this.location);
+    const bccs = await userLocation.sendContactEmails();
+    const msg = {
+        to:this.email,
+        from:'Site Admin <info@greenstreetimagining.com>',
+        bcc:bccs,
+        subject:`${this.firstName} ${this.lastName} ${this.title} Setup Complete - ${userLocation.city} #${userLocation.officeNumber}`,
+        text: ejs.render('../private/completedSetup', attrs)
+    };
+    await sgMail.send(msg);
 });
 
 userSchema.plugin(passportLocalMongoose);
