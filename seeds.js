@@ -50,7 +50,8 @@ async function clearDatabase() {
 
 
 async function seedDatabase() {
-    const companyCount = Math.ceil(Math.random() * 200);
+    // const companyCount = Math.ceil(Math.random() * 200);
+    const companyCount = 10;
 
     async function createLocations(companyId) {
         const locationCount = Math.ceil(Math.random() * 5);
@@ -63,7 +64,7 @@ async function seedDatabase() {
             const randomImageIndex = Math.ceil(Math.random() * sampleImages.length);
             const newLocation = await Location.create({
                 primary: isPrimary,
-                officeNumber: Math.random(Math.ceil() * 1000).toString(),
+                officeNumber: Math.ceil(Math.random() * 1000).toString(),
                 name: faker.company.companyName(),
                 phone: faker.phone.phoneNumber(),
                 fax: faker.phone.phoneNumber(),
@@ -84,6 +85,7 @@ async function seedDatabase() {
                 ],
                 company: companyId
             });
+            await newLocation.save();
             newLocation.contacts = await createUsers(newLocation._id, companyId, 'Admin', (Math.ceil(Math.random() * 5)));
             await newLocation.save();
             console.log(`Location ${newLocation.name} created with ${newLocation.contacts.length} contacts`)
@@ -109,8 +111,8 @@ async function seedDatabase() {
                 role: role,
                 company: companyId,
                 location: locationId,
-                formAccessToken: crypto.randomBytes(16).toString(),
-                createAccountToken: crypto.randomBytes(16).toString()
+                formAccessToken: crypto.randomBytes(16).toString('hex'),
+                createAccountToken: crypto.randomBytes(16).toString('hex')
             },'password');
         } catch (err) {
             if (err.message.includes('UserExistsError')) {

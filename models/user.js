@@ -5,6 +5,8 @@ const Location = require('./location');
 const Response = require('./response');
 const sgMail = require('@sendgrid/mail');
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+const crypto = require('crypto');
+
 
 const forbiddenWords = ['realtor', 'realty', 'realestate', 'agent', 'broker', 'admin'];
 
@@ -59,7 +61,10 @@ const userSchema = new Schema({
         type:Boolean,
         default:false
     },
-    formAccessToken:String,
+    formAccessToken: {
+        type: String,
+        default: crypto.randomBytes(16).toString('hex')
+    },
     completedForm:{
         type:Boolean,
         default:false
@@ -74,7 +79,10 @@ const userSchema = new Schema({
             ref:'Response'
         }
     ],
-    createAccountToken : String,
+    createAccountToken : {
+        type: String,
+        default: crypto.randomBytes(16).toString('hex')
+    },
     resetPasswordToken : String,
     resetPasswordExpires: Date,
     created:{
@@ -92,6 +100,10 @@ userSchema.pre('remove', async function() {
 userSchema.method('makeAdmin', async function () {
     this.role = 'Admin';
     await this.save();
+});
+
+userSchema.method('sendInvitation', async function (attrs = {}) {
+
 });
 
 userSchema.method('markFormCompleted', async function (attrs = {}) {

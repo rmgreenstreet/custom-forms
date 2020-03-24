@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const User = require('./user');
 const Form = require('./form');
 const fs = require('fs');
 
@@ -97,7 +96,10 @@ const locationSchema = new Schema({
             type:Schema.Types.ObjectId,
         }
     ],
-    totalMonthlyExpedited:Number,
+    totalMonthlyExpedited:{
+        type: Number,
+        default: 0
+    },
     company: {
         type: Schema.Types.ObjectId,
         ref: 'Company'
@@ -118,11 +120,16 @@ locationSchema.pre('remove', async function() {
 });
 
 locationSchema.method('sendContactEmails', async function () {
+    const User = require('./user');
     let contactEmails = [];
-    for(let contact of this.contacts) {
-        const currentContact = User.findById(contact);
-        contactEmails.push(currentContact.personalEmail);
-    };
+    const allContacts = await User.find({location:this._id});
+    for (let contact of allContacts) {
+        contactEmails.push(contact.personalEmail);
+    }
+    // for(let contact of this.contacts) {
+    //     const currentContact = User.findById(contact);
+    //     contactEmails.push(currentContact.personalEmail);
+    // };
     return contactEmails.join(',');
 });
 

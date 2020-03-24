@@ -9,15 +9,19 @@ require('mongoose-type-url');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const expressSession = require('express-session');
-const User = require('./models/user');
 const methodOverride = require('method-override');
 const expressSanitizer = require('express-sanitizer');
+const sgMail = require('@sendgrid/mail');
+
+
+const User = require('./models/user');
 
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 
 const app = express();
-if (app.get('env') == 'development'){ require('dotenv').config(); }
+if (app.get('env') == 'development'){ require('dotenv').config(); };
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 //connect to database
 mongoose.connect(process.env.DATABASE_URL,{
@@ -67,7 +71,7 @@ app.use(function(req, res, next){
 });
 
 // CHANGE: USE "createStrategy" INSTEAD OF "authenticate"
-passport.use(User.createStrategy());
+passport.use(User.createStrategy({usernameField:'personalEmail'}));
 
 // use static authenticate method of model in LocalStrategy
 passport.use(new LocalStrategy(User.authenticate()));
@@ -80,7 +84,7 @@ app.use(async function (req,res,next) {
 	// if(!req.user) {
 	// 	req.user = await User.find({firstname:'potato'});
 	// }
-	req.user = await User.findOne({role:'Admin'});
+	req.user = await User.findById('5e7a53a594b31f40547ee9ff');
 	res.locals.currentUser = req.user;
   //set default page title if one is not specified
 	res.locals.title='Custom Forms';
@@ -124,7 +128,7 @@ async function databaseInit() {
 	// seedDefaultQuestions();	
   	await clearDatabase();
 	await seedDatabase();
-	await User.register({firstname: 'potato', lastname:'head',username:'potatohead', personalEmail:'test@test.com', location:'5e77b1c9826bb10ddc332316', company: '5e77b1c7826bb10ddc33230d', role:'Admin'},'password');
+	// await User.register({firstname: 'potato', lastname:'head',username:'potatohead', personalEmail:'test@test.com', location:'5e77b1c9826bb10ddc332316', company: '5e77b1c7826bb10ddc33230d', role:'Admin'},'password');
 }
 
 // databaseInit();

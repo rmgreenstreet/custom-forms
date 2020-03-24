@@ -25,7 +25,7 @@
             </div>
             <div class="col" id="send-link">
                 <h3>Send An Invitation</h3>
-                <form action="/send" method="POST" id="send-link-to-user">
+                <form action="/users/send" method="POST" id="send-link-to-user">
                     <div class="input-group">
                         <div class="input-group-prepend">
                             <label for="email" class="input-group-text">Email</label>
@@ -34,16 +34,32 @@
                     </div>
                     <div class="input-group">
                         <div class="input-group-prepend">
-                            <label for="first-name" class="input-group-text">First Name</label>
+                            <label for="firstName" class="input-group-text">First Name</label>
                         </div>
-                        <input type="text" id="first-name" name="first-name" class="form-control" required>
+                        <input type="text" id="firstName" name="firstName" class="form-control" required>
                     </div>
                     <div class="input-group">
                         <div class="input-group-prepend">
-                            <label for="last-name" class="input-group-text">Last Name</label>
+                            <label for="lastName" class="input-group-text">Last Name</label>
                         </div>
-                        <input type="text" id="last-name" name="last-name" class="form-control" required>
+                        <input type="text" id="lastName" name="lastName" class="form-control" required>
                     </div>
+                    <div class="input-group">
+                      <div class="form-check form-check-inline">
+                        <input type="checkbox" id="isExpedited" name="isExpedited" class="form-check-input" >
+                        <label for="isExpedited" class="form-check-label">Expedite This Setup</label>
+                      </div>
+                      <div class="form-check form-check-inline">
+                        <input type="checkbox" id="isHidden" name="isHidden" class="form-check-input" >
+                        <label for="isHidden" class="form-check-label">Keep this setup hidden</label>
+                      </div>
+                    </div>
+                    <% if (location.totalMonthlyExpedited > 0) { %>
+                      <div class="row">
+                        <p>Your location has sent <%= location.totalMonthlyExpedited %> Expedited invitations this month</p>
+                      </div>
+                    <% } %>
+                    
                     <button type="submit" class="btn btn-secondary mt-2">Send Link</button>
                 </form>
             </div>
@@ -76,7 +92,7 @@
                             <tr>
                               <td class="border-0 align-middle"><strong><%= invitation.firstname %></strong></td>
                               <td class="border-0 align-middle"><strong><%= invitation.lastname %></strong></td>
-                              <td class="border-0 align-middle"><strong><%= invitation.email %></strong></td>
+                              <td class="border-0 align-middle"><strong><%= invitation.personalEmail %></strong></td>
                               <td class="border-0 align-middle"><strong><%= invitation.created.toDateString() %></strong></td>
                               </tr>
                           <% } %>
