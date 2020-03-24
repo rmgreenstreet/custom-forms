@@ -71,14 +71,16 @@
                       </tr>
                     </thead>
                     <tbody>
-                        <%# for(let invitation of invitations) { %>
-                          <tr>
-                            <td class="border-0 align-middle"><strong><%#= item.post.price.toFixed(2) %>John</strong></td>
-                            <td class="border-0 align-middle"><strong><%#= item.post.price.toFixed(2) %>Smith</strong></td>
-                            <td class="border-0 align-middle"><strong><%#= item.quantity %></strong>johnsmith@gmail.com</td>
-                            <td class="border-0 align-middle"><strong><%#= item.quantity %></strong>2020-03-19 10:49</td>
-                            </tr>
-                        <%#} %>
+                        <% if (recentInvitations && recentInvitations.length > 0 ) { %>
+                          <% for(let invitation of recentInvitations) { %>
+                            <tr>
+                              <td class="border-0 align-middle"><strong><%= invitation.firstname %></strong></td>
+                              <td class="border-0 align-middle"><strong><%= invitation.lastname %></strong></td>
+                              <td class="border-0 align-middle"><strong><%= invitation.email %></strong></td>
+                              <td class="border-0 align-middle"><strong><%= invitation.created.toDateString() %></strong></td>
+                              </tr>
+                          <% } %>
+                        <% } %>
                     </tbody>
                   </table>
             </div>
@@ -106,14 +108,14 @@
                       </tr>
                     </thead>
                     <tbody>
-                        <%# for(let invitation of invitations) { %>
+                        <%# for(let response of recentResponses) { %>
                           <tr>
                             <td class="border-0 align-middle"><strong><%#= item.post.price.toFixed(2) %>Andrew</strong></td>
                             <td class="border-0 align-middle"><strong><%#= item.post.price.toFixed(2) %>Stone</strong></td>
                             <td class="border-0 align-middle"><strong><%#= item.quantity %></strong>andytherock@gmail.com</td>
                             <td class="border-0 align-middle"><strong><%#= item.quantity %></strong>2020-03-17 14:25</td>
                             </tr>
-                        <%#} %>
+                        <%# } %>
                     </tbody>
                   </table>
             </div>

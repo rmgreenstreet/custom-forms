@@ -1,21 +1,36 @@
 const mongoose = require('mongoose');
 const passportLocalMongoose = require('passport-local-mongoose');
 const Schema = mongoose.Schema;
-const Company = require('./company');
 const Location = require('./location');
+const Response = require('./response');
 const sgMail = require('@sendgrid/mail');
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
+const forbiddenWords = ['realtor', 'realty', 'realestate', 'agent', 'broker', 'admin'];
+
 const userSchema = new Schema({
-    username:{
-        type:String,
-        unique:true,
-        required:true
+    firstname: {
+        type: String,
+        required: true
     },
-    email:{
+    lastname: {
+        type: String,
+        required: true
+    },
+    username: String,
+    personalEmail:{
         type:String,
         required:true,
         unique:true
+        // ,
+        // validate: {
+        //     validator: function(v) {
+        //       console.log({ v });
+        //       ;
+        //     },
+        //     message: props =>
+        //       `${props.value} is not a valid email address`
+        //   }
     },
     role:{
         type:String,
@@ -40,7 +55,10 @@ const userSchema = new Schema({
         type:Boolean,
         default:false
     },
-    totalMonthlyExpedited:Number,
+    isHidden: {
+        type:Boolean,
+        default:false
+    },
     formAccessToken:String,
     completedForm:{
         type:Boolean,
@@ -58,7 +76,17 @@ const userSchema = new Schema({
     ],
     createAccountToken : String,
     resetPasswordToken : String,
-    resetPasswordExpires: Date
+    resetPasswordExpires: Date,
+    created:{
+        type:Date,
+        default:Date.now()
+    }
+});
+
+userSchema.pre('remove', async function() {
+    for (let response of this.responses) {
+        Response.findByIdAndRemove(response);
+    };
 });
 
 userSchema.method('makeAdmin', async function () {
@@ -66,10 +94,18 @@ userSchema.method('makeAdmin', async function () {
     await this.save();
 });
 
-userSchema.method('markFormCompleted', async function () {
+userSchema.method('markFormCompleted', async function (attrs = {}) {
     this.completedForm = true;
     await this.save();
-    const msg = await ejs.render('../private/completedForm',this);
+    const userLocation = Location.findById(this.location);
+    const bccs = await userLocation.sendContactEmails();
+    const msg = {
+        to:this.personalEmail,
+        from:'Site Admin <info@greenstreetimagining.com>',
+        bcc:bccs,
+        subject:`${this.firstName} ${this.lastName} ${this.title} Form Received - ${userLocation.city} #${userLocation.officeNumber}`,
+        text: await ejs.render('../private/completedForm', {user:this, attrs})
+    };
     await sgMail.send(msg);
 });
 
@@ -79,14 +115,18 @@ userSchema.method('markSetupCompleted', async function (attrs = {}) {
     const userLocation = Location.findById(this.location);
     const bccs = await userLocation.sendContactEmails();
     const msg = {
-        to:this.email,
+        to:this.personalEmail,
         from:'Site Admin <info@greenstreetimagining.com>',
         bcc:bccs,
         subject:`${this.firstName} ${this.lastName} ${this.title} Setup Complete - ${userLocation.city} #${userLocation.officeNumber}`,
-        text: ejs.render('../private/completedSetup', attrs)
+        text: await ejs.render('../private/completedSetup', {user:this, attrs})
     };
     await sgMail.send(msg);
 });
+
+async function checkForForbiddenWords (input) {
+
+};
 
 userSchema.plugin(passportLocalMongoose);
 

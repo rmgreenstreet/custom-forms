@@ -76,7 +76,11 @@ passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
 //set local variables middleware
-app.use(function (req,res,next) {
+app.use(async function (req,res,next) {
+	// if(!req.user) {
+	// 	req.user = await User.find({firstname:'potato'});
+	// }
+	req.user = await User.findOne({role:'Admin'});
 	res.locals.currentUser = req.user;
   //set default page title if one is not specified
 	res.locals.title='Custom Forms';
@@ -110,6 +114,25 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
+
+
+const { seedDatabase, clearDatabase, seedDefaultQuestions} = require('./seeds.js');
+
+
+
+async function databaseInit() {
+	// seedDefaultQuestions();	
+  	await clearDatabase();
+	await seedDatabase();
+	await User.register({firstname: 'potato', lastname:'head',username:'potatohead', personalEmail:'test@test.com', location:'5e77b1c9826bb10ddc332316', company: '5e77b1c7826bb10ddc33230d', role:'Admin'},'password');
+}
+
+// databaseInit();
+
+
+
+
+
 
 let port = process.env.PORT;
 if (port == null || port == "") {

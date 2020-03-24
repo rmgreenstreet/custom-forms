@@ -27,13 +27,16 @@ const formSchema = new Schema({
 formSchema.plugin(version,{collection:'form_versions'});
 
 formSchema.method('addDefault', async function () {
-    const defaultQuestions = await Question.find({default:true});
-    await this.questions.push(...defaultQuestions);
+    console.log('adding default questions to form')
+    const defaultQuestions = await Question.find({isDefault:true}).sort('order');
+    for (let question of defaultQuestions) {
+        await this.questions.push(question._id);
+    }
     await this.save()
 });
 
 formSchema.method('removeDefault',  async function () {
-    const existingDefaultQuestions = await this.questions.find({default:true});
+    const existingDefaultQuestions = await this.questions.find({isDefault:true});
     if(existingDefaultQuestions && existingDefaultQuestions.length > 0) {
         for(question of existingDefaultQuestions) {
             this.questions.splice(this.questions.indexOf(question),1);

@@ -11,8 +11,6 @@ router.get('/', function(req, res, next) {
 
 // isLoggedIn, asyncErrorHandler(routeByRole)
 //GET dashboard
-router.get('/dashboard', (req,res,next) => {
-  res.render('../views/admin/dashboard');
-});
+router.get('/dashboard', asyncErrorHandler(routeByRole));
 
 module.exports = router;
