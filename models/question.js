@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const inputTypes = require('./inputTypes');
 
 const questionSchema = new Schema ({
     sectionName: {
@@ -26,7 +27,7 @@ const questionSchema = new Schema ({
     inputType: {
         type: String,
         required: true,
-        enum: ['checkbox','email','file','image','number','password','radio','select','tel','text','textarea','url']
+        enum: inputTypes
     },
     values: [],
     placeholder:String,

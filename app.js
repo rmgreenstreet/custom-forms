@@ -18,6 +18,7 @@ const User = require('./models/user');
 
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
+const formsRouter = require('./routes/forms');
 
 const app = express();
 if (app.get('env') == 'development'){ require('dotenv').config(); };
@@ -102,6 +103,7 @@ app.use(async function (req,res,next) {
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/forms', formsRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
