@@ -84,7 +84,7 @@ app.use(async function (req,res,next) {
 	// if(!req.user) {
 	// 	req.user = await User.find({firstname:'potato'});
 	// }
-	req.user = await User.findById('5e7a53a594b31f40547ee9ff');
+	req.user = await User.findById('5e7a63fd152598249c5cd6e0');
 	res.locals.currentUser = req.user;
   //set default page title if one is not specified
 	res.locals.title='Custom Forms';

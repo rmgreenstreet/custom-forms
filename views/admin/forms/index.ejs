@@ -1,0 +1,48 @@
+<%- include("../../partials/header") %>
+
+<div class="container mt-5">
+   
+    <h1>All of <%= location.name %>'s forms</h1>
+    <section>
+        <div class="row shadow-sm my-3">
+            <div class="col">
+                <table class="table">
+                    <thead>
+                      <tr>
+                        <th scope="col" class="border-0 bg-light">
+                          <div class="p-2 px-3 text-uppercase">Title</div>
+                        </th>
+                        <th scope="col" class="border-0 bg-light">
+                          <div class="py-2 text-uppercase">Created</div>
+                        </th>
+                        <th scope="col" class="border-0 bg-light">
+                          <div class="py-2 text-uppercase">Last Edited</div>
+                        </th>
+                        <th scope="col" class="border-0 bg-light">
+                          <div class="py-2 text-uppercase">Last Edited By</div>
+                        </th>
+                        <th scope="col" class="border-0 bg-light">
+                          <div class="py-2 text-uppercase">Edit/Delete</div>
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                        <% if (allForms && allForms.length > 0 ) { %>
+                          <% for(let form of allForms) { %>
+                            <tr>
+                              <td class="border-0 align-middle"><strong><%= form.title %></strong></td>
+                              <td class="border-0 align-middle"><strong><%= form.created.toDateString() %></strong></td>
+                              <td class="border-0 align-middle"><strong><%= form.lastEdited.when.toDateString() %></strong></td>
+                              <td class="border-0 align-middle"><strong><%= (form.lastEdited.by ? form.lastEdited.by.firstname : 'System') %></strong></td>
+                              <td class="border-0 align-middle"><a href="/forms/edit/<%= form.id %>" class="btn btn-outline-secondary mx-1"><i class="far fa-edit"></i></a> <a href="/forms/delete/<%= form.id %>" class="btn btn-outline-secondary mx-1"><i class="fas fa-trash-alt"></a></i></td>
+                              </tr>
+                          <% } %>
+                        <% } %>
+                    </tbody>
+                  </table>
+            </div>
+        </div>
+    </section>
+</div>
+
+<%- include("../../partials/footer") %>

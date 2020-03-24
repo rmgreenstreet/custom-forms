@@ -34,27 +34,26 @@
 					</span>
 				  </button>
 				  <div class="collapse navbar-collapse" id="navHamburger">
-					<a class="nav-link js-scroll-trigger" href="#about">About</a>
-					<a class="nav-link js-scroll-trigger" href="#work">Work</a>
-					<a class="nav-link js-scroll-trigger" href="#contact">Contact</a>
+					<a class="nav-link js-scroll-trigger" href="/users/dashboard">Dashboard</a>
+					<a class="nav-link js-scroll-trigger" href="/users/list">All Users</a>
+					<a class="nav-link js-scroll-trigger" href="/users/forms">Forms</a>
 				  </div>
 				</nav>
 			</div>	
 		</header>
-		<div class="container flash">
-			<% if(success && success.length) { %>
-				<div class="alert alert-success">
-					<%= success %>
-				</div>
-			<% } %>
-			<% if(error && error.length) { %>
-				<div class="alert alert-danger">
-					<%= error %>
-				</div>
-			<% } %>
-		</div>
-		<main>	
-			
+		<main class="pt-4">	
+			<div class="container flash">
+				<% if(success && success.length) { %>
+					<div class="alert alert-success">
+						<%= success %>
+					</div>
+				<% } %>
+				<% if(error && error.length) { %>
+					<div class="alert alert-danger">
+						<%= error %>
+					</div>
+				<% } %>
+			</div>
 			<!--[if lt IE 10]>
 				<p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com">upgrade your browser</a> to improve your experience.</p>
 			<![endif]-->

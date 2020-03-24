@@ -5,6 +5,10 @@ const Question = require('./question');
 
 
 const formSchema = new Schema({
+    title: {
+        type: String,
+        default: 'Default Form'
+    },
     questions: [
         {
             type:Schema.Types.ObjectId,
@@ -16,10 +20,13 @@ const formSchema = new Schema({
         default: Date.now()
     },
     lastEdited: {
-        when: Date,
+        when: {
+            type: Date,
+            default: Date.now()
+        },
         by: {
             type:Schema.Types.ObjectId,
-            ref:'User' 
+            ref:'User'
         }
     }
 });
@@ -45,8 +52,8 @@ formSchema.method('removeDefault',  async function () {
     this.save();
 });
 
-formSchema.post('init', async function () {
-    await this.addDefault();
-});
+// formSchema.post('init', async function () {
+//     await this.addDefault();
+// });
 
 module.exports = mongoose.model('Form',formSchema);

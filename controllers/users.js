@@ -1,13 +1,15 @@
-// const express = require('express');
-// const app = express();
-// if (app.get('env') == 'development'){ require('dotenv').config(); }
-
 const sgMail = require('@sendgrid/mail');
-// sgMail.setApiKey(process.env.SENDGRID_API_KEY)
 const crypto = require('crypto');
 const ejs = require('ejs');
 const Location = require('../models/location');
 const User = require('../models/user');
+const Form = require('../models/form');
+
+async function newUserErrorHandler(err, newUser) {
+  console.log(err);
+  await User.findByIdAndDelete(newUser._id);
+  return res.redirect('/users/dashboard');
+}
 
 module.exports = {
     async routeByRole(req, res, next) {
@@ -82,10 +84,8 @@ module.exports = {
             location.totalMonthlyExpedited ++ ;
             await location.save();
           } catch (err) {
-            console.log(err);
-            await User.findByIdAndDelete(newUser._id);
             req.session.error = `Error updating Location`
-            return res.redirect('/users/dashboard');
+            await newUserErrorHandler(err, newUser);
           }
         }
       }
@@ -94,10 +94,8 @@ module.exports = {
       try {
         locationContacts = await currentUser.location.sendContactEmails();
       } catch (err) {
-        console.log(err);
-        await User.findByIdAndDelete(newUser._id);
         req.session.error = `Error getting location's contacts to BCC`
-        return res.redirect('/users/dashboard');
+        await newUserErrorHandler(err, newUser);
       }
       console.log('creating message to send to new user');
       let messageHTML;
@@ -105,9 +103,8 @@ module.exports = {
         messageHTML = await ejs.renderFile('./private/invitation.ejs',{currentUser, newUser});
       } catch (err) {
         console.log(err);
-        await User.findByIdAndDelete(newUser._id);
-        req.session.error = `Error rendering message HTML`
-        return res.redirect('/users/dashboard');
+        req.session.error = `Error rendering message HTML`;
+        await newUserErrorHandler(err, newUser);
       }
       let msg;
       try {
@@ -119,19 +116,15 @@ module.exports = {
           html: messageHTML
         };
       } catch (err) {
-        console.log(err.response.body.errors);
-        await User.findByIdAndDelete(newUser._id);
-        req.session.error = `Error creating message object`
-        return res.redirect('/users/dashboard');
+        req.session.error = `Error creating message object`;
+        await newUserErrorHandler(err, newUser);
       }
       try {
         await sgMail.send(msg);
         console.log('message sent to new user');
       } catch (err) {
-        console.log(err.response.body);
-        await User.findByIdAndDelete(newUser._id);
-        req.session.error = `Error creating message object`
-        return res.redirect('/users/dashboard');
+        req.session.error = `Error creating message object`;
+        await newUserErrorHandler(err, newUser);
       }
       try {
         await currentUser.save();
@@ -139,12 +132,38 @@ module.exports = {
         await currentUser.location.save();
         console.log('currentUser\'s location saved');
       } catch (err) {
-        console.log(err);
-        await User.findByIdAndDelete(newUser._id);
         req.session.error = `Error creating message object`
-        return res.redirect('/users/dashboard');
+        await newUserErrorHandler(err, newUser);0
       }
       req.session.success = 'Invitation successfully sent!';
       res.redirect('/users/dashboard');
+    },
+    async getFormsIndex(req,res,next) {
+      let location;
+      try {
+        console.log('getting location');
+        location = await Location.findById(req.user.location);
+      } catch (err) {
+        console.log(err);
+        req.session.error = 'Unable to load location data';
+        return res.redirect('back')
+      }
+      let allForms = [];
+      try {
+        console.log('getting forms');
+        for (let form of location.forms) {
+          allForms.push(await Form.findById(form).populate({
+            path:'lastEdited.by',
+            ref: 'User'
+          }));
+        }
+      } catch (err) {
+        console.log(err);
+        req.session.error = 'Unable to load forms';
+        return res.redirect('back');
+      }
+      // console.log(location);
+      // console.log(allForms);
+      res.render('../views/admin/forms/index.ejs',{location,allForms});
     }
 };
