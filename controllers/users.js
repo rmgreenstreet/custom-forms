@@ -1,14 +1,13 @@
 const sgMail = require('@sendgrid/mail');
 const crypto = require('crypto');
 const ejs = require('ejs');
+const Company = require('../models/company');
 const Location = require('../models/location');
 const User = require('../models/user');
 const Form = require('../models/form');
 
-async function newUserErrorHandler(err, newUser) {
-  console.log(err);
-  await User.findByIdAndDelete(newUser._id);
-  return res.redirect('/users/dashboard');
+async function getRecentDocuments(documentType) {
+  return await documentType.find({}).gt({'created':(Date.now() - (1000 * 60 * 60 * 24 * 3))}).limit(10);
 }
 
 module.exports = {
@@ -17,11 +16,56 @@ module.exports = {
         const user = await User.findById(req.user._id);
         console.log(user);
         if(!user) {
-          req.session.error = "User could not be found"
-          return res.redirect('/')
+          req.session.error = "You must be logged in to do that"
+          return res.redirect('/login')
         }
         if(user.role === 'Owner') {
-          res.render('../views/owner/dashboard', {user});
+          console.log(`This is a site owner, getting owner dashboard`);
+          let recentCompanies;
+          let recentLocations;
+          let recentForms;
+          let recentQuestions;
+          
+          try {
+            recentCompanies = await getRecentDocuments(Company);
+          } catch (err) {
+            console.log(err);
+            req.session.error = `Error loading Company data`;
+            return res.redirect('back');
+          };
+
+          try {
+            recentLocations = await getRecentDocuments(Location);
+          } catch (err) {
+            console.log(err);
+            req.session.error = `Error loading Location data`;
+            return res.redirect('back');
+          };
+
+          try {
+            recentForms = await getRecentDocuments(Form);
+          } catch (err) {
+            console.log(err);
+            req.session.error = `Error loading Form data`;
+            return res.redirect('back');
+          };
+
+          try {
+            allQuestions = await Question.find({});
+          } catch (err) {
+            console.log(err);
+            req.session.error = `Error loading Question data`;
+            return res.redirect('back');
+          };
+
+          try {
+            res.render('../views/owner/dashboard', {recentCompanies,recentLocations,recentForms,allQuestions});
+          } catch (err) {
+            console.log(err);
+            req.session.error = `Error loading Question data`;
+            return res.redirect('back');
+          };
+          
         } else if (user.role === 'Admin') {
           console.log('this is an admin, getting dashboard for this location');
           try {

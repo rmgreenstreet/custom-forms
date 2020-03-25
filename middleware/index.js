@@ -66,7 +66,23 @@ const middleware = {
 		if (req.file) {	
 			await cloudinary.uploader.destroy(req.file.public_id);
 		}
-    }
+	},
+	async isAdmin (req, res, next) {
+		if (req.user.role === 'Admin' || req.user.role === 'Owner') {
+			next();
+		} else {
+			req.session.error = 'You are not authorized to access this page';
+			res.redirect('back');
+		}
+	},
+	async isOwner(req, res, next) {
+		if (req.user.role === 'Owner') {
+			next();
+		} else {
+			req.session.error = 'You are not authorized to access this page';
+			res.redirect('back');
+		}
+	}
 };
 
 module.exports = middleware;

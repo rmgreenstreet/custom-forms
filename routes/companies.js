@@ -1,14 +1,13 @@
 const express = require('express');
 const router = express.Router();
-const Form = require('../models/form');
 const { asyncErrorHandler, isLoggedIn, isAdmin, isOwner } = require('../middleware');
-const { getFormsSearch, getFormsIndex, getFormEdit } = require('../controllers/forms');
+const { getCompaniesIndex, getCompanyEdit, getFormsIndex } = require('../controllers/companies');
 
-//GET forms index
-router.get('/', (req, res) => {res.redirect('/companies')});
+//GET Companies index
+router.get('/', asyncErrorHandler(getCompaniesIndex));
 
 //GET forms index for a particular company
-router.get('/:companyId', asyncErrorHandler(getFormsIndex));
+router.get('/:companyId/forms', asyncErrorHandler(getFormsIndex));
 
 router.get('/edit/:id', asyncErrorHandler(getFormEdit));
 
