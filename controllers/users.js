@@ -7,11 +7,11 @@ const User = require('../models/user');
 const Form = require('../models/form');
 const Question = require('../models/question');
 
-async function getRecentDocuments(documentType, populatePath, populateModel) {
+async function getRecentDocuments(documentType, days, populatePath, populateModel) {
   if(populatePath && populateModel) {
     return await documentType.find({})
     .where('created')
-    .gt(Date.now() - (1000 * 60 * 60 * 24 * 3))
+    .gt(Date.now() - (1000 * 60 * 60 * 24 * days))
     .limit(10)
     .populate({
       path: populatePath,
@@ -20,7 +20,7 @@ async function getRecentDocuments(documentType, populatePath, populateModel) {
   } else {
     return await documentType.find({})
     .where('created')
-    .gt(Date.now() - (1000 * 60 * 60 * 24 * 3))
+    .gt(Date.now() - (1000 * 60 * 60 * 24 * days))
     .limit(10);
   }
   
@@ -45,13 +45,11 @@ module.exports = {
           let recentCompanies;
           let recentLocations;
           let recentForms;
-          let allQuestions;
+          let totalQuestions;
           let totalCompanies;
-          let totalLocations;
           let totalForms;
           try {
-            recentCompanies = await Company.find({joined: {$gt: Date.now() - (1000 * 60 * 60 * 24 * 3) }});
-            // getRecentDocuments(Company, 'locations','Location');
+            recentCompanies = await getRecentDocuments(Company, 3, null, null);
             totalCompanies = await Company.countDocuments();
           } catch (err) {
             dashboardErrorHandler(err,`Error loading Company data`);
@@ -59,26 +57,26 @@ module.exports = {
 
           try {
             allLocations = await Location.find({}, 'name officeNumber totalMonthlyExpedited').sort('officeNumber');
-            totalLocations = await Location.countDocuments();
+            recentLocations = getRecentDocuments(Location, 3);
           } catch (err) {
             dashboardErrorHandler(err,`Error loading Location data`);
           };
 
           try {
-            recentForms = await getRecentDocuments(Form);
+            recentForms = await getRecentDocuments(Form, 3);
             totalForms = await Form.countDocuments();
           } catch (err) {
             dashboardErrorHandler(err,`Error loading Form data`);
           };
 
           try {
-            allQuestions = await Question.find({});
+            totalQuestions = await Question.countDocuments();
           } catch (err) {
             dashboardErrorHandler(err,`Error loading Question data`);
           };
 
           try {
-            res.render('../views/owner/dashboard', {recentCompanies,allLocations,recentForms,allQuestions, totalCompanies, totalForms, totalLocations});
+            res.render('../views/owner/dashboard', {recentCompanies,allLocations,recentForms,totalQuestions, totalCompanies, totalForms});
           } catch (err) {
             dashboardErrorHandler(err,`Error loading dashboard`);
           };

@@ -17,7 +17,7 @@ const companySchema = new Schema({
         type: Boolean,
         default: true
     },
-    joined: {
+    created: {
         type: Date,
         default: Date.now()
     }
