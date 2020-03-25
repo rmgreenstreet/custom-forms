@@ -72,7 +72,7 @@ Github
 
 ## Authors
 
-* **Robert Greenstreet** - *Initial work* - [rmgreenstreet](https://github.com/rmgreenstreet) - [GreenstreetImagining](http://www.greenstreetimagining.com)
+* **Robert Greenstreet** - [rmgreenstreet](https://github.com/rmgreenstreet) - [GreenstreetImagining](http://www.greenstreetimagining.com)
 
 ## License
 

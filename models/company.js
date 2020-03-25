@@ -9,20 +9,22 @@ const companySchema = new Schema({
     },
     locations: [
         {
-            type:Schema.Types.ObjectId
+            type:Schema.Types.ObjectId,
+            ref: 'Location'
         }
     ],
     isActive: {
         type: Boolean,
         default: true
+    },
+    joined: {
+        type: Date,
+        default: Date.now()
     }
 });
 
 companySchema.pre('remove', async function() {
-    for (let location of this.locations) {
-        console.log('removing all locations');
-        Location.findOneAndRemove(location);
-    }
+    Location.deleteMany({company: this._id});
 });
 
 module.exports = mongoose.model('Company', companySchema);

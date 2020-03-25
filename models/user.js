@@ -38,6 +38,10 @@ const userSchema = new Schema({
         type:String,
         default:'User'
     },
+    isCompanyAdmin: {
+        type:Boolean,
+        default: false
+    },
     company: {
         type:Schema.Types.ObjectId,
         ref: 'Company'

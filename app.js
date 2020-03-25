@@ -85,7 +85,7 @@ app.use(async function (req,res,next) {
 	// if(!req.user) {
 	// 	req.user = await User.find({firstname:'potato'});
 	// }
-	req.user = await User.findById('5e7a63fd152598249c5cd6e0');
+	req.user = await User.findOne({firstname: 'potato'});
 	res.locals.currentUser = req.user;
   //set default page title if one is not specified
 	res.locals.title='Custom Forms';
@@ -127,10 +127,10 @@ const { seedDatabase, clearDatabase, seedDefaultQuestions} = require('./seeds.js
 
 
 async function databaseInit() {
-	// seedDefaultQuestions();	
+	// await seedDefaultQuestions();	
   	await clearDatabase();
 	await seedDatabase();
-	// await User.register({firstname: 'potato', lastname:'head',username:'potatohead', personalEmail:'test@test.com', location:'5e77b1c9826bb10ddc332316', company: '5e77b1c7826bb10ddc33230d', role:'Admin'},'password');
+	// await User.register({firstname: 'potato', lastname:'head',username:'potatohead', personalEmail:'test@test.com', location:'5e77b1c9826bb10ddc332316', company: '5e77b1c7826bb10ddc33230d', role:'Owner'},'password');
 }
 
 // databaseInit();

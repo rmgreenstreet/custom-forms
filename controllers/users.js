@@ -5,16 +5,37 @@ const Company = require('../models/company');
 const Location = require('../models/location');
 const User = require('../models/user');
 const Form = require('../models/form');
+const Question = require('../models/question');
 
-async function getRecentDocuments(documentType) {
-  return await documentType.find({}).gt({'created':(Date.now() - (1000 * 60 * 60 * 24 * 3))}).limit(10);
+async function getRecentDocuments(documentType, populatePath, populateModel) {
+  if(populatePath && populateModel) {
+    return await documentType.find({})
+    .where('created')
+    .gt(Date.now() - (1000 * 60 * 60 * 24 * 3))
+    .limit(10)
+    .populate({
+      path: populatePath,
+      model: populateModel
+    });
+  } else {
+    return await documentType.find({})
+    .where('created')
+    .gt(Date.now() - (1000 * 60 * 60 * 24 * 3))
+    .limit(10);
+  }
+  
+};
+
+async function dashboardErrorHandler(err, message = `Error loading the page`) {
+  console.log(err);
+  req.session.error = message;
+  return res.redirect('back');
 }
 
 module.exports = {
     async routeByRole(req, res, next) {
         console.log('getting dashboard');
-        const user = await User.findById(req.user._id);
-        console.log(user);
+        const user = req.user;
         if(!user) {
           req.session.error = "You must be logged in to do that"
           return res.redirect('/login')
@@ -24,46 +45,42 @@ module.exports = {
           let recentCompanies;
           let recentLocations;
           let recentForms;
-          let recentQuestions;
-          
+          let allQuestions;
+          let totalCompanies;
+          let totalLocations;
+          let totalForms;
           try {
-            recentCompanies = await getRecentDocuments(Company);
+            recentCompanies = await Company.find({joined: {$gt: Date.now() - (1000 * 60 * 60 * 24 * 3) }});
+            // getRecentDocuments(Company, 'locations','Location');
+            totalCompanies = await Company.countDocuments();
           } catch (err) {
-            console.log(err);
-            req.session.error = `Error loading Company data`;
-            return res.redirect('back');
+            dashboardErrorHandler(err,`Error loading Company data`);
           };
 
           try {
-            recentLocations = await getRecentDocuments(Location);
+            allLocations = await Location.find({}, 'name officeNumber totalMonthlyExpedited').sort('officeNumber');
+            totalLocations = await Location.countDocuments();
           } catch (err) {
-            console.log(err);
-            req.session.error = `Error loading Location data`;
-            return res.redirect('back');
+            dashboardErrorHandler(err,`Error loading Location data`);
           };
 
           try {
             recentForms = await getRecentDocuments(Form);
+            totalForms = await Form.countDocuments();
           } catch (err) {
-            console.log(err);
-            req.session.error = `Error loading Form data`;
-            return res.redirect('back');
+            dashboardErrorHandler(err,`Error loading Form data`);
           };
 
           try {
             allQuestions = await Question.find({});
           } catch (err) {
-            console.log(err);
-            req.session.error = `Error loading Question data`;
-            return res.redirect('back');
+            dashboardErrorHandler(err,`Error loading Question data`);
           };
 
           try {
-            res.render('../views/owner/dashboard', {recentCompanies,recentLocations,recentForms,allQuestions});
+            res.render('../views/owner/dashboard', {recentCompanies,allLocations,recentForms,allQuestions, totalCompanies, totalForms, totalLocations});
           } catch (err) {
-            console.log(err);
-            req.session.error = `Error loading Question data`;
-            return res.redirect('back');
+            dashboardErrorHandler(err,`Error loading dashboard`);
           };
           
         } else if (user.role === 'Admin') {
@@ -82,7 +99,7 @@ module.exports = {
         } else {
           req.session.error = "User could not be found"
           res.redirect('/')
-        }
+        };
     },
     async sendInvitation(req,res,next) {
       let newUser;

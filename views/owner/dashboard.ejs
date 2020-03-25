@@ -1,8 +1,188 @@
 <%- include("../partials/header") %>
 
 <div class="container mt-5">
+   
     <h1>Owner Dashboard</h1>
-
+    <section id="search" class="my-2">
+        <div class="row shadow-sm">
+            <div class="col">
+                <form action="/dashboard" method="POST" id="search" class="my-2">
+                    <div class="input-group">
+                        <input type="text" name="query" class="form-control" placeholder="Search names or dates" aria-label="Search names or dates">
+                        <div class="input-group-append">
+                            <button class="input-group-text">Search</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+    <section id="stats" class="my-3">
+        <div class="row shadow-sm pb-3">
+            <div class="col" id="companies-locations-over-time">
+                <h3>New Companies and Locations in the Last 6 Months</h3>
+                <div id="chart-container" ><img src="/images/line-graph-example.svg" alt=""></div>
+            </div>
+            <div class="col" id="invitations-over-time">
+                <h3>Invitations sent in the Last 6 Months</h3>
+                <div id="chart-container" ><img src="/images/line-graph-example.svg" alt=""></div>
+            </div>
+            <div class="col" id="completions-over-time">
+                <h3>Setups Completed in the Last 6 Months</h3>
+                <div id="chart-container" ><img src="/images/line-graph-example.svg" alt=""></div>
+            </div>
+        </div>
+        <div class="row shadow-sm pb-3">
+            <div class="col" id="send-link">
+                <h3>Create A Company</h3>
+                <form action="/users/send" method="POST" id="send-link-to-user">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <label for="email" class="input-group-text">Email</label>
+                        </div>
+                        <input type="email" id="email" name="email" class="form-control" required>
+                    </div>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <label for="firstName" class="input-group-text">First Name</label>
+                        </div>
+                        <input type="text" id="firstName" name="firstName" class="form-control" required>
+                    </div>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <label for="lastName" class="input-group-text">Last Name</label>
+                        </div>
+                        <input type="text" id="lastName" name="lastName" class="form-control" required>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-secondary mt-2">Send Link</button>
+                </form>
+            </div>
+            <div class="col" id="send-link">
+              <h3>Send An Invitation</h3>
+              <form action="/users/send" method="POST" id="send-link-to-user">
+                  <div class="input-group">
+                      <div class="input-group-prepend">
+                          <label for="location" class="input-group-text">Location</label>
+                      </div>
+                      <select class="form-control" id="location" required>
+                        <% if (allLocations && allLocations.length > 0) { %>
+                          <% for (let location of allLocations) { %> 
+                            <option value="<%= location.id %>"><%= location.name %> - #<%= location.officeNumber %></option>
+                          <% } %>
+                        <% } %>
+                      </select>
+                  </div>
+                  <div class="input-group">
+                      <div class="input-group-prepend">
+                          <label for="email" class="input-group-text">Email</label>
+                      </div>
+                      <input type="email" id="email" name="email" class="form-control" required>
+                  </div>
+                  <div class="input-group">
+                      <div class="input-group-prepend">
+                          <label for="firstName" class="input-group-text">First Name</label>
+                      </div>
+                      <input type="text" id="firstName" name="firstName" class="form-control" required>
+                  </div>
+                  <div class="input-group">
+                      <div class="input-group-prepend">
+                          <label for="lastName" class="input-group-text">Last Name</label>
+                      </div>
+                      <input type="text" id="lastName" name="lastName" class="form-control" required>
+                  </div>
+                  <div class="input-group">
+                    <div class="form-check form-check-inline">
+                      <input type="checkbox" id="isExpedited" name="isExpedited" class="form-check-input" >
+                      <label for="isExpedited" class="form-check-label">Expedite This Setup</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                      <input type="checkbox" id="isHidden" name="isHidden" class="form-check-input" >
+                      <label for="isHidden" class="form-check-label">Keep this setup hidden</label>
+                    </div>
+                  </div>
+                  <%# if (location.totalMonthlyExpedited > 0) { %>
+                    <div class="row">
+                      <p>Your location has sent <%#= location.totalMonthlyExpedited %> Expedited invitations this month</p>
+                    </div>
+                  <%# } %>
+                  
+                  <button type="submit" class="btn btn-secondary mt-2">Send Link</button>
+              </form>
+          </div>
+        </div>
+    </section>
+    <section>
+        <div class="row shadow-sm my-3">
+            <div class="col">
+                <h3>Recently Added Companies</h3>
+                <table class="table">
+                    <thead>
+                      <tr>
+                        <th scope="col" class="border-0 bg-light">
+                          <div class="p-2 px-3 text-uppercase">Name</div>
+                        </th>
+                        <th scope="col" class="border-0 bg-light">
+                          <div class="py-2 text-uppercase"># of Locations</div>
+                        </th>
+                        <!-- <th scope="col" class="border-0 bg-light">
+                          <div class="py-2 text-uppercase">Contact Name</div>
+                        </th> -->
+                        <th scope="col" class="border-0 bg-light">
+                          <div class="py-2 text-uppercase">Date</div>
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                        <% if (recentCompanies && recentCompanies.length > 0 ) { %>
+                          <% for(let company of recentCompanies) { %>
+                            <tr>
+                              <td class="border-0 align-middle"><strong><%= company.name %></strong></td>
+                              <td class="border-0 align-middle"><strong><%= company.locations.length %></strong></td>
+                              <td class="border-0 align-middle"><strong><%= company.joined.toDateString() %></strong></td>
+                              </tr>
+                          <% } %>
+                        <% } %>
+                    </tbody>
+                  </table>
+            </div>
+        </div>
+    </section>
+    <section>
+        <div class="row shadow-sm my-3">
+            <div class="col">
+                <h3>Recently Completed Setups</h3>
+                <table class="table">
+                    <thead>
+                      <tr>
+                        <th scope="col" class="border-0 bg-light">
+                          <div class="p-2 px-3 text-uppercase">First Name</div>
+                        </th>
+                        <th scope="col" class="border-0 bg-light">
+                          <div class="py-2 text-uppercase">Last Name</div>
+                        </th>
+                        <th scope="col" class="border-0 bg-light">
+                          <div class="py-2 text-uppercase">Email</div>
+                        </th>
+                        <th scope="col" class="border-0 bg-light">
+                          <div class="py-2 text-uppercase">Date</div>
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                        <%# for(let response of recentResponses) { %>
+                          <tr>
+                            <td class="border-0 align-middle"><strong><%#= item.post.price.toFixed(2) %>Andrew</strong></td>
+                            <td class="border-0 align-middle"><strong><%#= item.post.price.toFixed(2) %>Stone</strong></td>
+                            <td class="border-0 align-middle"><strong><%#= item.quantity %></strong>andytherock@gmail.com</td>
+                            <td class="border-0 align-middle"><strong><%#= item.quantity %></strong>2020-03-17 14:25</td>
+                            </tr>
+                        <%# } %>
+                    </tbody>
+                  </table>
+            </div>
+        </div>
+    </section>
 </div>
 
 <%- include("../partials/footer") %>

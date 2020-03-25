@@ -1,1 +1,1 @@
-module.exports = ['checkbox','email','file','image','number','password','radio','select','tel','text','textarea','url'];
+module.exports = ['Checkbox','Email','File','Image','Number','Password','Radio','Select','Tel','Text','Textarea','Url'];

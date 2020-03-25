@@ -13,7 +13,7 @@ const sampleImages = fs.readdirSync('./public/images/seeds');
 async function seedDefaultQuestions() {
     try {
         console.log('clearing all default questions from database')
-        await Question.deleteMany({isDefault:true});
+        await Question.deleteMany({});
     } catch (err) {
         console.log(err.message);
     }
@@ -39,7 +39,7 @@ async function clearDatabase() {
     console.log('All Companies deleted \n Clearing Locations');
     await Location.deleteMany({});
     console.log('All Locations deleted \n Clearing Users');
-    await User.deleteMany({firstname:!'potato'});
+    await User.deleteMany({}).where('role').ne('Owner');
     console.log('All Users deleted \n Clearing Forms');
     await Form.deleteMany({});
     console.log('All forms deleted \n Clearing responses');
@@ -90,7 +90,7 @@ async function seedDatabase() {
             await newLocation.save();
             console.log(`Location ${newLocation.name} created with ${newLocation.contacts.length} contacts`)
             await createUsers(newLocation._id, companyId, 'User', (Math.ceil(Math.random() * 30)));
-            locationsArr.push(newLocation);
+            locationsArr.push(newLocation._id);
             await newLocation.addDefaultForm();
         }
         return locationsArr;
@@ -139,6 +139,7 @@ async function seedDatabase() {
             name: faker.company.companyName()
         });
         newCompany.locations = await createLocations(newCompany._id);
+        await newCompany.save();
         console.log(`${newCompany.name} created with ${newCompany.locations.length} locations`)
     }
     console.log('database seeded')
