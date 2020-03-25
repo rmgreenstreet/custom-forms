@@ -59,7 +59,7 @@ Add additional notes about how to deploy this on a live system -->
 ## Built With
 
 * [Node JS](http://www.nodejs.org) - The web framework used
-* [Mongoose JS](https://mongoosejs.com/docs/api.htm) - NoSQL Database
+* [Mongoose JS](https://mongoosejs.com/docs/api.htm) - NoSQL Database Interface
 * [EJS](https://ejs.co/) - Render Engine
 
 <!-- ## Contributing
