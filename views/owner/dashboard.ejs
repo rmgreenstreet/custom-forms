@@ -19,23 +19,31 @@
     </section>
     <section id="stats" class="my-3">
         <div class="row shadow-sm pb-3">
-            <div class="col" id="companies-locations-over-time">
-                <h3>New Companies and Locations in the Last 6 Months</h3>
-                <div id="chart-container" ><img src="/images/line-graph-example.svg" alt=""></div>
-            </div>
-            <div class="col" id="invitations-over-time">
+            <div class="col">
                 <h3>Invitations sent in the Last 6 Months</h3>
-                <div id="chart-container" ><img src="/images/line-graph-example.svg" alt=""></div>
+                <canvas id="invitations-over-time" width="400" height="400">
+                  <div class="chart-container" id="chart-container" ><img src="/images/line-graph-example.svg" alt=""></div>
+                </canvas>
             </div>
-            <div class="col" id="completions-over-time">
+            <div class="col">
                 <h3>Setups Completed in the Last 6 Months</h3>
-                <div id="chart-container" ><img src="/images/line-graph-example.svg" alt=""></div>
+                <canvas id="completions-over-time" width="400" height="400">
+                  <div class="chart-container" id="chart-container" ><img src="/images/line-graph-example.svg" alt=""></div>
+                </canvas>
             </div>
         </div>
+        <div class="row">
+          <div class="col">
+            <h3>New Companies and Locations in the Last 6 Months</h3>
+            <canvas id="companies-locations-over-time" width="400" height="400">
+              <div class="chart-container" ><img src="/images/line-graph-example.svg" alt=""></div>
+            </canvas>
+          </div>
+        </div>
         <div class="row shadow-sm pb-3">
-            <div class="col" id="send-link">
+            <div class="col col-lg-6 mt-3" id="send-link">
                 <h3>Create A Company</h3>
-                <form action="/users/send" method="POST" id="send-link-to-user">
+                <form action="/company/new" method="POST" id="send-link-to-user">
                     <div class="input-group">
                         <div class="input-group-prepend">
                             <label for="email" class="input-group-text">Email</label>
@@ -58,14 +66,15 @@
                     <button type="submit" class="btn btn-secondary mt-2">Send Link</button>
                 </form>
             </div>
-            <div class="col" id="send-link">
+            <div class="col col-lg-6 mt-3" id="send-link">
               <h3>Send An Invitation</h3>
               <form action="/users/send" method="POST" id="send-link-to-user">
                   <div class="input-group">
                       <div class="input-group-prepend">
-                          <label for="location" class="input-group-text">Location</label>
+                          <label for="locationSelector" class="input-group-text">Location</label>
                       </div>
-                      <select class="form-control" id="location" required>
+                      <select class="form-control" id="locationSelector" name="locationSelector" onchange="handleExpedited()" required>
+                        <option value="">-</option>
                         <% if (allLocations && allLocations.length > 0) { %>
                           <% for (let location of allLocations) { %> 
                             <option value="<%= location.id %>"><%= location.name %> - #<%= location.officeNumber %></option>
@@ -92,7 +101,7 @@
                       <input type="text" id="lastName" name="lastName" class="form-control" required>
                   </div>
                   <div class="input-group">
-                    <div class="form-check form-check-inline">
+                    <div class="form-check form-check-inline" id="expediteCheckbox" style="display:none;">
                       <input type="checkbox" id="isExpedited" name="isExpedited" class="form-check-input" >
                       <label for="isExpedited" class="form-check-label">Expedite This Setup</label>
                     </div>
@@ -100,13 +109,12 @@
                       <input type="checkbox" id="isHidden" name="isHidden" class="form-check-input" >
                       <label for="isHidden" class="form-check-label">Keep this setup hidden</label>
                     </div>
-                  </div>
-                  <%# if (location.totalMonthlyExpedited > 0) { %>
                     <div class="row">
-                      <p>Your location has sent <%#= location.totalMonthlyExpedited %> Expedited invitations this month</p>
+                      <div class="col" id="expeditedTotal">
+
+                      </div>
                     </div>
-                  <%# } %>
-                  
+                  </div>
                   <button type="submit" class="btn btn-secondary mt-2">Send Link</button>
               </form>
           </div>
@@ -135,11 +143,11 @@
                     </thead>
                     <tbody>
                         <% if (recentCompanies && recentCompanies.length > 0 ) { %>
-                          <% for(let company of recentCompanies) { %>
+                          <% for(let i = 0; i < 10; i++) { %>
                             <tr>
-                              <td class="border-0 align-middle"><strong><%= company.name %></strong></td>
-                              <td class="border-0 align-middle"><strong><%= company.locations.length %></strong></td>
-                              <td class="border-0 align-middle"><strong><%= company.created.toDateString() %></strong></td>
+                              <td class="border-0 align-middle"><strong><%= recentCompanies[i].name %></strong></td>
+                              <td class="border-0 align-middle"><strong><%= recentCompanies[i].locations.length %></strong></td>
+                              <td class="border-0 align-middle"><strong><%= recentCompanies[i].created.toDateString() %></strong></td>
                             </tr>
                           <% } %>
                         <% } %>
@@ -184,5 +192,10 @@
         </div>
     </section>
 </div>
-
+<script>
+  var allLocations = <%- JSON.stringify(allLocations) %>;
+  var recentCompanies= <%- JSON.stringify(recentCompanies) %>;
+  var recentLocations= <%- JSON.stringify(recentLocations) %>;
+  
+</script>
 <%- include("../partials/footer") %>

@@ -6,12 +6,6 @@ const User = require('../models/user');
 const Form = require('../models/form');
 const inputTypes = require('../models/inputTypes');
 
-async function newUserErrorHandler(err, newUser) {
-  console.log(err);
-  await User.findByIdAndDelete(newUser._id);
-  return res.redirect('/users/dashboard');
-}
-
 module.exports = {
   async getCompaniesIndex(req,res,next) {
     let allCompanies;

@@ -1,5 +1,5 @@
 window.onload = () => {
-
+  
   //add drop shadow to navbar when page is scrolled
   $(window).scroll(() =>{     
     var scroll = $(window).scrollTop();
@@ -14,30 +14,6 @@ window.onload = () => {
   //collapse navHamburger on item click
   $('.nav-link').click(() => {
       $('.navbar-collapse').collapse('hide');
-  });
-
-  
-  //slide form down when respective show button is clicked
-  function toggleForm(targetDiv) {
-    if(targetDiv.css('display') == 'none') {
-      targetDiv.slideDown(500);
-    } else {
-      targetDiv.slideUp(500);
-    }
-    //chose not to use .toggle() to avoid momentary display of vertical scroll bar during animation
-  };
-
-  const showNewProject = $('#show-add-project');
-  const newProjectForm = $('#add-project');
-  const showProfileEdit = $('#show-profile-edit');
-  const profileEditForm = $('#profile-edit');
-
-  showNewProject.click(() => {
-    toggleForm(newProjectForm);
-  });
-
-  showProfileEdit.click(() => {
-    toggleForm(profileEditForm);
   });
   
   //browser detection from MDN
@@ -89,26 +65,42 @@ window.onload = () => {
 
 }
 
+//Show/hide "Expedite" button when showing "send invitation" form
+function handleExpedited () {
+  if (allLocations) {
+    let selectedLocation = allLocations.find(location =>  location._id === document.getElementById('locationSelector').value);
+    console.log(selectedLocation);
+    if (selectedLocation.totalMonthlyExpedited < 3) {
+      if ($('#expediteCheckbox').is(':hidden')){
+        $('#expediteCheckbox').toggle("slide",{},500);
+      }
+    } else if ($('#expediteCheckbox').is(':visible')){
+        $('#expediteCheckbox').toggle("slide",{},500);
+    }
+    $('#expeditedTotal').html(`This office has sent ${selectedLocation.totalMonthlyExpedited} expedited requests this month`);
+  };
+};
+
 //drag and drop functionality for form editor
-var _el;
+// var _el;
 
-function dragOver(e) {
-  if (isBefore(_el, e.target))
-    e.target.parentNode.insertBefore(_el, e.target);
-  else
-    e.target.parentNode.insertBefore(_el, e.target.nextSibling);
-}
+// function dragOver(e) {
+//   if (isBefore(_el, e.target))
+//     e.target.parentNode.insertBefore(_el, e.target);
+//   else
+//     e.target.parentNode.insertBefore(_el, e.target.nextSibling);
+// }
 
-function dragStart(e) {
-  e.dataTransfer.effectAllowed = "move";
-  e.dataTransfer.setData("text/plain", null); // Thanks to bqlou for their comment.
-  _el = e.target;
-}
+// function dragStart(e) {
+//   e.dataTransfer.effectAllowed = "move";
+//   e.dataTransfer.setData("text/plain", null); // Thanks to bqlou for their comment.
+//   _el = e.target;
+// }
 
-function isBefore(el1, el2) {
-  if (el2.parentNode === el1.parentNode)
-    for (var cur = el1.previousSibling; cur && cur.nodeType !== 9; cur = cur.previousSibling)
-      if (cur === el2)
-        return true;
-  return false;
-}
+// function isBefore(el1, el2) {
+//   if (el2.parentNode === el1.parentNode)
+//     for (var cur = el1.previousSibling; cur && cur.nodeType !== 9; cur = cur.previousSibling)
+//       if (cur === el2)
+//         return true;
+//   return false;
+// }

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset=utf-8 />
+<title>Draw a line</title>
+</head>
+<body>
+<canvas id="DemoCanvas" width="500" height="500"></canvas>  
+<canvas id="DemoCanvas" width="500" height="500"></canvas>  
+<canvas id="DemoCanvas" width="500" height="500"></canvas>  
+<script>  
+var canvas = document.getElementById('DemoCanvas');
+//Always check for properties and methods, to make sure your code doesn't break in other browsers.
+// if (canvas.getContext) 
+//  {
+//   var context = canvas.getContext('2d');
+//   // Reset the current path
+//   context.beginPath(); 
+//   // Staring point (10,45)
+//    context.moveTo(10,45);
+//   // End point (180,47)
+//   context.lineTo(180,47);
+//   // Make the line visible
+//   context.stroke();
+//    }
+
+const pointsOne = [
+    [5,7],
+    [7,10],
+    [15,25],
+    [20,40],
+    [80,45],
+    [250,100],
+    [300,200],
+    [350,200],
+    [400,250]
+];
+
+   function renderSixMonths(canvas, points) {
+        console.log('drawing on canvas');
+        // var canvas = document.getElementById(canvasId);
+        if(canvas.getContext) {
+            // var parent = canvas.parentElement;
+            // canvas.width = parent.clientWidth;
+            // canvas.height = parent.clientHeight;
+            var ctx = canvas.getContext('2d'); 
+            ctx.beginPath();
+            ctx.lineWidth = 6;
+            ctx.moveTo(0,0);
+            ctx.lineTo(0,canvas.height);
+            ctx.lineTo(canvas.width,canvas.height);
+            ctx.stroke();
+            ctx.moveTo(0,canvas.height);
+            points.forEach((point) => {
+                // ctx.beginPath();
+                ctx.lineWidth = 2;
+                ctx.lineTo(point[0],(canvas.height - point[1]));
+                ctx.stroke();
+            });
+
+           
+        }
+    };
+    var canvases = document.querySelectorAll('canvas');
+    console.log(canvases);
+    canvases.forEach(canvas => renderSixMonths(canvas,pointsOne));
+    // renderSixMonths(canvas);
+
+
+window.addEventListener('load', function () {
+    
+});
+
+
+
+
+
+</script> 
+</body>
+</html>

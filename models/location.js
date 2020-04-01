@@ -104,6 +104,10 @@ const locationSchema = new Schema({
     company: {
         type: Schema.Types.ObjectId,
         ref: 'Company'
+    },
+    created: {
+        type: Date,
+        default: Date.now()
     }
 });
 
