@@ -3,43 +3,23 @@
 <div class="container mt-5">
    
     <h1>Owner Dashboard</h1>
-    <section id="search" class="my-2">
-        <div class="row shadow-sm">
-            <div class="col">
-                <form action="/dashboard" method="POST" id="search" class="my-2">
-                    <div class="input-group">
-                        <input type="text" name="query" class="form-control" placeholder="Search names or dates" aria-label="Search names or dates">
-                        <div class="input-group-append">
-                            <button class="input-group-text">Search</button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </section>
-    <section id="stats" class="my-3">
+    <section id="charts" class="my-3">
         <div class="row shadow-sm pb-3">
             <div class="col">
-                <h3>Invitations sent in the Last 6 Months</h3>
+                <h3>Invitations/Completions/Setups</h3>
                 <canvas id="invitations-over-time" width="400" height="400">
                   <div class="chart-container" id="chart-container" ><img src="/images/line-graph-example.svg" alt=""></div>
                 </canvas>
             </div>
             <div class="col">
-                <h3>Setups Completed in the Last 6 Months</h3>
-                <canvas id="completions-over-time" width="400" height="400">
-                  <div class="chart-container" id="chart-container" ><img src="/images/line-graph-example.svg" alt=""></div>
-                </canvas>
+              <h3>New Companies and Locations</h3>
+              <canvas id="companies-locations-over-time" width="400" height="400">
+                <div class="chart-container" ><img src="/images/line-graph-example.svg" alt=""></div>
+              </canvas>
             </div>
         </div>
-        <div class="row">
-          <div class="col">
-            <h3>New Companies and Locations in the Last 6 Months</h3>
-            <canvas id="companies-locations-over-time" width="400" height="400">
-              <div class="chart-container" ><img src="/images/line-graph-example.svg" alt=""></div>
-            </canvas>
-          </div>
-        </div>
+      </section>
+      <section id="forms">
         <div class="row shadow-sm pb-3">
             <div class="col col-lg-6 mt-3" id="send-link">
                 <h3>Create A Company</h3>
@@ -120,7 +100,21 @@
           </div>
         </div>
     </section>
-    <section>
+    <section id="search" class="my-2">
+        <div class="row shadow-sm">
+            <div class="col">
+                <form action="/dashboard" method="POST" id="search" class="my-2">
+                    <div class="input-group">
+                        <input type="text" name="query" class="form-control" placeholder="Search names or dates" aria-label="Search names or dates">
+                        <div class="input-group-append">
+                            <button class="input-group-text">Search</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+    <section id="tables">
         <div class="row shadow-sm my-3">
             <div class="col">
                 <h3>Recently Added Companies</h3>
@@ -143,11 +137,11 @@
                     </thead>
                     <tbody>
                         <% if (recentCompanies && recentCompanies.length > 0 ) { %>
-                          <% for(let i = 0; i < 10; i++) { %>
+                          <% for(let company of recentCompanies) { %>
                             <tr>
-                              <td class="border-0 align-middle"><strong><%= recentCompanies[i].name %></strong></td>
-                              <td class="border-0 align-middle"><strong><%= recentCompanies[i].locations.length %></strong></td>
-                              <td class="border-0 align-middle"><strong><%= recentCompanies[i].created.toDateString() %></strong></td>
+                              <td class="border-0 align-middle"><strong><%= company.name %></strong></td>
+                              <td class="border-0 align-middle"><strong><%= company.locations.length %></strong></td>
+                              <td class="border-0 align-middle"><strong><%= company.created.toDateString() %></strong></td>
                             </tr>
                           <% } %>
                         <% } %>
@@ -196,6 +190,6 @@
   var allLocations = <%- JSON.stringify(allLocations) %>;
   var recentCompanies= <%- JSON.stringify(recentCompanies) %>;
   var recentLocations= <%- JSON.stringify(recentLocations) %>;
-  
+  var totalMonths= <%- JSON.stringify(totalMonths) %>;
 </script>
 <%- include("../partials/footer") %>

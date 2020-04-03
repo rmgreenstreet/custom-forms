@@ -9,23 +9,19 @@ const Question = require('../models/question');
 
 const { newUserErrorHandler } = require('../helpers');
 
-async function getRecentDocuments(documentType, beginDate, endDate, populatePath, populateModel) {
+async function getRecentDocuments(documentType, beginDate, endDate, limit = 0, populatePath, populateModel) {
   if(populatePath && populateModel) {
-    return await documentType.find({})
-    .where('created')
-    .gt(beginDate)
-    .lt(endDate)
-    .limit(10)
+    return await documentType.find({created: {$gte: beginDate, $lte: endDate}})
+    .limit(limit)
     .populate({
       path: populatePath,
       model: populateModel
-    });
+    })
+    .sort('created');
   } else {
-    return await documentType.find({})
-    .where('created')
-    .gt(beginDate)
-    .lt(endDate)
-    .limit(10);
+    return await documentType.find({created: {$gte: beginDate, $lte: endDate}})
+    .limit(limit)
+    .sort('created');
   }
   
 };
@@ -34,6 +30,15 @@ async function dashboardErrorHandler(err, message = `Error loading the page`) {
   console.log(err);
   req.session.error = message;
   return res.redirect('back');
+}
+
+function monthDiff(date1, date2) {
+  let months;
+  months = (date2.getFullYear() - date1.getFullYear()) * 12;
+  months -= date1.getMonth() + 1;
+  months += date2.getMonth();
+  months += 2;
+  return months <= 0 ? 0 : months;
 }
 
 module.exports = {
@@ -53,20 +58,22 @@ module.exports = {
           let totalQuestions;
           let totalCompanies;
           let totalForms;
+          let recentInvitations;
           let recentCompletions;
           let beginDate = new Date();
-          beginDate.setMonth(beginDate.getMonth() -6);
+          beginDate.setMonth(beginDate.getMonth() - 6);
           if (req.body.beginDate) {
             beginDate = req.body.beginDate;
           }
-          console.log(`beginDate: ${beginDate}`);
           let endDate = new Date();
           if (req.body.endDate) {
             endDate = req.body.endDate
           }
-          console.log(`endDate: ${endDate}`);
+          const totalMonths = monthDiff(beginDate, endDate);
+
           try {
             recentCompanies = await getRecentDocuments(Company, beginDate, endDate, null, null);
+            // console.log(recentCompanies);
             totalCompanies = await Company.countDocuments();
           } catch (err) {
             dashboardErrorHandler(err,`Error loading Company data`);
@@ -74,7 +81,7 @@ module.exports = {
 
           try {
             allLocations = await Location.find({}, 'name officeNumber totalMonthlyExpedited').sort('officeNumber');
-            recentLocations = getRecentDocuments(Location, beginDate, endDate);
+            recentLocations = await getRecentDocuments(Location, beginDate, endDate);
           } catch (err) {
             dashboardErrorHandler(err,`Error loading Location data`);
           };
@@ -93,7 +100,9 @@ module.exports = {
           };
 
           try {
-            res.render('../views/owner/dashboard', {recentCompanies, recentLocations, allLocations,recentForms,totalQuestions, totalCompanies, totalForms, page:'ownerDashboard'});
+            console.log(`recentCompanies =`,recentCompanies);
+            console.log(`recentLocations =`,recentLocations);
+            res.render('../views/owner/dashboard', {totalMonths, recentInvitations, recentCompletions, recentCompanies, recentLocations, allLocations,recentForms,totalQuestions, totalCompanies, totalForms, page:'ownerDashboard'});
           } catch (err) {
             dashboardErrorHandler(err,`Error loading dashboard`);
           };

@@ -69,14 +69,7 @@ const userSchema = new Schema({
         type: String,
         default: crypto.randomBytes(16).toString('hex')
     },
-    completedForm:{
-        type:Boolean,
-        default:false
-    },
-    completedSetup:{
-        type:Boolean,
-        default:false
-    },
+    completedSetup: Date,
     responses: [
         {
             type:Schema.Types.ObjectId,
