@@ -4,15 +4,12 @@ var canvases = document.querySelectorAll('canvas');
 //   "July", "August", "September", "October", "November", "December"
 // ];
 
-const colors = ['blue','green','orange','purple','teal','fuschia'];
-
 //converts full object data from server into {month: String, count: Number} objects
 function getPoints(items) {
     let points = []
     items.forEach((item) => {
         const createdDate = new Date(item.created)
         const monthYear = `${createdDate.getMonth() + 1}/${createdDate.getFullYear()}`;
-        console.log(monthYear);
         let existingPoint = points.find(point => point.x === monthYear);
         if (existingPoint) {
             existingPoint.y ++;
@@ -70,6 +67,7 @@ function equalize(arr1, arr2) {
 
 function renderCanvas(canvas, data) {
     console.log('drawing on canvas');
+    const colors = ['indigo','blue','green','orange','purple','teal','fuschia'];
 
     if(canvas.getContext) {
         var xPadding = 30;
@@ -158,14 +156,14 @@ function renderCanvas(canvas, data) {
             }
         };
 
-        pointsArr.forEach(function (points) {
-            drawLine(points, colors[Math.ceil(Math.random() * colors.length)]);
+        pointsArr.forEach(async function (points) {
+            var randColors = [];
+            do {
+                randColors.push(colors.splice(Math.floor(Math.random() * colors.length), 1)[0]);
+            } while (randColors.length < pointsArr.length);
+            console.log(randColors);
+            drawLine(points, randColors[pointsArr.indexOf(points)]);
         });
-
-        // drawLine(points, 'blue');
-        // if(points2 && points2.length > 0) {
-        //     drawLine(points2, 'green');
-        // }
     }
 };
 
