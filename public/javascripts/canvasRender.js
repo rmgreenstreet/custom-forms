@@ -1,19 +1,23 @@
 var canvases = document.querySelectorAll('canvas');
 
-const monthNames = ["January", "February", "March", "April", "May", "June",
-  "July", "August", "September", "October", "November", "December"
-];
+// const monthNames = ["January", "February", "March", "April", "May", "June",
+//   "July", "August", "September", "October", "November", "December"
+// ];
+
+const colors = ['blue','green','orange','purple','teal','fuschia'];
+
 //converts full object data from server into {month: String, count: Number} objects
 function getPoints(items) {
     let points = []
     items.forEach((item) => {
-        const createdMonth = new Date(item.created).getMonth();
-        let existingPoint = points.find(point => point.x === createdMonth);
-        // console.log(`existingPoint:`,existingPoint);
+        const createdDate = new Date(item.created)
+        const monthYear = `${createdDate.getMonth() + 1}/${createdDate.getFullYear()}`;
+        console.log(monthYear);
+        let existingPoint = points.find(point => point.x === monthYear);
         if (existingPoint) {
             existingPoint.y ++;
         } else {
-            points.push({x:createdMonth, y: 1});
+            points.push({x:monthYear, y: 1});
         }
     });
     return points;
@@ -40,7 +44,6 @@ function removeDuplicates(originalArray, objKey) {
 
     for(var i = 0; i < originalArray.length; i++) {
       value = originalArray[i][objKey];
-
       if(values.indexOf(value) === -1) {
         trimmedArray.push(originalArray[i]);
         values.push(value);
@@ -49,22 +52,23 @@ function removeDuplicates(originalArray, objKey) {
     return trimmedArray;
 };
 
+/* compare two arrays and if there are any missing months in either array, add them with a y value of 0, then sortby month/year */
 function equalize(arr1, arr2) {
-    arr1.forEach(function (item) {
-        // console.log(`arr1[${i}].x: ${arr1[i].x}, arr2[${i}].x: ${arr2[i].x}`);
-        const missingIndex = arr2.findIndex(function (obj) {
-            obj.x === item.x;
-        });
-        if (missingIndex > 0) {
-            for (let j = arr1.indexOf(item); j < missingIndex; j++) {
-                arr1.splice(j,0,{x: arr2[missingIndex -j].x, y:0});
-            };
-        };
+    let newArr = arr2.reduce(function (result, obj2) {
+        if (arr1.some(obj1 => obj1['x'] === obj2['x'])) {
+            return result;
+        }
+        return [...result, {'x' : obj2['x'], 'y':0}];
+    }, arr1);
+    newArr.sort(function (a, b) {
+        a = a.x.split('/');
+        b = b.x.split('/')
+        return new Date(a[1], a[0], 1) - new Date(b[1], b[0], 1)
     });
-    return arr1;
+    return newArr;
 };
 
-function renderCanvas(canvas, data, otherData) {
+function renderCanvas(canvas, data) {
     console.log('drawing on canvas');
 
     if(canvas.getContext) {
@@ -72,28 +76,23 @@ function renderCanvas(canvas, data, otherData) {
         var yPadding = 30;
         var xLength = canvas.width - yPadding;
         var yLength = canvas.height - xPadding;
-        var points = getPoints(data);
-        var otherPoints = getPoints(otherData);
-        points = equalize(points,otherPoints);
-        otherPoints = equalize(otherPoints,points);
-        var combinedData = data.concat(otherData);
-        console.log(`points: ${points}`);
-        console.log(`otherPoints: ${otherPoints}`);
+        var pointsArr = [];
+        data.forEach(function (arr) {
+            pointsArr.push(getPoints(arr));
+        });
+        for (let i = 0; i < pointsArr.length -1 ; i++) {
+            pointsArr[i] = equalize(pointsArr[i], pointsArr[i+1]);
+        };
+        var combinedData = Array.prototype.concat.apply([], pointsArr);
         combinedData.sort(function(a,b) {
             return new Date(a.created) - new Date(b.created)
         });
+        var filteredPoints = removeDuplicates(combinedData, 'x');
 
         /* cuts X axis into a number of sections double the number of points */ 
         var xSpacing = xLength / (totalMonths * 2);
-        var combinedPoints = getPoints(combinedData);
-        var filteredPoints = removeDuplicates(combinedPoints, 'x');
 
-
-        if (otherPoints && otherPoints.length > 0) {
-            var yMax = getMaxY(combinedPoints);
-        } else {
-            var yMax = getMaxY(points);
-        }
+        var yMax = getMaxY(combinedData);
 
         var ctx = canvas.getContext('2d');
         ctx.font = 'italic 8pt sans-serif';
@@ -141,9 +140,9 @@ function renderCanvas(canvas, data, otherData) {
         // Draw the X value texts
         for(var i = 0; i < totalMonths; i ++) {
             if (i===0) {
-                ctx.fillText(monthNames[filteredPoints[i].x], yPadding, yLength +20);
+                ctx.fillText(filteredPoints[i].x, yPadding, yLength +20);
             }else {
-                ctx.fillText(monthNames[filteredPoints[i].x], (yPadding) + (xSpacing * (2 * i)), yLength + 20);
+                ctx.fillText(filteredPoints[i].x, (yPadding) + (xSpacing * (2 * i)), yLength + 20);
             }
         }
 
@@ -159,14 +158,17 @@ function renderCanvas(canvas, data, otherData) {
             }
         };
 
+        pointsArr.forEach(function (points) {
+            drawLine(points, colors[Math.ceil(Math.random() * colors.length)]);
+        });
 
-        drawLine(points, 'blue');
-        if(otherPoints && otherPoints.length > 0) {
-            drawLine(otherPoints, 'green');
-        }
+        // drawLine(points, 'blue');
+        // if(points2 && points2.length > 0) {
+        //     drawLine(points2, 'green');
+        // }
     }
 };
 
 canvases.forEach((canvas) => {
-    renderCanvas(canvas,recentCompanies, recentLocations);
+    renderCanvas(canvas,[recentCompanies, recentLocations]);
 });
