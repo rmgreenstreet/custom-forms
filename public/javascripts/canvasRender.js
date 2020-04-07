@@ -1,4 +1,5 @@
 var canvases = document.querySelectorAll('canvas');
+console.log(canvases);
 
 // const monthNames = ["January", "February", "March", "April", "May", "June",
 //   "July", "August", "September", "October", "November", "December"
@@ -65,7 +66,7 @@ function equalize(arr1, arr2) {
     return newArr;
 };
 
-function renderCanvas(canvas, data) {
+function renderCanvas(canvas, data, legend) {
     console.log('drawing on canvas');
     const colors = ['indigo','blue','green','orange','purple','teal','fuschia'];
 
@@ -88,7 +89,7 @@ function renderCanvas(canvas, data) {
         var filteredPoints = removeDuplicates(combinedData, 'x');
 
         /* cuts X axis into a number of sections double the number of points */ 
-        var xSpacing = xLength / (totalMonths * 2);
+        var xSpacing = xLength / (filteredPoints.length * 2);
 
         var yMax = getMaxY(combinedData);
 
@@ -136,13 +137,15 @@ function renderCanvas(canvas, data) {
         }
         
         // Draw the X value texts
-        for(var i = 0; i < totalMonths; i ++) {
+        for(var i = 0; i < filteredPoints.length; i ++) {
             if (i===0) {
                 ctx.fillText(filteredPoints[i].x, yPadding, yLength +20);
             }else {
                 ctx.fillText(filteredPoints[i].x, (yPadding) + (xSpacing * (2 * i)), yLength + 20);
             }
         }
+
+        //Draw the Legend
 
         // Draw the Y value texts
         ctx.textAlign = "right"
@@ -156,17 +159,23 @@ function renderCanvas(canvas, data) {
             }
         };
 
+        // var randColors = [];
+        // do {
+        //     randColors.push(colors.splice(Math.floor(Math.random() * colors.length), 1)[0]);
+        // } while (randColors.length < pointsArr.length);
+        // console.log(randColors);
+        
         pointsArr.forEach(async function (points) {
-            var randColors = [];
-            do {
-                randColors.push(colors.splice(Math.floor(Math.random() * colors.length), 1)[0]);
-            } while (randColors.length < pointsArr.length);
-            console.log(randColors);
-            drawLine(points, randColors[pointsArr.indexOf(points)]);
+            drawLine(points, colors[pointsArr.indexOf(points)]);
         });
     }
 };
 
+NodeList.prototype.indexOf = Array.prototype.indexOf
 canvases.forEach((canvas) => {
-    renderCanvas(canvas,[recentCompanies, recentLocations]);
+    renderCanvas(
+        canvas,
+        graphDatasets[canvases.indexOf(canvas)][1],
+        graphDatasets[canvases.indexOf(canvas)][0]
+        );
 });

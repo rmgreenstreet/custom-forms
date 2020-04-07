@@ -24,15 +24,6 @@ const userSchema = new Schema({
         type:String,
         required:true,
         unique:true
-        // ,
-        // validate: {
-        //     validator: function(v) {
-        //       console.log({ v });
-        //       ;
-        //     },
-        //     message: props =>
-        //       `${props.value} is not a valid email address`
-        //   }
     },
     role:{
         type:String,
@@ -51,7 +42,7 @@ const userSchema = new Schema({
         ref: 'Location'
     },
     image: {
-        url: {
+        secure_url: {
             type:String,
             default:'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png'
         },
@@ -104,7 +95,6 @@ userSchema.method('sendInvitation', async function (attrs = {}) {
 });
 
 userSchema.method('markFormCompleted', async function (attrs = {}) {
-    this.completedForm = true;
     await this.save();
     const userLocation = Location.findById(this.location);
     const bccs = await userLocation.sendContactEmails();
@@ -119,10 +109,9 @@ userSchema.method('markFormCompleted', async function (attrs = {}) {
 });
 
 userSchema.method('markSetupCompleted', async function (attrs = {}) {
-    this.completedSetup = true;
+    this.completedSetup = Date.now();
     await this.save();
-    const userLocation = Location.findById(this.location);
-    const bccs = await userLocation.sendContactEmails();
+    const bccs = await Location.findById(this.location).sendContactEmails();
     const msg = {
         to:this.personalEmail,
         from:'Site Admin <info@greenstreetimagining.com>',

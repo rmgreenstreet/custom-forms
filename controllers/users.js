@@ -6,12 +6,13 @@ const Location = require('../models/location');
 const User = require('../models/user');
 const Form = require('../models/form');
 const Question = require('../models/question');
+const Response = require('../models/response');
 
 const { newUserErrorHandler } = require('../helpers');
 
 async function getRecentDocuments(documentType, beginDate, endDate, limit = 0, populatePath, populateModel) {
   if(populatePath && populateModel) {
-    return await documentType.find({created: {$gte: beginDate, $lte: endDate}})
+    return await documentType.find({created: {$gte: new Date(beginDate), $lte: new Date(endDate)}})
     .limit(limit)
     .populate({
       path: populatePath,
@@ -29,7 +30,7 @@ async function getRecentDocuments(documentType, beginDate, endDate, limit = 0, p
 async function dashboardErrorHandler(err, message = `Error loading the page`) {
   console.log(err);
   req.session.error = message;
-  return res.redirect('back');
+  return res.redirect('/');
 }
 
 function monthDiff(date1, date2) {
@@ -60,14 +61,16 @@ module.exports = {
           let totalForms;
           let recentInvitations;
           let recentCompletions;
+          let recentSetups;
           let beginDate = new Date();
           beginDate.setMonth(beginDate.getMonth() - 6);
           if (req.body.beginDate) {
-            beginDate = req.body.beginDate;
+            beginDate = new Date(req.body.beginDate);
           }
+          console.log(beginDate);
           let endDate = new Date();
           if (req.body.endDate) {
-            endDate = req.body.endDate
+            endDate = new Date(req.body.endDate);
           }
           const totalMonths = monthDiff(beginDate, endDate);
 
@@ -87,6 +90,24 @@ module.exports = {
           };
 
           try {
+            recentInvitations = await getRecentDocuments(User, beginDate, endDate);
+          } catch (err) {
+            dashboardErrorHandler(err,`Error loading recent Invitations`);
+          };
+
+          try {
+            recentCompletions = await getRecentDocuments(Response, beginDate, endDate);
+          } catch (err) {
+            dashboardErrorHandler(err,`Error loading recent Completions`);
+          };
+
+          try {
+            recentSetups = await User.find({completedSetup: {$gt: beginDate, $lte: endDate}});
+          } catch (err) {
+            dashboardErrorHandler(err,`Error loading recent Setups`);
+          };
+
+          try {
             recentForms = await getRecentDocuments(Form, 3);
             totalForms = await Form.countDocuments();
           } catch (err) {
@@ -100,9 +121,31 @@ module.exports = {
           };
 
           try {
-            console.log(`recentCompanies =`,recentCompanies);
-            console.log(`recentLocations =`,recentLocations);
-            res.render('../views/owner/dashboard', {totalMonths, recentInvitations, recentCompletions, recentCompanies, recentLocations, allLocations,recentForms,totalQuestions, totalCompanies, totalForms, page:'ownerDashboard'});
+            const graphDatasets = [
+              [
+                [
+                  'Invitations',
+                  'Completions',
+                  'Setups'
+                ],
+                [
+                  recentInvitations, 
+                  recentCompletions, 
+                  recentSetups
+                ]
+              ],
+              [
+                [
+                  recentCompanies[0].constructor.modelName, 
+                  recentLocations[0].constructor.modelName
+                ],
+                [
+                  recentCompanies, 
+                  recentLocations
+                ]
+              ]              
+            ];
+            res.render('../views/owner/dashboard', {recentCompanies, allLocations, recentInvitations,totalMonths, recentForms,totalQuestions, totalCompanies, totalForms, graphDatasets, page:'ownerDashboard'});
           } catch (err) {
             dashboardErrorHandler(err,`Error loading dashboard`);
           };
@@ -225,20 +268,3 @@ module.exports = {
       res.redirect('/users/dashboard');
     }
 };
-
-
-// try {
-//   var newUser = User.create({
-//     name:'John'
-//   });
-// } catch (err) {
-//   //handle the error differently here
-// }
-
-// try {
-//   //after creating the user, other stuff happens that could cause an error
-// } catch (err) {
-//   req.session.error = 'There was an error';
-//   //passes the newUser into the error handler to be removed in order to start over
-//   await myErrorHandler(err, newUser)
-// }

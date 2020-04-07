@@ -21,24 +21,15 @@ async function pickADate() {
         try {
             const today = new Date();
             const day = Math.ceil(Math.random() * 27);
-            const thisOrLastYear = flipACoin();
-            if(thisOrLastYear) {
-                const month = Math.ceil(Math.random() * today.getMonth())
-                const returnDate = new Date(today.getFullYear(),month,day);
-                console.log(`Date from last year:`,returnDate);
-                resolve(returnDate);
-                return
-            } else {
-                const month = Math.ceil(Math.random() * 12);
-                const returnDate = new Date(today.getFullYear() -1,month,day);
-                console.log(`Date from this year:`,returnDate);
-                resolve(returnDate);
-                return
-            }
+            // const thisOrLastYear = flipACoin();
+            const month = Math.ceil(Math.random() * today.getMonth())
+            const returnDate = new Date(today.getFullYear() - flipACoin(),month,day);
+            resolve(returnDate);
+            return;
         } catch (err) {
             console.log(`Error creating random date: ${err.message}`);
             reject(Date.now());
-            return
+            return;
         }
     });
 };
@@ -158,6 +149,12 @@ async function seedDatabase() {
         if(role === 'User');{
             if(flipACoin()) {
                 newUser.responses.push(await createResponse(newUser)); 
+                await newUser.save();
+            } else {
+                continue;
+            }                
+            if(flipACoin()) {
+                newUser.completedSetup = await pickADate(); 
                 await newUser.save();
             } else {
                 continue;
