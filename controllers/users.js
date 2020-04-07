@@ -66,17 +66,17 @@ module.exports = {
           beginDate.setMonth(beginDate.getMonth() - 6);
           if (req.body.beginDate) {
             beginDate = new Date(req.body.beginDate);
-          }
-          console.log(beginDate);
+          };
+
           let endDate = new Date();
           if (req.body.endDate) {
             endDate = new Date(req.body.endDate);
-          }
+          };
+
           const totalMonths = monthDiff(beginDate, endDate);
 
           try {
             recentCompanies = await getRecentDocuments(Company, beginDate, endDate, null, null);
-            // console.log(recentCompanies);
             totalCompanies = await Company.countDocuments();
           } catch (err) {
             dashboardErrorHandler(err,`Error loading Company data`);
@@ -102,7 +102,7 @@ module.exports = {
           };
 
           try {
-            recentSetups = await User.find({completedSetup: {$gt: beginDate, $lte: endDate}});
+            recentSetups = await User.find({completedSetup: {$gte: beginDate, $lte: endDate}}).sort('completedSetup');
           } catch (err) {
             dashboardErrorHandler(err,`Error loading recent Setups`);
           };
@@ -123,28 +123,16 @@ module.exports = {
           try {
             const graphDatasets = [
               [
-                [
-                  'Invitations',
-                  'Completions',
-                  'Setups'
-                ],
-                [
-                  recentInvitations, 
-                  recentCompletions, 
-                  recentSetups
-                ]
+                {label:'Invitations',payload:recentInvitations,searchProperty:'created'},
+                {label:'Completions',payload:recentCompletions,searchProperty:'created'},
+                {label:'Setups',payload:recentSetups,searchProperty:'completedSetup'}
               ],
               [
-                [
-                  recentCompanies[0].constructor.modelName, 
-                  recentLocations[0].constructor.modelName
-                ],
-                [
-                  recentCompanies, 
-                  recentLocations
-                ]
-              ]              
+                {label:'Companies',payload:recentCompanies,searchProperty:'created'},
+                {label:'Locations',payload:recentLocations,searchProperty:'created'}
+              ]             
             ];
+            
             res.render('../views/owner/dashboard', {recentCompanies, allLocations, recentInvitations,totalMonths, recentForms,totalQuestions, totalCompanies, totalForms, graphDatasets, page:'ownerDashboard'});
           } catch (err) {
             dashboardErrorHandler(err,`Error loading dashboard`);
@@ -154,9 +142,7 @@ module.exports = {
           console.log('this is an admin, getting dashboard for this location');
           try {
             const location = await Location.findById(user.location);
-            // console.log(location);
             const recentInvitations = await User.find({location:req.user.location}).limit(10);
-            // console.log(recentInvitations);
             res.render('../views/admin/dashboard', {user, recentInvitations, location});
           } catch (err) {
             req.session.error('Unable to find recent statistics');

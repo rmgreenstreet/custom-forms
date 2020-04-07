@@ -1,16 +1,15 @@
 var canvases = document.querySelectorAll('canvas');
-console.log(canvases);
 
 // const monthNames = ["January", "February", "March", "April", "May", "June",
 //   "July", "August", "September", "October", "November", "December"
 // ];
 
-//converts full object data from server into {month: String, count: Number} objects
-function getPoints(items) {
-    let points = []
-    items.forEach((item) => {
-        const createdDate = new Date(item.created)
-        const monthYear = `${createdDate.getMonth() + 1}/${createdDate.getFullYear()}`;
+//converts full object data from server into {x: mm/yyyy, y: Number} objects
+function getPoints(items, searchProperty) {
+    let points = [];
+    items.payload.forEach((item) => {
+        const workingDate = new Date(item[searchProperty])
+        const monthYear = `${workingDate.getMonth() + 1}/${workingDate.getFullYear()}`;
         let existingPoint = points.find(point => point.x === monthYear);
         if (existingPoint) {
             existingPoint.y ++;
@@ -66,18 +65,19 @@ function equalize(arr1, arr2) {
     return newArr;
 };
 
-function renderCanvas(canvas, data, legend) {
+function renderCanvas(canvas, data) {
     console.log('drawing on canvas');
     const colors = ['indigo','blue','green','orange','purple','teal','fuschia'];
-
+    canvas.width = canvas.parentNode.parentElement.clientWidth;
     if(canvas.getContext) {
         var xPadding = 30;
         var yPadding = 30;
-        var xLength = canvas.width - yPadding;
+        var legendWidth = (data[0].label.length * 4);
+        var xLength = canvas.width - yPadding - legendWidth;
         var yLength = canvas.height - xPadding;
         var pointsArr = [];
-        data.forEach(function (arr) {
-            pointsArr.push(getPoints(arr));
+        data.forEach(function (obj) {
+            pointsArr.push(getPoints(obj, obj.searchProperty));
         });
         for (let i = 0; i < pointsArr.length -1 ; i++) {
             pointsArr[i] = equalize(pointsArr[i], pointsArr[i+1]);
@@ -93,19 +93,20 @@ function renderCanvas(canvas, data, legend) {
 
         var yMax = getMaxY(combinedData);
 
+        //draw Y and X axes
         var ctx = canvas.getContext('2d');
         ctx.font = 'italic 8pt sans-serif';
         ctx.beginPath();
         ctx.lineWidth = 6;
         ctx.moveTo(yPadding,0);
         ctx.lineTo(yPadding,yLength);
-        ctx.lineTo(canvas.width,yLength);
+        ctx.lineTo(xLength,yLength);
         ctx.stroke();
         ctx.closePath();
 
         // Return the y pixel for a graph point
         function getYPixel(val) {
-            return yLength - ((yLength / yMax) * (val));
+            return yLength - ((yLength / yMax) * (val)) - 10;
         }
 
         // Return the y pixel for a graph point
@@ -113,8 +114,8 @@ function renderCanvas(canvas, data, legend) {
             return ((xSpacing + yPadding) + (xSpacing * (2 * val)))
         }
 
-        /*this is where the issue is, I believe */
-        function drawLine(points, color) {
+        function drawLine(points, color, legendVal) {
+            
             /* move one xSpacing out from y Axis */
             ctx.moveTo(yPadding + xSpacing, getYPixel(points[0].y));
             ctx.beginPath();
@@ -134,6 +135,8 @@ function renderCanvas(canvas, data, legend) {
                 ctx.fill();
                 ctx.moveTo(x,y);
             });
+            ctx.moveTo(xLength + legendWidth, getYPixel(points[points.length-1].y));
+            ctx.fillText(legendVal, xLength + legendWidth, getYPixel(points[points.length-1].y));
         }
         
         // Draw the X value texts
@@ -145,37 +148,29 @@ function renderCanvas(canvas, data, legend) {
             }
         }
 
-        //Draw the Legend
-
         // Draw the Y value texts
         ctx.textAlign = "right"
         ctx.textBaseline = "middle";
 
         for(var i = 0; i <= yMax; i += 10) {
             if (i === yMax) {
-                ctx.fillText(i, xPadding - 10, getYPixel(i-1));
+                ctx.fillText(i, xPadding - 10, getYPixel(i-1)) - 10;
             } else {
-                ctx.fillText(i, xPadding - 10, getYPixel(i));
+                ctx.fillText(i, xPadding - 10, getYPixel(i)) - 10;
             }
         };
-
-        // var randColors = [];
-        // do {
-        //     randColors.push(colors.splice(Math.floor(Math.random() * colors.length), 1)[0]);
-        // } while (randColors.length < pointsArr.length);
-        // console.log(randColors);
         
         pointsArr.forEach(async function (points) {
-            drawLine(points, colors[pointsArr.indexOf(points)]);
+            drawLine(points, colors[pointsArr.indexOf(points)], data[pointsArr.indexOf(points)].label);
         });
     }
 };
+
 
 NodeList.prototype.indexOf = Array.prototype.indexOf
 canvases.forEach((canvas) => {
     renderCanvas(
         canvas,
-        graphDatasets[canvases.indexOf(canvas)][1],
-        graphDatasets[canvases.indexOf(canvas)][0]
+        graphDatasets[canvases.indexOf(canvas)]
         );
 });
