@@ -12,7 +12,7 @@ const { newUserErrorHandler } = require('../helpers');
 
 async function getRecentDocuments(documentType, beginDate, endDate, limit = 0, populatePath, populateModel) {
   if(populatePath && populateModel) {
-    return await documentType.find({created: {$gte: new Date(beginDate), $lte: new Date(endDate)}})
+    return await documentType.find({created: {$gte: beginDate, $lte: endDate}})
     .limit(limit)
     .populate({
       path: populatePath,
@@ -63,17 +63,17 @@ module.exports = {
           let recentCompletions;
           let recentSetups;
           let beginDate = new Date();
-          beginDate.setMonth(beginDate.getMonth() - 6);
+          beginDate.setMonth(beginDate.getMonth() - 5);
           if (req.body.beginDate) {
-            beginDate = new Date(req.body.beginDate);
+            const dateArr = req.body.beginDate.split('-');
+            beginDate = new Date(parseInt(dateArr[0]),parseInt(dateArr[1]) - 1, 01);
           };
-
+          
           let endDate = new Date();
           if (req.body.endDate) {
-            endDate = new Date(req.body.endDate);
+            const dateArr = req.body.endDate.split('-');
+            endDate = new Date(parseInt(dateArr[0]),parseInt(dateArr[1] - 1), 01);
           };
-
-          const totalMonths = monthDiff(beginDate, endDate);
 
           try {
             recentCompanies = await getRecentDocuments(Company, beginDate, endDate, null, null);
@@ -107,12 +107,12 @@ module.exports = {
             dashboardErrorHandler(err,`Error loading recent Setups`);
           };
 
-          try {
-            recentForms = await getRecentDocuments(Form, 3);
-            totalForms = await Form.countDocuments();
-          } catch (err) {
-            dashboardErrorHandler(err,`Error loading Form data`);
-          };
+          // try {
+          //   recentForms = await getRecentDocuments(Form, 3);
+          //   totalForms = await Form.countDocuments();
+          // } catch (err) {
+          //   dashboardErrorHandler(err,`Error loading Form data`);
+          // };
 
           try {
             totalQuestions = await Question.countDocuments();
@@ -132,8 +132,8 @@ module.exports = {
                 {label:'Locations',payload:recentLocations,searchProperty:'created'}
               ]             
             ];
-            
-            res.render('../views/owner/dashboard', {recentCompanies, allLocations, recentInvitations,totalMonths, recentForms,totalQuestions, totalCompanies, totalForms, graphDatasets, page:'ownerDashboard'});
+            // beginDate.setMonth(beginDate.getMonth() + 1);
+            res.render('../views/owner/dashboard', {beginDate, endDate, recentCompanies, allLocations, recentInvitations, recentForms,totalQuestions, totalCompanies, totalForms, graphDatasets, page:'ownerDashboard'});
           } catch (err) {
             dashboardErrorHandler(err,`Error loading dashboard`);
           };

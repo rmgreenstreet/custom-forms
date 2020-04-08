@@ -13,6 +13,8 @@ router.get('/', function(req, res, next) {
 //GET dashboard
 router.get('/dashboard', asyncErrorHandler(routeByRole));
 
+router.post('/dashboard', asyncErrorHandler(routeByRole));
+
 //POST send
 router.post('/send', asyncErrorHandler(sendInvitation));
 

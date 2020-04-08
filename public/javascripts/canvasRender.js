@@ -70,6 +70,7 @@ function renderCanvas(canvas, data) {
     const colors = ['indigo','blue','green','orange','purple','teal','fuschia'];
     canvas.width = canvas.parentNode.parentElement.clientWidth;
     if(canvas.getContext) {
+        var topPadding = 5;
         var xPadding = 30;
         var yPadding = 30;
         var legendWidth = (data[0].label.length * 4);
@@ -95,18 +96,19 @@ function renderCanvas(canvas, data) {
 
         //draw Y and X axes
         var ctx = canvas.getContext('2d');
+        ctx.clearRect( 0, 0, ctx.canvas.width, ctx.canvas.height);
         ctx.font = 'italic 8pt sans-serif';
         ctx.beginPath();
         ctx.lineWidth = 6;
         ctx.moveTo(yPadding,0);
-        ctx.lineTo(yPadding,yLength);
-        ctx.lineTo(xLength,yLength);
+        ctx.lineTo(yPadding,yLength + topPadding);
+        ctx.lineTo(xLength - legendWidth,yLength + topPadding);
         ctx.stroke();
         ctx.closePath();
 
         // Return the y pixel for a graph point
         function getYPixel(val) {
-            return yLength - ((yLength / yMax) * (val)) - 10;
+            return yLength - ((yLength / yMax) * (val));
         }
 
         // Return the y pixel for a graph point
@@ -135,32 +137,39 @@ function renderCanvas(canvas, data) {
                 ctx.fill();
                 ctx.moveTo(x,y);
             });
-            ctx.moveTo(xLength + legendWidth, getYPixel(points[points.length-1].y));
             ctx.fillText(legendVal, xLength + legendWidth, getYPixel(points[points.length-1].y));
         }
         
         // Draw the X value texts
         for(var i = 0; i < filteredPoints.length; i ++) {
-            if (i===0) {
-                ctx.fillText(filteredPoints[i].x, yPadding, yLength +20);
-            }else {
-                ctx.fillText(filteredPoints[i].x, (yPadding) + (xSpacing * (2 * i)), yLength + 20);
-            }
+            ctx.fillText(filteredPoints[i].x, getXPixel(i) - (xSpacing * .25), yLength + xPadding);
         }
 
         // Draw the Y value texts
         ctx.textAlign = "right"
         ctx.textBaseline = "middle";
+        var increment = 10;
+        if (yMax < 10) {
+            increment = 2;
+        } else if (yMax < 25) {
+            increment = 4;
+        } else if (yMax < 50) {
+            increment = 5;
+        } else if (yMax > 100) {
+            increment = 10;
+        } else if (yMax >= 150) {
+            increment = 15;
+        }
 
-        for(var i = 0; i <= yMax; i += 10) {
+        for(var i = 0; i <= yMax; i += increment) {
             if (i === yMax) {
-                ctx.fillText(i, xPadding - 10, getYPixel(i-1)) - 10;
+                ctx.fillText(i, xPadding - 10, getYPixel(i) + topPadding);
             } else {
-                ctx.fillText(i, xPadding - 10, getYPixel(i)) - 10;
+                ctx.fillText(i, xPadding - 10, getYPixel(i));
             }
         };
         
-        pointsArr.forEach(async function (points) {
+        pointsArr.forEach(function (points) {
             drawLine(points, colors[pointsArr.indexOf(points)], data[pointsArr.indexOf(points)].label);
         });
     }

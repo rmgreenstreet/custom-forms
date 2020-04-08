@@ -1,9 +1,35 @@
 <%- include("../partials/header") %>
-
 <div class="container mt-5">
   <%#- JSON.stringify(graphDatasets[0][1][0]); %>
     <h1>Owner Dashboard</h1>
     <section id="charts" class="my-3">
+      <div class="row shadow-sm pb-3">
+        <div class="col">
+          <form action="/users/dashboard" method="POST">
+            <div class="form-row">
+              <div class="col">
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                    <label for="beginDate" class="input-group-text" id="beginDateLabel">From</label>
+                  </div>
+                  <input type="date" name="beginDate" id="beginDate" aria-describedby="beginDateLabel">
+                </div>
+              </div>
+              <div class="col">
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                    <label for="endDate" class="input-group-text" id="endDateLabel">To</label>
+                  </div>
+                  <input type="date" name="endDate" id="endDate" aria-describedby="endDateLabel">
+                </div>
+              </div>
+              <div class="col">
+                <button class="btn btn-secondary" type="submit">Go</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
         <div class="row shadow-sm pb-3">
             <div class="col">
                 <h3>Invitations/Completions/Setups</h3>
@@ -189,6 +215,25 @@
     </section>
 </div>
 <script>
+  var beginDate = new Date(<%- JSON.stringify(beginDate) %>);
+  var beginMonth = beginDate.getMonth() + 1;
+  if (beginMonth < 10) {
+    beginMonth = '0'+beginMonth;
+  }
+
+  var endDate = new Date(<%- JSON.stringify(endDate) %>);
+  var endMonth = endDate.getMonth() + 1;
+  if (endMonth < 10) {
+    endMonth = '0'+endMonth;
+  }
+
+  var endDay = endDate.getDate();
+  if (endDay < 10) {
+    endDay = '0' + endDay
+  }
+
+  document.querySelector('#beginDate').defaultValue = `${beginDate.getFullYear()}-${beginMonth}-01`;
+  document.querySelector('#endDate').defaultValue = `${endDate.getFullYear()}-${endMonth}-${endDay}`;
   var graphDatasets = <%- JSON.stringify(graphDatasets) %>;
   // var totalMonths= <%#- JSON.stringify(totalMonths) %>;
 </script>
