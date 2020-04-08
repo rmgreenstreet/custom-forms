@@ -1,5 +1,5 @@
 const sgMail = require('@sendgrid/mail');
-const crypto = require('crypto');
+const fs = require('fs');
 const ejs = require('ejs');
 const Company = require('../models/company');
 const Location = require('../models/location');
@@ -7,6 +7,17 @@ const User = require('../models/user');
 const Form = require('../models/form');
 const Question = require('../models/question');
 const Response = require('../models/response');
+
+function getStateNamesAndAbbrs() {
+      const statesJSON = fs.readFileSync('./private/states.json');
+      const provincesJSON = fs.readFileSync('./private/provinces.json');
+      const USStates = JSON.parse(statesJSON);
+      const CANProvinces = JSON.parse(provincesJSON);
+      let allItems = {};
+      return Object.assign(allItems, USStates,CANProvinces);
+};
+
+const states = getStateNamesAndAbbrs();
 
 const { newUserErrorHandler } = require('../helpers');
 
@@ -66,17 +77,18 @@ module.exports = {
           beginDate.setMonth(beginDate.getMonth() - 5);
           if (req.body.beginDate) {
             const dateArr = req.body.beginDate.split('-');
-            beginDate = new Date(parseInt(dateArr[0]),parseInt(dateArr[1]) - 1, 01);
+            beginDate = new Date(parseInt(dateArr[0]),parseInt(dateArr[1]) - 1, dateArr[1]);
           };
           
           let endDate = new Date();
           if (req.body.endDate) {
             const dateArr = req.body.endDate.split('-');
-            endDate = new Date(parseInt(dateArr[0]),parseInt(dateArr[1] - 1), 01);
+
+            endDate = new Date(parseInt(dateArr[0]),parseInt(dateArr[1] - 1), dateArr[1]);
           };
 
           try {
-            recentCompanies = await getRecentDocuments(Company, beginDate, endDate, null, null);
+            recentCompanies = await getRecentDocuments(Company, beginDate, endDate);
             totalCompanies = await Company.countDocuments();
           } catch (err) {
             dashboardErrorHandler(err,`Error loading Company data`);
@@ -133,7 +145,7 @@ module.exports = {
               ]             
             ];
             // beginDate.setMonth(beginDate.getMonth() + 1);
-            res.render('../views/owner/dashboard', {beginDate, endDate, recentCompanies, allLocations, recentInvitations, recentForms,totalQuestions, totalCompanies, totalForms, graphDatasets, page:'ownerDashboard'});
+            res.render('../views/owner/dashboard', {states, beginDate, endDate, recentCompanies, allLocations, recentInvitations, recentForms,totalQuestions, totalCompanies, totalForms, graphDatasets, page:'ownerDashboard'});
           } catch (err) {
             dashboardErrorHandler(err,`Error loading dashboard`);
           };

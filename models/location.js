@@ -3,11 +3,11 @@ const Schema = mongoose.Schema;
 const Form = require('./form');
 const fs = require('fs');
 
-async function getStatesAndProvinces() {
-    const statesJSON = fs.readFileSync('./private/states.json');
-    const provincesJSON = fs.readFileSync('./private/provinces.json');
-    const USStates = JSON.parse(statesJSON);
-    const CANProvinces = JSON.parse(provincesJSON);
+async function getStateAbbrs() {
+    const statesJSON = await fs.readFileSync('./private/states.json');
+    const provincesJSON = await fs.readFileSync('./private/provinces.json');
+    const USStates = await JSON.parse(statesJSON);
+    const CANProvinces = await JSON.parse(provincesJSON);
 
     const stateAbbrs = Object.keys(USStates);
     const provinceAbbrs = Object.keys(CANProvinces);
@@ -33,10 +33,7 @@ const locationSchema = new Schema({
         type:String,
         required:true
     },
-    fax: {
-        type:String,
-        required:true
-    },
+    fax: String,
     address: {
         required: true,
         type: {
@@ -58,7 +55,7 @@ const locationSchema = new Schema({
                 minlength:2,
                 maxlength:2,
                 required:true,
-                enum: getStatesAndProvinces()
+                enum: getStateAbbrs()
             },
             postal: {
                 type:String,

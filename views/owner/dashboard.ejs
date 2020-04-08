@@ -1,6 +1,6 @@
 <%- include("../partials/header") %>
+
 <div class="container mt-5">
-  <%#- JSON.stringify(graphDatasets[0][1][0]); %>
     <h1>Owner Dashboard</h1>
     <section id="charts" class="my-3">
       <div class="row shadow-sm pb-3">
@@ -23,7 +23,7 @@
                   <input type="date" name="endDate" id="endDate" aria-describedby="endDateLabel">
                 </div>
               </div>
-              <div class="col">
+              <div class="col-1">
                 <button class="btn btn-secondary" type="submit">Go</button>
               </div>
             </div>
@@ -48,65 +48,201 @@
         </div>
       </section>
       <section id="forms">
-        <div class="row shadow-sm pb-3">
-            <div class="col col-lg-6 mt-3" id="send-link">
+        <div class="row shadow-mb-3">
+          <div class="col mt-3"+>
+            <div class="row">
+              <div class="col-3">
                 <h3>Create A Company</h3>
-                <form action="/company/new" method="POST" id="send-link-to-user">
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <label for="email" class="input-group-text">Email</label>
-                        </div>
-                        <input type="email" id="email" name="email" class="form-control" required>
-                    </div>
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <label for="firstName" class="input-group-text">First Name</label>
-                        </div>
-                        <input type="text" id="firstName" name="firstName" class="form-control" required>
-                    </div>
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <label for="lastName" class="input-group-text">Last Name</label>
-                        </div>
-                        <input type="text" id="lastName" name="lastName" class="form-control" required>
-                    </div>
-                    
-                    <button type="submit" class="btn btn-secondary mt-2">Send Link</button>
-                </form>
+              </div>
+              <div class="col">
+                <p> - All fields required unless specified</p>
+              </div>
             </div>
-            <div class="col col-lg-6 mt-3" id="send-link">
+            <form action="/company/new" method="POST" id="create-company-form">
+                <div class="form-row mb-1">
+                  <div class="col">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <label for="name" class="input-group-text">Name</label>
+                        </div>
+                        <input type="text" id="name" name="name" class="form-control" required>
+                    </div>
+                  </div>
+                  <div class="col">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <label for="officeNumber" class="input-group-text">Primary Office #</label>
+                        </div>
+                        <input type="text" id="officeNumber" name="officeNumber" class="form-control" required>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-row mb-1">
+                  <div class="col">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <label for="phone" class="input-group-text">Phone</label>
+                        </div>
+                        <input type="tel" id="phone" name="phone" class="form-control" required>
+                    </div>
+                  </div>
+                  <div class="col">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <label for="website" class="input-group-text">Website</label>
+                        </div>
+                        <input type="url" id="website" name="website" class="form-control" required>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-row mb-1">
+                  <div class="col-4">
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <label for="streetNumber" class="input-group-text">Street #</label>
+                      </div>
+                      <input type="number" name="streetNumber" id="streetNumber" style="width:5em;" class="form-control" required>
+                    </div>
+                  </div>
+                  <div class="col-8">
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <label for="streetName" class="input-group-text">Street Name</label>
+                      </div>
+                      <input type="text" name="streetName" id="streetName" class="form-control" required>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-row mb-1">
+                  <div class="col">
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <label for="secondary" class="input-group-text">Secondary</label>
+                      </div>
+                      <input type="text" name="secondary" id="secondary" class="form-control" placeholder="Optional">
+                    </div>
+                  </div>
+                </div>
+                <div class="form-row mb-1">
+                  <div class="col-4">
+                    <div class="input-group">
+                      <label for="city" class="input-group-text">City</label>
+                      <input type="text" name="city" id="city" class="form-control" required>
+                    </div>
+                  </div>
+                  <div class="col-2">
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <label for="state" class="input-group-text">State</label>
+                      </div>
+                      <select name="state" id="state" class="form-control">
+                        <% Object.keys(states).forEach(key => { %>
+                          <option value="<%= key %>"><%= key %></option>
+                        <% }); %>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col">
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <label for="postal" class="input-group-text">Postal</label>
+                      </div>
+                      <input type="text" name="postal" id="postal" class="form-control" maxlength="7" minlength="5" required>
+                    </div>
+                  </div>
+                  <div class="col">
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <label for="secondary" class="input-group-text">Country</label>
+                      </div>
+                      <select name="country" id="country" class="form-control">
+                        <option value="USA">United States</option>
+                        <option value="CAN">Canada</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-row mb-1">
+                  <div class="col-3">
+                    <p class="input-group-text">Primary Contact Information</p>
+                  </div>
+                </div>
+                <div class="form-row mb-1">
+                  <div class="col">
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <label for="firstname" class="input-group-text">First Name</label>
+                      </div>
+                      <input type="text" name="firstname" id="firstname" class="form-control" required>
+                    </div>
+                  </div>
+                  <div class="col">
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <label for="lastname" class="input-group-text">Last Name</label>
+                      </div>
+                      <input type="text" name="lastname" id="lastname" class="form-control" required>
+                    </div>
+                  </div>
+                  <div class="col">
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <label for="personalEmail" class="input-group-text">Email</label>
+                      </div>
+                      <input type="email" name="personalEmail" id="personalEmail" class="form-control" required>
+                    </div>
+                  </div>
+                </div>
+                <button type="submit" class="btn btn-secondary mt-2">Send Link</button>
+            </form>
+        </div>
+        </div>
+        <div class="row shadow-sm pb-3">
+            <div class="col mt-3" id="send-link">
               <h3>Send An Invitation</h3>
               <form action="/users/send" method="POST" id="send-link-to-user">
-                  <div class="input-group">
-                      <div class="input-group-prepend">
-                          <label for="locationSelector" class="input-group-text">Location</label>
+                  <div class="form-row mb-1">
+                    <div class="col">
+                      <div class="input-group">
+                          <div class="input-group-prepend">
+                              <label for="locationSelector" class="input-group-text">Location</label>
+                          </div>
+                          <select class="form-control" id="locationSelector" name="locationSelector" onchange="handleExpedited()" required>
+                            <option value="">-</option>
+                            <% if (allLocations && allLocations.length > 0) { %>
+                              <% for (let location of allLocations) { %> 
+                                <option value="<%= location.id %>"><%= location.name %> - #<%= location.officeNumber %></option>
+                              <% } %>
+                            <% } %>
+                          </select>
                       </div>
-                      <select class="form-control" id="locationSelector" name="locationSelector" onchange="handleExpedited()" required>
-                        <option value="">-</option>
-                        <% if (allLocations && allLocations.length > 0) { %>
-                          <% for (let location of allLocations) { %> 
-                            <option value="<%= location.id %>"><%= location.name %> - #<%= location.officeNumber %></option>
-                          <% } %>
-                        <% } %>
-                      </select>
+                    </div>
+                    <div class="col">
+                      <div class="input-group">
+                          <div class="input-group-prepend">
+                              <label for="email" class="input-group-text">Email</label>
+                          </div>
+                          <input type="email" id="email" name="email" class="form-control" required>
+                      </div>
+                    </div>
                   </div>
-                  <div class="input-group">
-                      <div class="input-group-prepend">
-                          <label for="email" class="input-group-text">Email</label>
+                  <div class="form-row">
+                    <div class="col">
+                      <div class="input-group">
+                          <div class="input-group-prepend">
+                              <label for="firstName" class="input-group-text">First Name</label>
+                          </div>
+                          <input type="text" id="firstName" name="firstName" class="form-control" required>
                       </div>
-                      <input type="email" id="email" name="email" class="form-control" required>
-                  </div>
-                  <div class="input-group">
-                      <div class="input-group-prepend">
-                          <label for="firstName" class="input-group-text">First Name</label>
+                    </div>
+                    <div class="col">
+                      <div class="input-group">
+                          <div class="input-group-prepend">
+                              <label for="lastName" class="input-group-text">Last Name</label>
+                          </div>
+                          <input type="text" id="lastName" name="lastName" class="form-control" required>
                       </div>
-                      <input type="text" id="firstName" name="firstName" class="form-control" required>
-                  </div>
-                  <div class="input-group">
-                      <div class="input-group-prepend">
-                          <label for="lastName" class="input-group-text">Last Name</label>
-                      </div>
-                      <input type="text" id="lastName" name="lastName" class="form-control" required>
+                    </div>
                   </div>
                   <div class="input-group">
                     <div class="form-check form-check-inline" id="expediteCheckbox" style="display:none;">
@@ -117,10 +253,8 @@
                       <input type="checkbox" id="isHidden" name="isHidden" class="form-check-input" >
                       <label for="isHidden" class="form-check-label">Keep this setup hidden</label>
                     </div>
-                    <div class="row">
-                      <div class="col" id="expeditedTotal">
+                    <div class="" id="expeditedTotal">
 
-                      </div>
                     </div>
                   </div>
                   <button type="submit" class="btn btn-secondary mt-2">Send Link</button>
@@ -235,6 +369,6 @@
   document.querySelector('#beginDate').defaultValue = `${beginDate.getFullYear()}-${beginMonth}-01`;
   document.querySelector('#endDate').defaultValue = `${endDate.getFullYear()}-${endMonth}-${endDay}`;
   var graphDatasets = <%- JSON.stringify(graphDatasets) %>;
-  // var totalMonths= <%#- JSON.stringify(totalMonths) %>;
+  var allLocations= <%- JSON.stringify(allLocations) %>;
 </script>
 <%- include("../partials/footer") %>
