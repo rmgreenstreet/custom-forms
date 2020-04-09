@@ -1,21 +1,21 @@
 const mongoose = require('mongoose');
 const passportLocalMongoose = require('passport-local-mongoose');
 const Schema = mongoose.Schema;
-const Location = require('./location');
 const Response = require('./response');
 const sgMail = require('@sendgrid/mail');
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 const crypto = require('crypto');
+const ejs = require('ejs');
 
 
 const forbiddenWords = ['realtor', 'realty', 'realestate', 'agent', 'broker', 'admin'];
 
 const userSchema = new Schema({
-    firstname: {
+    firstName: {
         type: String,
         required: true
     },
-    lastname: {
+    lastName: {
         type: String,
         required: true
     },
@@ -91,11 +91,53 @@ userSchema.method('makeAdmin', async function () {
 });
 
 userSchema.method('sendInvitation', async function (attrs = {}) {
-
+    const Location = require('./location');
+    let userLocation;
+    let bccs;
+    let msg;
+    try {
+        userLocation = await Location.findById(this.location).populate({
+            path:'contacts',
+            model:'User'
+        }).exec();
+    } catch (err) {
+        throw err;
+    }
+    try {
+        bccs = await userLocation.sendContactEmails();
+    } catch (err) {
+        throw err;
+    }
+    let messageHTML;
+    try {
+        messageHTML = await ejs.renderFile('./private/invitation.ejs', {newUser:this, currentLocation:userLocation,attrs});
+    } catch (err) {
+        throw err;
+    }
+    try {
+        if (bccs.indexOf(this.personalEmail) > -1) {
+            bccs.splice(bccs.indexOf(this.personalEmail),1);
+        };
+        msg = {
+            to:this.personalEmail,
+            from:'Site Admin <rgreenstreetdev@gmail.com>',
+            bcc:bccs,
+            subject:`${this.firstName} ${this.lastName} - Setup Invitation From ${userLocation.name} - ${userLocation.address.city} #${userLocation.officeNumber}`,
+            html: messageHTML
+        };
+    } catch (err) {
+        throw err;
+    }
+    try {
+        await sgMail.send(msg);
+    } catch (err) {
+        throw err;
+    }
 });
 
 userSchema.method('markFormCompleted', async function (attrs = {}) {
-    await this.save();
+    const Location = require('./location');
+    this.save();
     const userLocation = Location.findById(this.location);
     const bccs = await userLocation.sendContactEmails();
     const msg = {
@@ -103,12 +145,13 @@ userSchema.method('markFormCompleted', async function (attrs = {}) {
         from:'Site Admin <info@greenstreetimagining.com>',
         bcc:bccs,
         subject:`${this.firstName} ${this.lastName} ${this.title} Form Received - ${userLocation.city} #${userLocation.officeNumber}`,
-        text: await ejs.render('../private/completedForm', {user:this, attrs})
+        html: await ejs.renderFile('../private/completedForm', {user:this, attrs})
     };
     await sgMail.send(msg);
 });
 
 userSchema.method('markSetupCompleted', async function (attrs = {}) {
+    const Location = require('./location');
     this.completedSetup = Date.now();
     await this.save();
     const bccs = await Location.findById(this.location).sendContactEmails();
@@ -117,7 +160,7 @@ userSchema.method('markSetupCompleted', async function (attrs = {}) {
         from:'Site Admin <info@greenstreetimagining.com>',
         bcc:bccs,
         subject:`${this.firstName} ${this.lastName} ${this.title} Setup Complete - ${userLocation.city} #${userLocation.officeNumber}`,
-        text: await ejs.render('../private/completedSetup', {user:this, attrs})
+        html: await ejs.renderFile('../private/completedSetup', {user:this, attrs})
     };
     await sgMail.send(msg);
 });

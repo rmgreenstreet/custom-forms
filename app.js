@@ -19,6 +19,7 @@ const User = require('./models/user');
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 const formsRouter = require('./routes/forms');
+const companiesRouter = require('./routes/companies');
 
 const app = express();
 if (app.get('env') == 'development'){ require('dotenv').config(); };
@@ -83,9 +84,9 @@ passport.deserializeUser(User.deserializeUser());
 //set local variables middleware
 app.use(async function (req,res,next) {
 	// if(!req.user) {
-	// 	req.user = await User.find({firstname:'potato'});
+	// 	req.user = await User.find({firstName:'potato'});
 	// }
-	req.user = await User.findOne({firstname: 'potato'});
+	req.user = await User.findOne({firstName: 'potato'});
 	res.locals.currentUser = req.user;
   //set default page title if one is not specified
 	res.locals.title='Custom Forms';
@@ -104,6 +105,7 @@ app.use(async function (req,res,next) {
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/forms', formsRouter);
+app.use('/companies', companiesRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -122,18 +124,18 @@ app.use(function(err, req, res, next) {
 });
 
 
-const { seedDatabase, clearDatabase, seedDefaultQuestions} = require('./seeds.js');
-
-
+const { seedDatabase, clearDatabase, seedDefaultQuestions, clearRecentItems} = require('./seeds.js');
 
 async function databaseInit() {
+	
+	await clearRecentItems();
 	// await seedDefaultQuestions();	
-  	await clearDatabase();
-	await seedDatabase();
-	// await User.register({firstname: 'potato', lastname:'head',username:'potatohead', personalEmail:'test@test.com', location:'5e77b1c9826bb10ddc332316', company: '5e77b1c7826bb10ddc33230d', role:'Owner'},'password');
+  	// await clearDatabase();
+	// await seedDatabase();
+	await User.register({firstName: 'potato', lastName:'head',username:'potatohead', personalEmail:'test@test.com', location:'5e77b1c9826bb10ddc332316', company: '5e77b1c7826bb10ddc33230d', role:'Owner'},'password');
 }
 
-// databaseInit();
+databaseInit();
 
 
 

@@ -23,7 +23,8 @@ const locationSchema = new Schema({
     },
     officeNumber:{
         type:String,
-        required:true
+        required:true,
+        unique:true
     },
     name:{
         type:String,
@@ -124,15 +125,19 @@ locationSchema.pre('remove', async function() {
 locationSchema.method('sendContactEmails', async function () {
     const User = require('./user');
     let contactEmails = [];
-    const allContacts = await User.find({location:this._id});
-    for (let contact of allContacts) {
-        contactEmails.push(contact.personalEmail);
+    // const allContacts = await User.find({location:this._id});
+    // for (let contact of allContacts) {
+    //     contactEmails.push(contact.personalEmail);
+    // }
+    try {
+        for(let contact of this.contacts) {
+            const currentContact = await User.findById(contact);
+            contactEmails.push(currentContact.personalEmail);
+        };
+        return contactEmails;
+    } catch (err) {
+        throw err;
     }
-    // for(let contact of this.contacts) {
-    //     const currentContact = User.findById(contact);
-    //     contactEmails.push(currentContact.personalEmail);
-    // };
-    return contactEmails.join(',');
 });
 
 module.exports = mongoose.model('Location', locationSchema);

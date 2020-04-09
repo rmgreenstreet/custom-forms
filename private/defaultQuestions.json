@@ -2,8 +2,8 @@
     {
         "isDefault":true,
         "title":"What Is Your First Name, To Be Shown Publicly To Clients?",
-        "inputName":"user[firstname]",
-        "elementId":"firstname",
+        "inputName":"user[firstName]",
+        "elementId":"firstName",
         "inputType":"Text",
         "values":[],
         "placeholder":"Example: Johnny",
@@ -14,8 +14,8 @@
     {
         "isDefault":true,
         "title":"What Is Your Last Name, To Be Shown Publicly To Clients?",
-        "inputName":"user[lastname]",
-        "elementId":"lastname",
+        "inputName":"user[lastName]",
+        "elementId":"lastName",
         "inputType":"Text",
         "values":[],
         "placeholder":"Example: Smith",

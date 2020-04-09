@@ -1,5 +1,4 @@
 const sgMail = require('@sendgrid/mail');
-const fs = require('fs');
 const ejs = require('ejs');
 const Company = require('../models/company');
 const Location = require('../models/location');
@@ -8,18 +7,12 @@ const Form = require('../models/form');
 const Question = require('../models/question');
 const Response = require('../models/response');
 
-function getStateNamesAndAbbrs() {
-      const statesJSON = fs.readFileSync('./private/states.json');
-      const provincesJSON = fs.readFileSync('./private/provinces.json');
-      const USStates = JSON.parse(statesJSON);
-      const CANProvinces = JSON.parse(provincesJSON);
-      let allItems = {};
-      return Object.assign(allItems, USStates,CANProvinces);
-};
+const { newObjectErrorHandler, getStateNamesAndAbbrs } = require('../helpers');
 
 const states = getStateNamesAndAbbrs();
-
-const { newUserErrorHandler } = require('../helpers');
+if(states) {
+  console.log('States Parsed');
+}
 
 async function getRecentDocuments(documentType, beginDate, endDate, limit = 0, populatePath, populateModel) {
   if(populatePath && populateModel) {
@@ -29,11 +22,11 @@ async function getRecentDocuments(documentType, beginDate, endDate, limit = 0, p
       path: populatePath,
       model: populateModel
     })
-    .sort('created');
+    .sort('-created');
   } else {
     return await documentType.find({created: {$gte: beginDate, $lte: endDate}})
     .limit(limit)
-    .sort('created');
+    .sort('-created');
   }
   
 };
@@ -144,7 +137,6 @@ module.exports = {
                 {label:'Locations',payload:recentLocations,searchProperty:'created'}
               ]             
             ];
-            // beginDate.setMonth(beginDate.getMonth() + 1);
             res.render('../views/owner/dashboard', {states, beginDate, endDate, recentCompanies, allLocations, recentInvitations, recentForms,totalQuestions, totalCompanies, totalForms, graphDatasets, page:'ownerDashboard'});
           } catch (err) {
             dashboardErrorHandler(err,`Error loading dashboard`);
@@ -169,9 +161,8 @@ module.exports = {
     async sendInvitation(req,res,next) {
       let newUser;
       let currentLocation;
-      console.log('Getting location');
       try {
-        console.log(req.body.locationSelector);
+        console.log('Getting location');
         if(req.body.locationSelector) {
           currentLocation = await Location.findById(req.body.locationSelector).populate({
             path:'contacts',
@@ -183,25 +174,28 @@ module.exports = {
             model:'User'
           });
         }
-        
+        console.log('Got Location:',currentLocation.name);
       } catch (err) {
         req.session.error = 'Unable to get location data. Please try again';
         return res.redirect('/users/dashboard');
       }
-      console.log('Got Location:',currentLocation.name);
-      console.log('creating new user');
       try {
-        const existingUser = await User.find({personalEmail:req.body.email});
+        const existingUser = await User.findOne({personalEmail:req.body.email});
         if(!existingUser) {
+          console.log('creating new user');
           newUser = await User.register({
-            firstname: req.body.firstName,
-            lastname: req.body.lastName,
+            firstName: req.body.firstName,
+            lastName: req.body.lastName,
             username: req.body.firstName+req.body.lastName,
             personalEmail: req.body.email,
             company: currentLocation.company,
             location: currentLocation._id
           },`Password${currentLocation.officeNumber}`);
+          if(req.body.isHidden) {
+            newUser.isHidden = true;
+          }
         } else {
+          console.log('user already exists, re-sending invitation');
           newUser = existingUser;
         }
         
@@ -219,27 +213,27 @@ module.exports = {
         messageHTML = await ejs.renderFile('./private/invitation.ejs',{currentLocation, newUser});
       } catch (err) {
         req.session.error = `Error rendering message HTML`;
-        await newUserErrorHandler(err, newUser, res);
+        return await newObjectErrorHandler(err, newUser, res);
       }
       let msg;
       try {
         msg = {
           to: newUser.personalEmail,
           from: currentLocation.contacts[0].personalEmail,
-          bcc: [await currentLocation.sendContactEmails()],
-          subject: `Getting Started At ${currentLocation.name} - ${req.body.firstName} ${req.body.lastName}`,
+          bcc: await currentLocation.sendContactEmails(),
+          subject: `Getting Started At ${currentLocation.name} - ${newUser.firstName} ${newUser.lastName}`,
           html: messageHTML
         };
       } catch (err) {
         req.session.error = `Error creating message object`;
-        await newUserErrorHandler(err, newUser, res);
+        return await newObjectErrorHandler(err, newUser, res);
       }
       try {
         await sgMail.send(msg);
         console.log('message sent to new user');
       } catch (err) {
         req.session.error = `Error sending message`;
-        await newUserErrorHandler(err, newUser, res);
+        return await newObjectErrorHandler(err, newUser, res);
       }
 
 
@@ -255,10 +249,11 @@ module.exports = {
           }
         }
         await currentLocation.save();
+        await newUser.save();
         console.log('currentUser\'s location saved');
       } catch (err) {
         req.session.error = `Error updating expedited count`
-        await newUserErrorHandler(err, newUser, res);
+        return await newObjectErrorHandler(err, newUser, res);
       }
 
       

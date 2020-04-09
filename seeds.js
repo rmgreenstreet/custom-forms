@@ -10,9 +10,19 @@ const Response = require('./models/response');
 
 const sampleImages = fs.readdirSync('./public/images/seeds');
 
+async function clearRecentItems() {
+    const threeDaysAgo = new Date(Date.now() - (1000 * 60 * 60 * 25 * 2));
+    // console.log(threeDaysAgo);
+    await Company.deleteMany({created: {$gte: threeDaysAgo}})
+    await Location.deleteMany({created: {$gte: threeDaysAgo}})
+    await User.deleteMany({created: {$gte: threeDaysAgo}})
+    await Form.deleteMany({created: {$gte: threeDaysAgo}})
+    await Question.deleteMany({created: {$gte: threeDaysAgo}})
+    await Response.deleteMany({created: {$gte: threeDaysAgo}})
+}
+
 function flipACoin() {
     const yesOrNo = Math.floor(Math.random() *2);
-    // console.log(yesOrNo);
     return yesOrNo;
 }
 
@@ -21,7 +31,6 @@ async function pickADate() {
         try {
             const today = new Date();
             const day = Math.ceil(Math.random() * 27);
-            // const thisOrLastYear = flipACoin();
             const month = Math.ceil(Math.random() * today.getMonth())
             const returnDate = new Date(today.getFullYear() - flipACoin(),month,day);
             resolve(returnDate);
@@ -123,6 +132,9 @@ async function seedDatabase() {
     };
 
     async function createUsers(locationId, companyId, role, count) {
+        if (role === 'Admin') {
+            console.log(`Creating ${count} Admins`);
+        };
         let contactsArr = [];
         for (let i = 0; i < count; i++) {
             const newFirstName = await faker.name.firstName();
@@ -130,8 +142,8 @@ async function seedDatabase() {
             let newUser;
             try {
                 newUser = await User.register({
-                firstname: newFirstName,
-                lastname: newLastName,
+                firstName: newFirstName,
+                lastName: newLastName,
                 username: newFirstName+newLastName,
                 personalEmail: newFirstName+newLastName+'@test.com',
                 role: role,
@@ -161,14 +173,14 @@ async function seedDatabase() {
             }                
         };
         contactsArr.push(newUser._id);
-        console.log(`${role} ${newUser.firstname} ${newUser.lastname} created`);
+        console.log(`${role} ${newUser.firstName} ${newUser.lastName} created`);
         };
         return contactsArr;
     };
 
     async function createResponse(user) {
         return new Promise(async (resolve, reject) => {
-            console.log(`Creating a response for ${user.firstname}`)
+            console.log(`Creating a response for ${user.firstName}`)
             const makeString = (charLimit) => {
                 let str = faker.lorem.paragraph()
                     if (str.length > charLimit) {
@@ -248,4 +260,4 @@ async function seedDatabase() {
     console.log('database seeded')
 };
 
-module.exports = {seedDatabase, clearDatabase, seedDefaultQuestions};
+module.exports = {seedDatabase, clearDatabase, seedDefaultQuestions, clearRecentItems};

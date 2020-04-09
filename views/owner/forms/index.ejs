@@ -33,7 +33,7 @@
                               <td class="border-0 align-middle"><strong><%= form.title %></strong></td>
                               <td class="border-0 align-middle"><strong><%= form.created.toDateString() %></strong></td>
                               <td class="border-0 align-middle"><strong><%= form.lastEdited.when.toDateString() %></strong></td>
-                              <td class="border-0 align-middle"><strong><%= (form.lastEdited.by ? form.lastEdited.by.firstname : 'System') %></strong></td>
+                              <td class="border-0 align-middle"><strong><%= (form.lastEdited.by ? form.lastEdited.by.firstName : 'System') %></strong></td>
                               <td class="border-0 align-middle"><a href="/forms/edit/<%= form.id %>" class="btn btn-outline-secondary mx-1"><i class="far fa-edit"></i></a> <a href="/forms/delete/<%= form.id %>" class="btn btn-outline-secondary mx-1"><i class="fas fa-trash-alt"></a></i></td>
                               </tr>
                           <% } %>

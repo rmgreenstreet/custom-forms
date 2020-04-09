@@ -2,8 +2,12 @@ const sgMail = require('@sendgrid/mail');
 const ejs = require('ejs');
 const Company = require('../models/company');
 const Location = require('../models/location');
+const User = require('../models/user');
 const Form = require('../models/form');
+// const { sendInvitation } = require('./users')
 const inputTypes = require('../models/inputTypes');
+
+const { newObjectErrorHandler } = require('../helpers');
 
 module.exports = {
   async getCompaniesIndex(req,res,next) {
@@ -26,8 +30,44 @@ module.exports = {
       return res.redirect('back');
     }
   },
-  async postCompanyCreate (req,res,next) {
-
+  async postNewCompany (req,res,next) {
+    let newCompany;
+    let newLocation;
+    let newContact;
+    let createdUser;
+    try {
+      newCompany = await Company.create({name:req.body.location.name});
+    } catch (err) {
+      req.session.error = 'Error Creating Company'
+      await newObjectErrorHandler(err, newCompany, res)
+    }
+    try {
+      newLocation = await Location.create(req.body.location);
+      newLocation.company = newCompany._id;
+      await newLocation.save();
+      newCompany.locations.push(newLocation._id);
+      await newCompany.save();
+    } catch (err) {
+      req.session.error = 'Error Creating Location'
+      await newObjectErrorHandler(err, [newCompany, newLocation], res);
+    }
+    try { 
+      newContact = req.body.contact;
+      newContact.location = newLocation._id;
+      newContact.company = newCompany._id;
+      newContact.username = req.body.contact.firstName+req.body.contact.lastName;
+      newContact.role = 'Admin';
+      newContact.isCompanyAdmin = true;
+      createdUser = await User.create(newContact);
+      newLocation.contacts.push(createdUser._id);
+      await newLocation.save();
+      await createdUser.sendInvitation();
+      req.session.success = `Company ${newCompany.name} successfully created!`;
+      res.redirect('/users/dashboard');
+    } catch (err) {
+      req.session.error = 'Error Creating User'
+      await newObjectErrorHandler(err, [newCompany, newLocation, createdUser], res);
+    }
   },
   async getFormsIndex(req,res,next) {
     let company;
@@ -74,7 +114,6 @@ module.exports = {
       path: 'questions',
       model:'Question'
     });
-    console.log(inputTypes)
     res.render('../views/owner/forms/edit.ejs', {currentForm,inputTypes});
   }
 };

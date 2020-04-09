@@ -58,22 +58,22 @@
                 <p> - All fields required unless specified</p>
               </div>
             </div>
-            <form action="/company/new" method="POST" id="create-company-form">
+            <form action="/companies" method="POST" id="create-company-form">
                 <div class="form-row mb-1">
                   <div class="col">
                     <div class="input-group">
                         <div class="input-group-prepend">
-                            <label for="name" class="input-group-text">Name</label>
+                            <label for="location[name]" class="input-group-text">Name</label>
                         </div>
-                        <input type="text" id="name" name="name" class="form-control" required>
+                        <input type="text" id="location[name]" name="location[name]" class="form-control" required>
                     </div>
                   </div>
                   <div class="col">
                     <div class="input-group">
                         <div class="input-group-prepend">
-                            <label for="officeNumber" class="input-group-text">Primary Office #</label>
+                            <label for="location[officeNumber]" class="input-group-text">Primary Office #</label>
                         </div>
-                        <input type="text" id="officeNumber" name="officeNumber" class="form-control" required>
+                        <input type="text" id="location[officeNumber]" name="location[officeNumber]" class="form-control" required>
                     </div>
                   </div>
                 </div>
@@ -81,17 +81,17 @@
                   <div class="col">
                     <div class="input-group">
                         <div class="input-group-prepend">
-                            <label for="phone" class="input-group-text">Phone</label>
+                            <label for="location[phone]" class="input-group-text">Phone</label>
                         </div>
-                        <input type="tel" id="phone" name="phone" class="form-control" required>
+                        <input type="tel" id="location[phone]" name="location[phone]" class="form-control" required>
                     </div>
                   </div>
                   <div class="col">
                     <div class="input-group">
                         <div class="input-group-prepend">
-                            <label for="website" class="input-group-text">Website</label>
+                            <label for="location[website]" class="input-group-text">Website</label>
                         </div>
-                        <input type="url" id="website" name="website" class="form-control" required>
+                        <input type="url" id="location[website]" name="location[website]" class="form-control" required>
                     </div>
                   </div>
                 </div>
@@ -99,17 +99,17 @@
                   <div class="col-4">
                     <div class="input-group">
                       <div class="input-group-prepend">
-                        <label for="streetNumber" class="input-group-text">Street #</label>
+                        <label for="location[address][streetNumber]" class="input-group-text">Street #</label>
                       </div>
-                      <input type="number" name="streetNumber" id="streetNumber" style="width:5em;" class="form-control" required>
+                      <input type="number" name="location[address][streetNumber]" id="location[address][streetNumber]" style="width:5em;" class="form-control" required>
                     </div>
                   </div>
                   <div class="col-8">
                     <div class="input-group">
                       <div class="input-group-prepend">
-                        <label for="streetName" class="input-group-text">Street Name</label>
+                        <label for="location[address][streetName]" class="input-group-text">Street Name</label>
                       </div>
-                      <input type="text" name="streetName" id="streetName" class="form-control" required>
+                      <input type="text" name="location[address][streetName]" id="location[address][streetName]" class="form-control" required>
                     </div>
                   </div>
                 </div>
@@ -117,25 +117,25 @@
                   <div class="col">
                     <div class="input-group">
                       <div class="input-group-prepend">
-                        <label for="secondary" class="input-group-text">Secondary</label>
+                        <label for="location[address][secondary]" class="input-group-text">Secondary</label>
                       </div>
-                      <input type="text" name="secondary" id="secondary" class="form-control" placeholder="Optional">
+                      <input type="text" name="location[address][secondary]" id="location[address][secondary]" class="form-control" placeholder="Optional">
                     </div>
                   </div>
                 </div>
                 <div class="form-row mb-1">
                   <div class="col-4">
                     <div class="input-group">
-                      <label for="city" class="input-group-text">City</label>
-                      <input type="text" name="city" id="city" class="form-control" required>
+                      <label for="location[city]" class="input-group-text">City</label>
+                      <input type="text" name="location[address][city]" id="location[address][city]" class="form-control" required>
                     </div>
                   </div>
                   <div class="col-2">
                     <div class="input-group">
                       <div class="input-group-prepend">
-                        <label for="state" class="input-group-text">State</label>
+                        <label for="location[address][state]" class="input-group-text">State</label>
                       </div>
-                      <select name="state" id="state" class="form-control">
+                      <select name="location[address][state]" id="location[address][state]" class="form-control">
                         <% Object.keys(states).forEach(key => { %>
                           <option value="<%= key %>"><%= key %></option>
                         <% }); %>
@@ -145,17 +145,17 @@
                   <div class="col">
                     <div class="input-group">
                       <div class="input-group-prepend">
-                        <label for="postal" class="input-group-text">Postal</label>
+                        <label for="location[address][postal]" class="input-group-text">Postal</label>
                       </div>
-                      <input type="text" name="postal" id="postal" class="form-control" maxlength="7" minlength="5" required>
+                      <input type="text" name="location[address][postal]" id="location[address][postal]" class="form-control" maxlength="7" minlength="5" required>
                     </div>
                   </div>
                   <div class="col">
                     <div class="input-group">
                       <div class="input-group-prepend">
-                        <label for="secondary" class="input-group-text">Country</label>
+                        <label for="location[address][country]" class="input-group-text">Country</label>
                       </div>
-                      <select name="country" id="country" class="form-control">
+                      <select name="location[address][country]" id="location[address][country]" class="form-control">
                         <option value="USA">United States</option>
                         <option value="CAN">Canada</option>
                       </select>
@@ -171,29 +171,29 @@
                   <div class="col">
                     <div class="input-group">
                       <div class="input-group-prepend">
-                        <label for="firstname" class="input-group-text">First Name</label>
+                        <label for="contact[firstName]" class="input-group-text">First Name</label>
                       </div>
-                      <input type="text" name="firstname" id="firstname" class="form-control" required>
+                      <input type="text" name="contact[firstName]" id="contact[firstName]" class="form-control" required>
                     </div>
                   </div>
                   <div class="col">
                     <div class="input-group">
                       <div class="input-group-prepend">
-                        <label for="lastname" class="input-group-text">Last Name</label>
+                        <label for="contact[lastName]" class="input-group-text">Last Name</label>
                       </div>
-                      <input type="text" name="lastname" id="lastname" class="form-control" required>
+                      <input type="text" name="contact[lastName]" id="contact[lastName]" class="form-control" required>
                     </div>
                   </div>
                   <div class="col">
                     <div class="input-group">
                       <div class="input-group-prepend">
-                        <label for="personalEmail" class="input-group-text">Email</label>
+                        <label for="contact[personalEmail]" class="input-group-text">Email</label>
                       </div>
-                      <input type="email" name="personalEmail" id="personalEmail" class="form-control" required>
+                      <input type="email" name="contact[personalEmail]" id="contact[personalEmail]" class="form-control" required>
                     </div>
                   </div>
                 </div>
-                <button type="submit" class="btn btn-secondary mt-2">Send Link</button>
+                <button type="submit" class="btn btn-secondary mt-2">Create</button>
             </form>
         </div>
         </div>
