@@ -115,5 +115,8 @@ module.exports = {
       model:'Question'
     });
     res.render('../views/owner/forms/edit.ejs', {currentForm,inputTypes});
+  },
+  async getCompanyProfile(req, res, next) {
+    
   }
 };

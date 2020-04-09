@@ -5,3 +5,8 @@
 #flashMessages {
     margin-top:70px;
 }
+
+tr a {
+    color:inherit;
+    text-decoration: underline;
+}

@@ -300,11 +300,17 @@
                     <tbody>
                         <% if (recentCompanies && recentCompanies.length > 0 ) { %>
                           <% for(let company of recentCompanies) { %>
-                            <tr>
-                              <td class="border-0 align-middle"><strong><%= company.name %></strong></td>
-                              <td class="border-0 align-middle"><strong><%= company.locations.length %></strong></td>
-                              <td class="border-0 align-middle"><strong><%= company.created.toDateString() %></strong></td>
-                            </tr>
+                              <tr>
+                                <td class="border-0 align-middle">
+                                  <a href="/company/<%= company.id %>"><strong><%= company.name %></strong></a>
+                                </td>
+                                <td class="border-0 align-middle">
+                                  <strong><%= company.locations.length %></strong>
+                                </td>
+                                <td class="border-0 align-middle">
+                                  <strong><%= company.created.toDateString() %></strong>
+                                </td>
+                              </tr>
                           <% } %>
                         <% } %>
                     </tbody>
