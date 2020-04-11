@@ -17,9 +17,9 @@ async function getStateAbbrs() {
 
 
 const locationSchema = new Schema({
-    primary: {
+    isPrimary: {
         type:Boolean,
-        default:true
+        default:false
     },
     officeNumber:{
         type:String,
@@ -95,17 +95,29 @@ const locationSchema = new Schema({
             ref: 'Form'
         }
     ],
-    totalMonthlyExpedited:{
-        type: Number,
-        default: 0
-    },
+    expedited: [
+        {
+            month: {
+                type: Number,
+                default: new Date().getMonth()
+            },
+            year: {
+                type: Number,
+                default: new Date().getFullYear()
+            },
+            total: {
+                type: Number,
+                default: 0
+            }
+        }
+    ],
     company: {
         type: Schema.Types.ObjectId,
         ref: 'Company'
     },
     created: {
         type: Date,
-        default: Date.now()
+        default: new Date()
     }
 });
 

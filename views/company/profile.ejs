@@ -1,0 +1,164 @@
+<%- include("../partials/header") %>
+
+<div class="container mt-5">
+    <h1>
+      <%= currentCompany.name %>
+    </h1>
+    <div class="row shadow-sm mb-2">
+      <div class="col">
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col" class="border-0 bg-light" colspan="2">Quick Stats</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="border-0 align-middle">
+                <strong>Locations</strong>
+              </td>
+              <td class="border-0 align-middle">
+                <strong><%= currentCompany.locations.length %></strong>
+              </td>
+            </tr>
+            <tr>
+              <td class="border-0 align-middle">
+                <strong>Total Admins</strong>
+              </td>
+              <td class="border-0 align-middle">
+                <% let totalAdmins = 0 %>
+                <% for (let location of currentCompany.locations) { %>
+                  <% totalAdmins += location.contacts.length %>
+                <% } %>
+                <strong><%= totalAdmins %></strong>
+              </td>
+            </tr>
+            <tr>
+              <td class="border-0 align-middle">
+                <strong>Total Users</strong>
+              </td>
+              <td class="border-0 align-middle">
+
+                <strong><%= userCount.reduce((total, current) => total + current.count, 0) %></strong>
+              </td>
+            </tr>
+            <tr>
+              <td class="border-0 align-middle">
+                <strong>Total Forms</strong>
+              </td>
+              <td class="border-0 align-middle">
+                <% let totalForms = 0 %>
+                <% for (let location of currentCompany.locations) { %>
+                  <% totalForms += location.forms.length %>
+                <% } %>
+                <strong><%= totalForms %></strong>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="col">
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col" class="border-0 bg-light" colspan="2">Details</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="border-0 align-middle">
+                <strong>Primary Contact<%= companyAdmins.length > 1 ? 's' : '' %></strong>
+              </td>
+              <td class="border-0 align-middle">
+                <strong>
+                  <% for (let i = 0; i < companyAdmins.length; i++ ) { %>
+                    <a href="/users/<%= companyAdmins[0].id %>"><%= `${companyAdmins[i].firstName} ${companyAdmins[i].lastName}${(i + 1 !== companyAdmins.length ? ', ' : '')}` %></a>
+                  <% } %>
+                </strong>
+              </td>
+            </tr>
+            <tr>
+              <td class="border-0 align-middle">
+                <strong>Primary Location</strong>
+              </td>
+              <td class="border-0 align-middle">
+                <% const primaryLocation = currentCompany.locations.find(location => location.isPrimary === true) %>
+                <strong><a href="/locations/<%= primaryLocation.id %>"><%= primaryLocation.name %></a></strong>
+              </td>
+            </tr>
+            <tr>
+              <td class="border-0 align-middle">
+                <strong>Join Date</strong>
+              </td>
+              <td class="border-0 align-middle">
+                <strong><%= primaryLocation.created.toDateString() %></strong>
+              </td>
+            </tr>
+            <tr>
+              <td class="border-0 align-middle" colspan="2">
+                <a class="btn btn-primary btn-block" href="/companies/<%= currentCompany.id %>/edit">Manage</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="row shadow-sm mb-2">
+      <div class="col">
+        <h2>Locations</h2>
+        <table class="table">
+          <thead>
+            <th scope="col" class="border-0 bg-light">
+              Name
+            </th>
+            <th scope="col" class="border-0 bg-light">
+              Contacts
+            </th>
+            <th scope="col" class="border-0 bg-light">
+              Forms
+            </th>
+            <th scope="col" class="border-0 bg-light">
+              Users
+            </th>
+            <th scope="col" class="border-0 bg-light">
+              Expedited This Month
+            </th>
+          </thead>
+          <tbody>
+            <% currentCompany.locations.forEach(location => { %>
+              <tr>
+                <td class="border-0 align-middle">
+                  <a href="/locations/<%= location.id %>"><strong><%= location.name %></strong></a>
+                  <!-- on the company profile, list the contents of all of these stats -->
+                </td>
+                <td class="border-0 align-middle">
+                  <strong><%= location.contacts.length %></strong>
+                </td>
+                <td class="border-0 align-middle">
+                  <strong><%= location.forms.length %></strong>
+                </td>
+                <td class="border-0 align-middle">
+                  <strong><%= userCount.find(user => user.location === location._id ).count %></strong>
+                </td>
+                <td class="border-0 align-middle">
+                  <strong>
+                    <% const currentMonthlyExpedited = location.expedited.find(item => item.month == new Date().getMonth() && item.year == new Date().getFullYear()) %>
+                    <%= (currentMonthlyExpedited ? currentMonthlyExpedited : 0) %>
+                  </strong>
+                </td>
+              </tr>
+            <% }); %>
+          </tbody>
+        </table>
+        <div class="row mb-2">
+          <div class="col text-center">
+            <a href="/locations/new" class="btn btn-primary">Add A Location</a>
+          </div>
+        </div>
+      </div>
+    </div>
+</div>
+<script>
+  
+</script>
+<%- include("../partials/footer") %>

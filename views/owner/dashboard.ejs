@@ -289,9 +289,6 @@
                         <th scope="col" class="border-0 bg-light">
                           <div class="py-2 text-uppercase"># of Locations</div>
                         </th>
-                        <!-- <th scope="col" class="border-0 bg-light">
-                          <div class="py-2 text-uppercase">Contact Name</div>
-                        </th> -->
                         <th scope="col" class="border-0 bg-light">
                           <div class="py-2 text-uppercase">Date</div>
                         </th>
@@ -302,7 +299,7 @@
                           <% for(let company of recentCompanies) { %>
                               <tr>
                                 <td class="border-0 align-middle">
-                                  <a href="/company/<%= company.id %>"><strong><%= company.name %></strong></a>
+                                  <a href="/companies/<%= company.id %>"><strong><%= company.name %></strong></a>
                                 </td>
                                 <td class="border-0 align-middle">
                                   <strong><%= company.locations.length %></strong>

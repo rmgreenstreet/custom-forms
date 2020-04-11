@@ -88,7 +88,7 @@ module.exports = {
           };
 
           try {
-            allLocations = await Location.find({}, 'name officeNumber totalMonthlyExpedited').sort('officeNumber');
+            allLocations = await Location.find({}, 'name officeNumber expedited').sort('officeNumber');
             recentLocations = await getRecentDocuments(Location, beginDate, endDate);
           } catch (err) {
             dashboardErrorHandler(err,`Error loading Location data`);
@@ -241,11 +241,13 @@ module.exports = {
         // await currentUser.save();
         // console.log('currentUser saved');
         if (req.body.isExpedited) {
-          if (currentLocation.totalMonthlyExpedited >= 3) {
+          for (let item of currentLocation.expedited) {
+            if (item.month == Date.now().getMonth() && item.year == Date.now().getFullYear && item.total >= 3) {
             req.session.error = 'However, an expedited invitation cannot be sent, because the Monthly Limit for expedited setups has been reached for your company. This will reset on the first of the month.';
-          } else {
-            newUser.isExpedited = true;
-            currentLocation.totalMonthlyExpedited ++ ;
+            } else {
+              newUser.isExpedited = true;
+              item.total ++ ;
+            }
           }
         }
         await currentLocation.save();

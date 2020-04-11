@@ -54,11 +54,18 @@
                         <label for="isHidden" class="form-check-label">Keep this setup hidden</label>
                       </div>
                     </div>
-                    <% if (location.totalMonthlyExpedited > 0) { %>
-                      <div class="row">
-                        <p>Your location has sent <%= location.totalMonthlyExpedited %> Expedited invitations this month</p>
-                      </div>
-                    <% } %>
+                    <% let currentMonthExpedited = location.expedited.find(item => item.month == Date.now().getMonth() && item.year == Date.now().getFullYear()); %>
+                    <% if (!currentMonthExpedited) {
+                      location.expedited.push({
+                        month: Date.now().getMonth();
+                        year: Date.now().getFullYear();
+                        total: 0;
+                      });
+                      currentMonthExpedited = 0;
+                    }
+                    <div class="row">
+                      <p>Your location has sent <%= currentMonthExpedited %> Expedited invitations this month</p>
+                    </div>
                     
                     <button type="submit" class="btn btn-secondary mt-2">Send Link</button>
                 </form>

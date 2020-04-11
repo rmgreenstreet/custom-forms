@@ -26,18 +26,54 @@ function flipACoin() {
     return yesOrNo;
 }
 
-async function pickADate() {
+async function pickADate(minDate = new Date().setFullYear(new Date().getFullYear() -1)) {
     return new Promise((resolve, reject) => {
         try {
             const today = new Date();
-            const day = Math.ceil(Math.random() * 27);
-            const month = Math.ceil(Math.random() * today.getMonth())
-            const returnDate = new Date(today.getFullYear() - flipACoin(),month,day);
+            const returnDate = new Date(+minDate + Math.random() * (today - minDate))
             resolve(returnDate);
             return;
         } catch (err) {
             console.log(`Error creating random date: ${err.message}`);
-            reject(Date.now());
+            reject(new Date());
+            return;
+        }
+    });
+};
+
+function monthDiff(d1, d2) {
+    var months;
+    months = (d2.getFullYear() - d1.getFullYear()) * 12;
+    months -= d1.getMonth() + 1;
+    months += d2.getMonth();
+    return months <= 0 ? 0 : months;
+}
+
+async function randomExpedited(createdDate) {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const months = monthDiff(createdDate, new Date());
+            let expedited = [];
+            for (let i = 0; i <= months; i++) {
+                let newYear = new Date();
+                newYear.setMonth(createdDate.getMonth() + i);
+                newYear = newYear.getFullYear();
+                expedited.push({
+                    month: createdDate.getMonth() + i,
+                    year: newYear,
+                    total: await Math.round(Math.random() * 3)
+                });
+            }
+            resolve(expedited);
+        } catch (err) {
+            console.log(`Error creating random date: ${err.message}`);
+            reject([
+                {
+                    month: new Date().getMonth(),
+                    year: new Date().getFullYear(),
+                    total: 1
+                }
+            ]);
             return;
         }
     });
@@ -88,94 +124,123 @@ async function seedDatabase() {
     const defaultQuestions = await Question.find({isDefault:true});
 
     async function createLocations(companyId) {
-        const locationCount = Math.ceil(Math.random() * 5);
-        let locationsArr = [];
-        for (let i = 0; i < locationCount; i++) {
-            let isPrimary = false;
-            if (i=== 0) {
-                isPrimary = true;
-            }
-            const randomImageIndex = Math.ceil(Math.random() * sampleImages.length);
-            const newLocation = await Location.create({
-                primary: isPrimary,
-                officeNumber: Math.ceil(Math.random() * 1000).toString(),
-                name: faker.company.companyName(),
-                phone: faker.phone.phoneNumber(),
-                fax: faker.phone.phoneNumber(),
-                address: {
-                    streetNumber: Math.random(Math.ceil() * 1000),
-                    streetName: faker.address.streetName(),
-                    secondary: `Ste ${faker.random.alphaNumeric()}`,
-                    city: faker.address.city(),
-                    state: faker.address.stateAbbr(),
-                    postal: faker.address.zipCode(),
-                    country: 'USA'
-                },
-                website: faker.internet.url(),
-                images: [
-                    {
-                        secure_url:`/images/seeds/${sampleImages[randomImageIndex]}`
+        return new Promise(async (resolve, reject) => {
+            const locationCount = Math.ceil(Math.random() * 5);
+            let locationsArr = [];
+            try {
+                for (let i = 0; i < locationCount; i++) {
+                    let isPrimary = false;
+                    if (i=== 0) {
+                        isPrimary = true;
                     }
-                ],
-                company: companyId,
-                created: await pickADate()
-            });
-            await newLocation.save();
-            newLocation.contacts = await createUsers(newLocation._id, companyId, 'Admin', (Math.ceil(Math.random() * 5)));
-            await newLocation.save();
-            console.log(`Location ${newLocation.name} created with ${newLocation.contacts.length} contacts`)
-            await createUsers(newLocation._id, companyId, 'User', (Math.ceil(Math.random() * 30)));
-            locationsArr.push(newLocation._id);
-            await newLocation.addDefaultForm();
-        }
-        return locationsArr;
+                    const randomImageIndex = Math.ceil(Math.random() * sampleImages.length);
+                    const newLocation = await Location.create({
+                        primary: isPrimary,
+                        officeNumber: Math.ceil(Math.random() * 1000).toString(),
+                        name: faker.company.companyName(),
+                        phone: faker.phone.phoneNumber(),
+                        fax: faker.phone.phoneNumber(),
+                        address: {
+                            streetNumber: Math.random(Math.ceil() * 1000),
+                            streetName: faker.address.streetName(),
+                            secondary: `Ste ${faker.random.alphaNumeric()}`,
+                            city: faker.address.city(),
+                            state: faker.address.stateAbbr(),
+                            postal: faker.address.zipCode(),
+                            country: 'USA'
+                        },
+                        website: faker.internet.url(),
+                        images: [
+                            {
+                                secure_url:`/images/seeds/${sampleImages[randomImageIndex]}`
+                            }
+                        ],
+                        company: companyId,
+                        created: await pickADate()
+                    });
+                    newLocation.expedited = await randomExpedited(newLocation.created);
+                    newLocation.contacts = await createUsers(newLocation._id, companyId, 'Admin', (Math.ceil(Math.random() * 5)));
+                    if(i === 0) {
+                        newLocation.isPrimary = true;
+                    }
+                    await newLocation.save();
+                    console.log(`Location ${newLocation.name} created with ${newLocation.contacts.length} contacts`)
+                    await createUsers(newLocation._id, companyId, 'User', (Math.ceil(Math.random() * 30)));
+                    locationsArr.push(newLocation._id);
+                    await newLocation.addDefaultForm();
+                }
+            } catch(err) {
+                console.log(err);
+                reject(locationsArr)
+            }
+            resolve(locationsArr);
+        });
     };
 
     async function createUsers(locationId, companyId, role, count) {
-        if (role === 'Admin') {
-            console.log(`Creating ${count} Admins`);
-        };
-        let contactsArr = [];
-        for (let i = 0; i < count; i++) {
-            const newFirstName = await faker.name.firstName();
-            const newLastName = await faker.name.lastName();
-            let newUser;
-            try {
-                newUser = await User.register({
-                firstName: newFirstName,
-                lastName: newLastName,
-                username: newFirstName+newLastName,
-                personalEmail: newFirstName+newLastName+'@test.com',
-                role: role,
-                company: companyId,
-                location: locationId,
-                formAccessToken: crypto.randomBytes(16).toString('hex'),
-                createAccountToken: crypto.randomBytes(16).toString('hex'),
-                created: await pickADate()
-            },'password');
-        } catch (err) {
-            if (err.message.includes('UserExistsError')) {
-                continue;
+        return new Promise(async (resolve, reject) => {
+            if (role === 'Admin') {
+                console.log(`Creating ${count} Admins`);
+            };
+            let contactsArr = [];
+            for (let i = 0; i < count; i++) {
+                const newFirstName = await faker.name.firstName();
+                const newLastName = await faker.name.lastName();
+                let newUser;
+                let isCompanyAdmin = false;
+                if (role === 'Admin' && i === 0) {
+                    isCompanyAdmin = true;
+                }
+                try {
+                    newUser = await User.register({
+                    firstName: newFirstName,
+                    lastName: newLastName,
+                    username: newFirstName+newLastName,
+                    personalEmail: newFirstName+newLastName+'@test.com',
+                    role: role,
+                    company: companyId,
+                    location: locationId,
+                    formAccessToken: crypto.randomBytes(16).toString('hex'),
+                    createAccountToken: crypto.randomBytes(16).toString('hex'),
+                    created: await pickADate(),
+                    isCompanyAdmin: isCompanyAdmin
+                },'password');
+                if (newUser.isCompanyAdmin) {
+                    console.log(`${newUser.firstName} is a company admin`);
+                };
+            } catch (err) {
+                if (err.message.includes('UserExistsError')) {
+                    continue;
+                }
+                reject(await User.find({firstName:'potato'})._id);
             }
-        }
-        if(role === 'User');{
-            if(flipACoin()) {
-                newUser.responses.push(await createResponse(newUser)); 
-                await newUser.save();
-            } else {
-                continue;
-            }                
-            if(flipACoin()) {
-                newUser.completedSetup = await pickADate(); 
-                await newUser.save();
-            } else {
-                continue;
-            }                
-        };
-        contactsArr.push(newUser._id);
-        console.log(`${role} ${newUser.firstName} ${newUser.lastName} created`);
-        };
-        return contactsArr;
+            
+            if(role === 'User');{
+                if(flipACoin()) {
+                    try {
+                        newUser.responses.push(await createResponse(newUser)); 
+                        await newUser.save();
+                    } catch (err) {
+                        console.log(err);
+                        reject([await User.find({firstName:'potato'})._id]);
+                    }
+                }             
+                if(flipACoin()) {
+                    try {
+                        newUser.completedSetup = await pickADate(); 
+                        await newUser.save();
+                    } catch (err) {
+                        console.log(err);
+                        reject([await User.find({firstName:'potato'})._id]);
+                    }   
+                }           
+            };
+            contactsArr.push(newUser._id);
+            console.log(`${role} ${newUser.firstName} ${newUser.lastName} created`);
+            };
+            resolve(contactsArr);
+        });
+        
     };
 
     async function createResponse(user) {

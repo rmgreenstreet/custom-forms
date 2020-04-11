@@ -70,14 +70,17 @@ function handleExpedited () {
   if (allLocations) {
     let selectedLocation = allLocations.find(location =>  location._id === document.getElementById('locationSelector').value);
     console.log(selectedLocation);
-    if (selectedLocation.totalMonthlyExpedited < 3) {
-      if ($('#expediteCheckbox').is(':hidden')){
-        $('#expediteCheckbox').toggle("slide",{},500);
+    for (let item of selectedLocation.expedited) {
+      if (item.month == Date.now().getMonth() && item.year == Date.now().getFullYear && item.total >= 3) {
+        if ($('#expediteCheckbox').is(':hidden')){
+          $('#expediteCheckbox').toggle("slide",{},500);
+        }
+      } else if ($('#expediteCheckbox').is(':visible')){
+          $('#expediteCheckbox').toggle("slide",{},500);
       }
-    } else if ($('#expediteCheckbox').is(':visible')){
-        $('#expediteCheckbox').toggle("slide",{},500);
     }
-    $('#expeditedTotal').html(`This office has sent ${selectedLocation.totalMonthlyExpedited} expedited requests this month`);
+    let currentMonthExpedited = selectedLocation.expedited.find(item => item.month == Date.now().getMonth() && item.year == Date.now().getFullYear());
+    $('#expeditedTotal').html(`This office has sent ${currentMonthExpedited} expedited requests this month`);
   };
 };
 

@@ -75,7 +75,7 @@ const userSchema = new Schema({
     resetPasswordExpires: Date,
     created:{
         type:Date,
-        default:Date.now()
+        default: new Date()
     }
 });
 

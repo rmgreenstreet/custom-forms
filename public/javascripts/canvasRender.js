@@ -183,3 +183,12 @@ canvases.forEach((canvas) => {
         graphDatasets[canvases.indexOf(canvas)]
         );
 });
+
+window.addEventListener('resize', function () {
+    canvases.forEach((canvas) => {
+        renderCanvas(
+            canvas,
+            graphDatasets[canvases.indexOf(canvas)]
+            );
+    });
+});

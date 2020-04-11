@@ -30,6 +30,55 @@ module.exports = {
       return res.redirect('back');
     }
   },
+  async getCompanyProfile(req, res, next) {
+    let currentCompany;
+    let userCount = [];
+    let companyAdmins = [];
+    try {
+      currentCompany = await Company
+      .findById(req.params.companyId)
+      .populate({
+        path: 'locations',
+        model: 'Location',
+        populate: {
+          path: 'contacts',
+          model: 'User'
+        }
+      }).exec();
+    } catch (err) {
+      console.log(err);
+      req.session.error = 'Error loading Company';
+      res.redirect('/users/dashboard');
+    }
+
+    try {
+      for (let location of currentCompany.locations) {
+        companyAdmins.push(location.contacts.find(contact => contact.isCompanyAdmin === true));
+      }
+    } catch (err) {
+      console.log(err)
+      req.session.error = 'Unable to get Primary Contacts'
+    }
+
+    try {
+      for (let location of currentCompany.locations) {
+        userCount.push({
+          count: await User.countDocuments({location:location._id}),
+          location: location._id})
+      }
+    } catch (err) {
+      console.log(err)
+      req.session.error = 'Error loading users for all locations'
+    }
+
+    try {
+      res.render('../views/company/profile.ejs', {currentCompany, userCount, companyAdmins, page: 'companyProfile', title: 'Company Profile'});
+    } catch (err) {
+      console.log(err);
+      req.session.error = 'Error rendering Company profile';
+      res.redirect('/users/dashboard');
+    }
+  },
   async postNewCompany (req,res,next) {
     let newCompany;
     let newLocation;
@@ -115,8 +164,5 @@ module.exports = {
       model:'Question'
     });
     res.render('../views/owner/forms/edit.ejs', {currentForm,inputTypes});
-  },
-  async getCompanyProfile(req, res, next) {
-    
   }
 };

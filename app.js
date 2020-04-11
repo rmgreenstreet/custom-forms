@@ -127,12 +127,11 @@ app.use(function(err, req, res, next) {
 const { seedDatabase, clearDatabase, seedDefaultQuestions, clearRecentItems} = require('./seeds.js');
 
 async function databaseInit() {
-	
 	await clearRecentItems();
 	// await seedDefaultQuestions();	
-  	// await clearDatabase();
+	// await clearDatabase();
+	await User.register({firstName: 'potato', lastName:'head',username:'potatohead', personalEmail:'test@test.com', role:'Owner'},'password');
 	// await seedDatabase();
-	await User.register({firstName: 'potato', lastName:'head',username:'potatohead', personalEmail:'test@test.com', location:'5e77b1c9826bb10ddc332316', company: '5e77b1c7826bb10ddc33230d', role:'Owner'},'password');
 }
 
 databaseInit();
