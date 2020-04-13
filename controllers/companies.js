@@ -7,7 +7,7 @@ const Form = require('../models/form');
 // const { sendInvitation } = require('./users')
 const inputTypes = require('../models/inputTypes');
 
-const { newObjectErrorHandler } = require('../helpers');
+const { newObjectErrorHandler, getRecentDocuments, monthDiff, dashboardErrorHandler } = require('../helpers');
 
 module.exports = {
   async getCompaniesIndex(req,res,next) {
@@ -34,6 +34,32 @@ module.exports = {
     let currentCompany;
     let userCount = [];
     let companyAdmins = [];
+    let locationAdmins = [];
+    let recentInvitations;
+    let recentCompletions = [];
+    let recentSetups;
+    let beginDate = new Date();
+    beginDate.setMonth(beginDate.getMonth() - 5);
+    if (req.body.beginDate) {
+      const dateArr = req.body.beginDate.split('-');
+      beginDate = new Date(parseInt(dateArr[0]),parseInt(dateArr[1]) - 1, dateArr[1]);
+    };
+    
+    let endDate = new Date();
+    if (req.body.endDate) {
+      const dateArr = req.body.endDate.split('-');
+
+      endDate = new Date(parseInt(dateArr[0]),parseInt(dateArr[1] - 1), dateArr[1]);
+    };
+    const dateRange = monthDiff(beginDate, endDate) + 2;
+    let datePoints = [];
+    for (let i = beginDate.getMonth(); i < beginDate.getMonth() + dateRange; i ++) {
+      if (i <= 11) {
+        datePoints.push({x: `${i + 1}/${beginDate.getFullYear()}`, y:0});
+      } else {
+        datePoints.push({x: `${i - 11}/${beginDate.getFullYear() + 1}`, y:0});
+      }
+    }
     try {
       currentCompany = await Company
       .findById(req.params.companyId)
@@ -59,6 +85,14 @@ module.exports = {
       console.log(err)
       req.session.error = 'Unable to get Primary Contacts'
     }
+    try {
+      for (let location of currentCompany.locations) {
+        locationAdmins.push(...location.contacts);
+      }
+    } catch (err) {
+      console.log(err)
+      req.session.error = 'Unable to get Primary Contacts'
+    }
 
     try {
       for (let location of currentCompany.locations) {
@@ -72,7 +106,55 @@ module.exports = {
     }
 
     try {
-      res.render('../views/company/profile.ejs', {currentCompany, userCount, companyAdmins, page: 'companyProfile', title: 'Company Profile'});
+      recentInvitations = await getRecentDocuments(User, beginDate, endDate, 0, 'company', currentCompany._id);
+    } catch (err) {
+      dashboardErrorHandler(err,`Error loading recent Invitations`);
+    };
+
+    try {
+      const allCompletions = await User.find({
+        responses: {$ne: []},
+        company: currentCompany._id
+      })
+      .populate({
+        path: 'responses',
+        model: 'Response'
+      });
+      for (let completion of allCompletions) {
+        for (let response of completion.responses) {
+          let currentDate = response.created.toJSON().slice(0,10);
+          let compareBeginDate = beginDate.toJSON().slice(0,10);
+          let compareEndDate = endDate.toJSON().slice(0,10);
+          if (currentDate >= compareBeginDate && currentDate <= compareEndDate) {
+            recentCompletions.push(response);
+          };
+        };
+      };
+    } catch (err) {
+      dashboardErrorHandler(err,`Error loading recent Completions`);
+    };
+
+    try {
+      recentSetups = await User.find({
+        completedSetup: {
+          $gte: beginDate, 
+          $lte: endDate
+        },
+        company: currentCompany._id
+      }).sort('completedSetup');
+    } catch (err) {
+      dashboardErrorHandler(err,`Error loading recent Setups`);
+    };
+
+    try {
+      const graphDatasets = [
+        [
+          {label:'Invitations',payload:recentInvitations,searchProperty:'created'},
+          {label:'Completions',payload:recentCompletions,searchProperty:'created'},
+          {label:'Setups',payload:recentSetups,searchProperty:'completedSetup'}
+        ]            
+      ];
+      res.render('../views/company/profile.ejs', {locationAdmins, datePoints, beginDate, endDate, graphDatasets, currentCompany, userCount, companyAdmins, page: 'companyProfile', title: 'Company Profile'});
     } catch (err) {
       console.log(err);
       req.session.error = 'Error rendering Company profile';
@@ -149,7 +231,7 @@ module.exports = {
       path: 'locations',
       model:'Location'
     });
-    res.render('../views/owner/companies/edit.ejs', {company});
+    res.render('../views/company./edit.ejs', {company});
   },
   async getLocationEdit(req, res, next) {
     const location = await Location.findById(req.params.locationId).populate({

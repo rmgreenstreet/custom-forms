@@ -1,11 +1,11 @@
 <%- include("../partials/header") %>
 
-<div class="container mt-5">
+  <div class="container mt-5">
     <h1>
       <%= currentCompany.name %>
     </h1>
     <div class="row shadow-sm mb-2">
-      <div class="col">
+      <div class="col-4">
         <table class="table">
           <thead>
             <tr>
@@ -18,7 +18,11 @@
                 <strong>Locations</strong>
               </td>
               <td class="border-0 align-middle">
-                <strong><%= currentCompany.locations.length %></strong>
+                <% if (currentCompany) { %>
+                  <strong><%= currentCompany.locations.length %></strong>
+                <% } else { %>
+                  <div class="alert alert-warning">Error loading location data</div>
+                <% } %>
               </td>
             </tr>
             <tr>
@@ -26,11 +30,15 @@
                 <strong>Total Admins</strong>
               </td>
               <td class="border-0 align-middle">
-                <% let totalAdmins = 0 %>
-                <% for (let location of currentCompany.locations) { %>
-                  <% totalAdmins += location.contacts.length %>
-                <% } %>
-                <strong><%= totalAdmins %></strong>
+                <% if (currentCompany) { %>
+                  <% let totalAdmins = 0 %>
+                  <% for (let location of currentCompany.locations) { %>
+                    <% totalAdmins += location.contacts.length %>
+                  <% } %>
+                  <strong><%= totalAdmins %></strong>
+                  <% } else { %>
+                    <div class="alert alert-warning">Error loading location admin data</div>
+                  <% } %>
               </td>
             </tr>
             <tr>
@@ -38,8 +46,11 @@
                 <strong>Total Users</strong>
               </td>
               <td class="border-0 align-middle">
-
-                <strong><%= userCount.reduce((total, current) => total + current.count, 0) %></strong>
+                <% if (typeof userCount !== 'undefined') { %>
+                  <strong><%= userCount.reduce((total, current) => total + current.count, 0) %></strong>
+                <% } else { %>
+                  <div class="alert alert-warning">Error loading user data</div>
+                <% } %>
               </td>
             </tr>
             <tr>
@@ -47,34 +58,60 @@
                 <strong>Total Forms</strong>
               </td>
               <td class="border-0 align-middle">
-                <% let totalForms = 0 %>
-                <% for (let location of currentCompany.locations) { %>
-                  <% totalForms += location.forms.length %>
+                <% if (currentCompany && currentCompany.locations) { %>
+                  <% let totalForms = 0 %>
+                  <% for (let location of currentCompany.locations) { %>
+                    <% totalForms += location.forms.length %>
+                  <% } %>
+                  <strong><%= totalForms %></strong>
+                <% } else { %>
+                  <div class="alert alert-warning">Error loading forms data</div>
                 <% } %>
-                <strong><%= totalForms %></strong>
               </td>
             </tr>
           </tbody>
         </table>
       </div>
-      <div class="col">
+      <div class="col-8">
         <table class="table">
           <thead>
             <tr>
-              <th scope="col" class="border-0 bg-light" colspan="2">Details</th>
+              <th scope="col" class="border-0 bg-light" colspan="3">Details</th>
             </tr>
           </thead>
           <tbody>
             <tr>
               <td class="border-0 align-middle">
-                <strong>Primary Contact<%= companyAdmins.length > 1 ? 's' : '' %></strong>
+                <strong>Primary Contact<%= companyAdmins && companyAdmins.length > 1 ? 's' : '' %></strong>
               </td>
               <td class="border-0 align-middle">
-                <strong>
-                  <% for (let i = 0; i < companyAdmins.length; i++ ) { %>
-                    <a href="/users/<%= companyAdmins[0].id %>"><%= `${companyAdmins[i].firstName} ${companyAdmins[i].lastName}${(i + 1 !== companyAdmins.length ? ', ' : '')}` %></a>
+                <div id="currentAdmins">
+                  <% if (companyAdmins) { %>
+                    <% for (let i = 0; i < companyAdmins.length; i++ ) { %>
+                      <strong><a href="/users/<%= companyAdmins[0].id %>"><%= `${companyAdmins[i].firstName} ${companyAdmins[i].lastName}${(i + 1 !== companyAdmins.length ? ', ' : '')}` %></a></strong>
+                    <% } %>
+                  <% } else { %>
+                    <div class="alert alert-warning">Error loading admins data</div>
                   <% } %>
-                </strong>
+                </div>
+                <div id="adminDropdown" style="display:none;">
+                  <% if (companyAdmins) { %>
+                    <select name="chooseAdmins" id="chooseAdmins" form="updateCompanyAdmins" multiple class="form-control">
+                      <% for (let location of currentCompany.locations ) { %>
+                        <% for (let contact of location.contacts) { %> 
+                          <option value="<%= contact.id %>" ><%= `${contact.firstName} ${contact.lastName}` %></option>
+                        <% } %>
+                    </select>
+                    <span class="muted"><small>Hold `CTRL` to select multiple admins, or to deselect an admin</small></span>
+                    <% } %>
+                  <% } else { %>
+                    <div class="alert alert-warning">Error loading admins data</div>
+                  <% } %>
+                </div>
+              </td>
+              <td class="border-0 align-middle">
+                <a href="#edit" id="contactsEdit">Edit</a>
+                <a href="#cancelEdit" id="cancelContactsEdit" style="display:none;">Cancel</a>
               </td>
             </tr>
             <tr>
@@ -82,8 +119,30 @@
                 <strong>Primary Location</strong>
               </td>
               <td class="border-0 align-middle">
-                <% const primaryLocation = currentCompany.locations.find(location => location.isPrimary === true) %>
-                <strong><a href="/locations/<%= primaryLocation.id %>"><%= primaryLocation.name %></a></strong>
+                <div id="currentPrimaryLocation">
+                  <% let primaryLocation %>
+                   <% if (currentCompany && currentCompany.locations) { %>
+                    <% primaryLocation = currentCompany.locations.find(location => location.isPrimary === true) %>
+                    <strong><a href="/locations/<%= primaryLocation.id %>"><%= primaryLocation.name %></a></strong>
+                  <% } else { %>
+                    <div class="alert alert-warning">Error loading primary location data</div>
+                  <% } %>
+                </div>
+                <div id="locationDropdown" style="display:none;">
+                  <% if (currentCompany && currentCompany.locations) { %>
+                    <select name="chooseAdmins" id="chooseAdmins" form="updateCompanyAdmins" class="form-control">
+                      <% for (let location of currentCompany.locations ) { %>
+                        <option value="<%= location.id %>" ><%= location.name %></option>
+                      <% } %>
+                    </select>
+                  <% } else { %>
+                    <div class="alert alert-warning">Error loading locations data</div>
+                  <% } %>
+                </div>
+              </td>
+              <td class="border-0 align-middle">
+                <a href="#edit" id="locationsEdit">Edit</a>
+                <a href="#cancelEdit" id="cancelLocationsEdit" style="display:none;">Cancel</a>
               </td>
             </tr>
             <tr>
@@ -91,12 +150,19 @@
                 <strong>Join Date</strong>
               </td>
               <td class="border-0 align-middle">
-                <strong><%= primaryLocation.created.toDateString() %></strong>
+                <% if (primaryLocation) { %> 
+                  <strong><%= primaryLocation.created.toDateString() %></strong>
+                <% } else { %>
+                  <div class="alert alert-warning">Error loading primary location data</div>
+                <% } %>
               </td>
             </tr>
             <tr>
               <td class="border-0 align-middle" colspan="2">
-                <a class="btn btn-primary btn-block" href="/companies/<%= currentCompany.id %>/edit">Manage</button>
+                <form action="/companies/<%= currentCompany.id %>?_method=PUT" method="post" style="display:none;" id="updateCompany">
+                  <button class="btn btn-primary btn-block" id="updateButton">Update</button>
+                </form>
+                
               </td>
             </tr>
           </tbody>
@@ -123,31 +189,39 @@
             <th scope="col" class="border-0 bg-light">
               Expedited This Month
             </th>
+            <th scope="col" class="border-0 bg-light">
+              Edit/Remove
+            </th>
           </thead>
           <tbody>
-            <% currentCompany.locations.forEach(location => { %>
-              <tr>
-                <td class="border-0 align-middle">
-                  <a href="/locations/<%= location.id %>"><strong><%= location.name %></strong></a>
-                  <!-- on the company profile, list the contents of all of these stats -->
-                </td>
-                <td class="border-0 align-middle">
-                  <strong><%= location.contacts.length %></strong>
-                </td>
-                <td class="border-0 align-middle">
-                  <strong><%= location.forms.length %></strong>
-                </td>
-                <td class="border-0 align-middle">
-                  <strong><%= userCount.find(user => user.location === location._id ).count %></strong>
-                </td>
-                <td class="border-0 align-middle">
-                  <strong>
-                    <% const currentMonthlyExpedited = location.expedited.find(item => item.month == new Date().getMonth() && item.year == new Date().getFullYear()) %>
-                    <%= (currentMonthlyExpedited ? currentMonthlyExpedited : 0) %>
-                  </strong>
-                </td>
-              </tr>
-            <% }); %>
+            <% if (currentCompany && currentCompany.locations) { %>
+              <% currentCompany.locations.forEach(location => { %>
+                <tr>
+                  <td class="border-0 align-middle">
+                    <a href="/locations/<%= location.id %>"><strong><%= location.name %></strong></a>
+                    <!-- on the company profile, list the contents of all of these stats -->
+                  </td>
+                  <td class="border-0 align-middle">
+                    <strong><%= location.contacts.length %></strong>
+                  </td>
+                  <td class="border-0 align-middle">
+                    <strong><%= location.forms.length %></strong>
+                  </td>
+                  <td class="border-0 align-middle">
+                    <strong><%= userCount.find(user => user.location === location._id ).count %></strong>
+                  </td>
+                  <td class="border-0 align-middle">
+                    <strong>
+                      <% const currentMonthlyExpedited = location.expedited.find(item => item.month == new Date().getMonth() && item.year == new Date().getFullYear()) %>
+                      <%= (currentMonthlyExpedited ? currentMonthlyExpedited : 0) %>
+                    </strong>
+                  </td>
+                </tr>
+              <% }); %>
+            <% } else { %>
+              <div class="alert alert-warning">Error loading location data</div>
+            <% } %>
+            
           </tbody>
         </table>
         <div class="row mb-2">
@@ -157,8 +231,15 @@
         </div>
       </div>
     </div>
-</div>
+    <div class="row shadow-sm pb-3">
+      <div class="col">
+          <h3>Invitations/Completions/Setups</h3>
+          <canvas id="invitations-over-time" width="800" height="400">
+            <div class="chart-container" id="chart-container" ><img src="/images/line-graph-example.svg" alt=""></div>
+          </canvas>
+      </div>
+    </div>
+  </div>
 <script>
-  
 </script>
 <%- include("../partials/footer") %>

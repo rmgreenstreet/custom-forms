@@ -1,0 +1,107 @@
+<%- include("../partials/header") %>
+
+<div class="container mt-5">
+    <h1>Manage <%= currentCompany.name %></h1>
+    <section>
+        <div class="row shadow-sm mb-3">
+            <div class="col">
+                <table class="table">
+                    <thead>
+                      <tr>
+                        <th scope="col" class="border-0 bg-light" colspan="2">Primary Contacts</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td class="border-0 align-middle">
+                          <strong>Locations</strong>
+                        </td>
+                        <td class="border-0 align-middle">
+                          <% if (currentCompany) { %>
+                            <strong><%= currentCompany.locations.length %></strong>
+                          <% } else { %>
+                            <div class="alert alert-warning">Error loading location data</div>
+                          <% } %>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="border-0 align-middle">
+                          <strong>Total Admins</strong>
+                        </td>
+                        <td class="border-0 align-middle">
+                          <% if (currentCompany) { %>
+                            <% let totalAdmins = 0 %>
+                            <% for (let location of currentCompany.locations) { %>
+                              <% totalAdmins += location.contacts.length %>
+                            <% } %>
+                            <strong><%= totalAdmins %></strong>
+                            <% } else { %>
+                              <div class="alert alert-warning">Error loading location admin data</div>
+                            <% } %>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="border-0 align-middle">
+                          <strong>Total Users</strong>
+                        </td>
+                        <td class="border-0 align-middle">
+                          <% if (typeof userCount !== 'undefined') { %>
+                            <strong><%= userCount.reduce((total, current) => total + current.count, 0) %></strong>
+                          <% } else { %>
+                            <div class="alert alert-warning">Error loading user data</div>
+                          <% } %>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="border-0 align-middle">
+                          <strong>Total Forms</strong>
+                        </td>
+                        <td class="border-0 align-middle">
+                          <% if (currentCompany && currentCompany.locations) { %>
+                            <% let totalForms = 0 %>
+                            <% for (let location of currentCompany.locations) { %>
+                              <% totalForms += location.forms.length %>
+                            <% } %>
+                            <strong><%= totalForms %></strong>
+                          <% } else { %>
+                            <div class="alert alert-warning">Error loading forms data</div>
+                          <% } %>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <form action="/companies/<%= currentCompany.id %>?_method=PUT" method="POST">
+                        
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+<script>
+  var beginDate = new Date(<%- JSON.stringify(beginDate) %>);
+  var beginMonth = beginDate.getMonth() + 1;
+  if (beginMonth < 10) {
+    beginMonth = '0'+beginMonth;
+  }
+
+  var endDate = new Date(<%- JSON.stringify(endDate) %>);
+  var endMonth = endDate.getMonth() + 1;
+  if (endMonth < 10) {
+    endMonth = '0'+endMonth;
+  }
+
+  var endDay = endDate.getDate();
+  if (endDay < 10) {
+    endDay = '0' + endDay
+  }
+
+  document.querySelector('#beginDate').defaultValue = `${beginDate.getFullYear()}-${beginMonth}-01`;
+  document.querySelector('#endDate').defaultValue = `${endDate.getFullYear()}-${endMonth}-${endDay}`;
+  var graphDatasets = <%- JSON.stringify(graphDatasets) %>;
+  var allLocations= <%- JSON.stringify(allLocations) %>;
+</script>
+<%- include("../partials/footer") %>

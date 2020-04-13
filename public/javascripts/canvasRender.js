@@ -5,18 +5,16 @@ var canvases = document.querySelectorAll('canvas');
 // ];
 
 //converts full object data from server into {x: mm/yyyy, y: Number} objects
-function getPoints(items, searchProperty) {
-    let points = [];
-    items.payload.forEach((item) => {
-        const workingDate = new Date(item[searchProperty])
-        const monthYear = `${workingDate.getMonth() + 1}/${workingDate.getFullYear()}`;
-        let existingPoint = points.find(point => point.x === monthYear);
-        if (existingPoint) {
-            existingPoint.y ++;
-        } else {
-            points.push({x:monthYear, y: 1});
-        }
+function getPoints(items) {
+    let points= datePoints.map(a => {
+        return {...a}
     });
+    for (let item of items.payload) {
+        const workingDate = new Date(item[items.searchProperty])
+        const monthYear = `${workingDate.getMonth() + 1}/${workingDate.getFullYear()}`;
+        let workingPoint = points.find(point => point.x === monthYear);
+        workingPoint.y ++;
+    }
     return points;
 };
 
@@ -29,7 +27,7 @@ function getPoints(items, searchProperty) {
             max = data[i].y;
         }
     }
-    max += 10 - max % 10;
+    max += 5 - max % 5;
     return max;
 }
 /* Removes objects from combined data where month matches, in order to draw only one copy of that 
@@ -78,7 +76,7 @@ function renderCanvas(canvas, data) {
         var yLength = canvas.height - xPadding;
         var pointsArr = [];
         data.forEach(function (obj) {
-            pointsArr.push(getPoints(obj, obj.searchProperty));
+            pointsArr.push(getPoints(obj));
         });
         for (let i = 0; i < pointsArr.length -1 ; i++) {
             pointsArr[i] = equalize(pointsArr[i], pointsArr[i+1]);
@@ -132,7 +130,7 @@ function renderCanvas(canvas, data) {
                 ctx.stroke();
                 ctx.beginPath();
                 ctx.arc(x,y,5,0,360,false);
-                ctx.fillText(point.y, x + 2, y - 15);
+                ctx.fillText(point.y, x + 15, y - 15);
                 ctx.closePath();
                 ctx.fill();
                 ctx.moveTo(x,y);
@@ -149,7 +147,9 @@ function renderCanvas(canvas, data) {
         ctx.textAlign = "right"
         ctx.textBaseline = "middle";
         var increment = 10;
-        if (yMax < 10) {
+        if (yMax < 5) {
+            increment = 1;
+        } else if (yMax < 10) {
             increment = 2;
         } else if (yMax < 25) {
             increment = 4;

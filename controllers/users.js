@@ -7,43 +7,11 @@ const Form = require('../models/form');
 const Question = require('../models/question');
 const Response = require('../models/response');
 
-const { newObjectErrorHandler, getStateNamesAndAbbrs } = require('../helpers');
+const { newObjectErrorHandler, getStateNamesAndAbbrs, getRecentDocuments, dashboardErrorHandler, monthDiff } = require('../helpers');
 
 const states = getStateNamesAndAbbrs();
 if(states) {
   console.log('States Parsed');
-}
-
-async function getRecentDocuments(documentType, beginDate, endDate, limit = 0, populatePath, populateModel) {
-  if(populatePath && populateModel) {
-    return await documentType.find({created: {$gte: beginDate, $lte: endDate}})
-    .limit(limit)
-    .populate({
-      path: populatePath,
-      model: populateModel
-    })
-    .sort('-created');
-  } else {
-    return await documentType.find({created: {$gte: beginDate, $lte: endDate}})
-    .limit(limit)
-    .sort('-created');
-  }
-  
-};
-
-async function dashboardErrorHandler(err, message = `Error loading the page`) {
-  console.log(err);
-  req.session.error = message;
-  return res.redirect('/');
-}
-
-function monthDiff(date1, date2) {
-  let months;
-  months = (date2.getFullYear() - date1.getFullYear()) * 12;
-  months -= date1.getMonth() + 1;
-  months += date2.getMonth();
-  months += 2;
-  return months <= 0 ? 0 : months;
 }
 
 module.exports = {
@@ -79,6 +47,15 @@ module.exports = {
 
             endDate = new Date(parseInt(dateArr[0]),parseInt(dateArr[1] - 1), dateArr[1]);
           };
+          const dateRange = monthDiff(beginDate, endDate) + 2;
+          let datePoints = [];
+          for (let i = beginDate.getMonth(); i < beginDate.getMonth() + dateRange; i ++) {
+            if (i <= 11) {
+              datePoints.push({x: `${i + 1}/${beginDate.getFullYear()}`, y:0});
+            } else {
+              datePoints.push({x: `${i - 11}/${beginDate.getFullYear() + 1}`, y:0});
+            }
+          }
 
           try {
             recentCompanies = await getRecentDocuments(Company, beginDate, endDate);
@@ -137,7 +114,7 @@ module.exports = {
                 {label:'Locations',payload:recentLocations,searchProperty:'created'}
               ]             
             ];
-            res.render('../views/owner/dashboard', {states, beginDate, endDate, recentCompanies, allLocations, recentInvitations, recentForms,totalQuestions, totalCompanies, totalForms, graphDatasets, page:'ownerDashboard'});
+            res.render('../views/owner/dashboard', {datePoints, states, beginDate, endDate, recentCompanies, allLocations, recentInvitations, recentForms,totalQuestions, totalCompanies, totalForms, graphDatasets, page:'ownerDashboard'});
           } catch (err) {
             dashboardErrorHandler(err,`Error loading dashboard`);
           };

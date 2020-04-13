@@ -7,6 +7,7 @@ const User = require('./models/user');
 const Form = require('./models/form');
 const Question = require('./models/question');
 const Response = require('./models/response');
+const { monthDiff, flipACoin, pickADate } = require('./helpers');
 
 const sampleImages = fs.readdirSync('./public/images/seeds');
 
@@ -19,34 +20,6 @@ async function clearRecentItems() {
     await Form.deleteMany({created: {$gte: threeDaysAgo}})
     await Question.deleteMany({created: {$gte: threeDaysAgo}})
     await Response.deleteMany({created: {$gte: threeDaysAgo}})
-}
-
-function flipACoin() {
-    const yesOrNo = Math.floor(Math.random() *2);
-    return yesOrNo;
-}
-
-async function pickADate(minDate = new Date().setFullYear(new Date().getFullYear() -1)) {
-    return new Promise((resolve, reject) => {
-        try {
-            const today = new Date();
-            const returnDate = new Date(+minDate + Math.random() * (today - minDate))
-            resolve(returnDate);
-            return;
-        } catch (err) {
-            console.log(`Error creating random date: ${err.message}`);
-            reject(new Date());
-            return;
-        }
-    });
-};
-
-function monthDiff(d1, d2) {
-    var months;
-    months = (d2.getFullYear() - d1.getFullYear()) * 12;
-    months -= d1.getMonth() + 1;
-    months += d2.getMonth();
-    return months <= 0 ? 0 : months;
 }
 
 async function randomExpedited(createdDate) {

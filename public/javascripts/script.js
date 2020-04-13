@@ -84,6 +84,81 @@ function handleExpedited () {
   };
 };
 
+function showOneHideOther(elementsToShow, elementsToHide) {
+  for (var e of elementsToShow) {
+    e.show();
+  }
+  for (var e of elementsToHide) {
+    e.hide();
+  }
+};
+
+var currentAdminsList = $('#currentAdmins');
+var adminDropdownList = $('#adminDropdown');
+var contactsEditButton = $('#contactsEdit');
+var cancelContactsEdit = $('#cancelContactsEdit');
+
+var currentPrimaryLocation = $('#currentPrimaryLocation');
+var locationDropdownList = $('#locationDropdown');
+var locationsEditButton = $('#locationsEdit');
+var cancelLocationsEdit = $('#cancelLocationsEdit');
+
+var updateButton = $('#updateCompany');
+
+contactsEditButton.on('click', function () {
+  showOneHideOther(
+    [
+      adminDropdownList, 
+      cancelContactsEdit, 
+      updateButton
+    ], 
+    [
+      currentAdminsList, 
+      contactsEditButton
+    ]
+  )
+});
+cancelContactsEdit.on('click', function () {
+  showOneHideOther(
+    [
+      currentAdminsList, 
+      contactsEditButton
+    ], 
+    [
+      adminDropdownList, 
+      cancelContactsEdit, 
+      (cancelLocationsEdit.is(':hidden') ? updateButton : null)
+    ]
+  )
+});
+
+locationsEditButton.on('click', function () {
+  showOneHideOther(
+    [
+      locationDropdownList, 
+      cancelLocationsEdit, 
+      updateButton
+    ], 
+    [
+      currentPrimaryLocation, 
+      locationsEditButton
+    ]
+  )
+});
+cancelLocationsEdit.on('click', function () {
+  showOneHideOther(
+    [
+      currentPrimaryLocation, 
+      locationsEditButton
+    ], 
+    [
+      locationDropdownList, 
+      cancelLocationsEdit, 
+      (cancelContactsEdit.is(':hidden') ? updateButton : null)
+    ]
+  )
+});
+
 //drag and drop functionality for form editor
 // var _el;
 
