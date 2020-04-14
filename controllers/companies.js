@@ -79,7 +79,10 @@ module.exports = {
 
     try {
       for (let location of currentCompany.locations) {
-        companyAdmins.push(location.contacts.find(contact => contact.isCompanyAdmin === true));
+        const currentAdmin = location.contacts.find(contact => contact.isCompanyAdmin === true);
+        if (currentAdmin) {
+          companyAdmins.push(currentAdmin);
+        }
       }
     } catch (err) {
       console.log(err)
@@ -233,90 +236,103 @@ module.exports = {
     });
     res.render('../views/company./edit.ejs', {company});
   },
+
   async putCompanyEdit (req, res, next) {
-    // let currentCompany;
     let existingAdmins;
     let newPrimaryLocation;
     let oldPrimaryLocation;
 
-    // try {
-    //   currentCompany = await Company.findById(req.user.company);
-    // } catch (err) {
-
-    // }
-
     try {
-      existingAdmins = await User.find({
-        company: req.user.company,
-        isCompanyAdmin: true
-      });
-    } catch (err) {
+      req.session.success = 'Entered PUT method';
+      
+      //Update Company Admins
+      try {
+        existingAdmins = await User.find({
+          company: req.params.companyId,
+          isCompanyAdmin: true
+        });
+      } catch (err) {
+        console.error(err);
+        throw new Error('Error finding existing Admins');
+      }
 
-    }
+      for (let user of existingAdmins) {
+        if (!req.body.chooseAdmins.includes(user._id.toString())) {
+          user.isCompanyAdmin = false;
+          try {
+            user.save();
+          } catch (err) {
+            console.error(err);
+            throw new Error('Error removing existing Admin');
+          };
+        }
+      }
 
-    for (let user of existingAdmins) {
-      if (!req.body.chooseAdmins.includes(user._id)) {
-        user.isCompanyAdmin = false;
+      for (let admin of req.body.chooseAdmins) {
+        let currentAdmin;
         try {
-          user.save();
+          currentAdmin = await User.findById(admin);
         } catch (err) {
+          console.error(err);
+          throw new Error('Error finding user to make admin');
+        }
 
-        };
+        if (currentAdmin.isCompanyAdmin) {
+          continue;
+        } else {
+          currentAdmin.isCompanyAdmin = true;
+        }
+
+        try {
+          currentAdmin.save();
+        } catch (err) {
+          console.error(err);
+          throw new Error('Error saving new Admin');
+        }
       }
-    }
 
-    for (let admin of req.body.chooseAdmins) {
-      let currentAdmin;
+      //Update Primary Location
       try {
-        currentAdmin = await User.findById(admin);
+        oldPrimaryLocation = await Location.findOne({
+          isPrimary: true,
+          company: req.params.companyId
+        });
       } catch (err) {
-
+        console.error(err);
+        throw new Error('Error finding existing Primary Location');
       }
 
-      if (currentAdmin.isCompanyAdmin) {
-        continue;
-      } else {
-        currentAdmin.isCompanyAdmin = true;
+      if (!oldPrimaryLocation._id.equals(req.body.choosePrimaryLocation)) {
+        try {
+          newPrimaryLocation = await Location.findById(req.body.choosePrimaryLocation);
+        } catch (err) {
+          console.error(err);
+          throw new Error('Error finding new Primary Location');
+        }
+        try {
+          oldPrimaryLocation.isPrimary = false;
+          await oldPrimaryLocation.save();
+        } catch (err) {
+          console.error(err);
+          throw new Error('Error removing existing Primary Location');
+        }
+        try {
+          newPrimaryLocation.isPrimary = true;
+          await newPrimaryLocation.save();
+        } catch (err) {
+          console.error(err);
+          oldPrimaryLocation.isPrimary = true;
+          await oldPrimaryLocation.save();
+          throw new Error('Error saving new Primary Location');
+        }
       }
 
-      try {
-        currentAdmin.save();
-      } catch (err) {
-
-      }
+    } catch (err) {
+      req.session.error = err;
+    } finally {
+      res.redirect(`/companies/${req.params.companyId}`);
     }
     
-    try {
-      oldPrimaryLocation = await Location.find({
-        isPrimary: true,
-        company: req.user.company
-      });
-    } catch (err) {
-
-    }
-
-    if (oldPrimaryLocation._id.equals(req.body.choosePrimaryLocation)) {
-      continue;
-    } else {
-      try {
-        newPrimaryLocation = await Location.findById(req.body.choosePrimaryLocation);
-      } catch (err) {
-
-      }
-      oldPrimaryLocation.isPrimary = false;
-      newPrimaryLocation.isPrimary = true;
-      try {
-        await oldPrimaryLocation.save();
-      } catch (err) {
-
-      }
-      try {
-        await newPrimaryLocation.save();
-      } catch (err) {
-
-
-      }
-    }
   },
   async getLocationEdit(req, res, next) {
     const location = await Location.findById(req.params.locationId).populate({

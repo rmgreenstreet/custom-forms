@@ -96,7 +96,7 @@
                 </div>
                 <div id="adminDropdown" style="display:none;">
                   <% if (companyAdmins) { %>
-                    <select name="chooseAdmins" id="chooseAdmins" form="updateCompany" multiple class="form-control">
+                    <select name="chooseAdmins[]" id="chooseAdmins" form="updateCompany" multiple class="form-control">
                       <% for (let location of currentCompany.locations ) { %>
                         <% for (let contact of location.contacts) { %> 
                           <option value="<%= contact.id %>" <%= contact.isCompanyAdmin ? 'selected' : '' %>><%= contact.firstName %> <%= contact.lastName %></option>
@@ -161,7 +161,7 @@
             </tr>
             <tr>
               <td class="border-0 align-middle" colspan="2">
-                <form action="/companies/<%= currentCompany.id %>?_method=PUT" method="post" style="display:none;" id="updateCompany">
+                <form action="/companies/<%= currentCompany.id %>?_method=PUT" method="POST" style="display:none;" id="updateCompany">
                   <button class="btn btn-primary btn-block" id="updateButton">Update</button>
                 </form>
                 
