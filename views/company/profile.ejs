@@ -96,14 +96,16 @@
                 </div>
                 <div id="adminDropdown" style="display:none;">
                   <% if (companyAdmins) { %>
-                    <select name="chooseAdmins" id="chooseAdmins" form="updateCompanyAdmins" multiple class="form-control">
+                    <select name="chooseAdmins" id="chooseAdmins" form="updateCompany" multiple class="form-control">
                       <% for (let location of currentCompany.locations ) { %>
                         <% for (let contact of location.contacts) { %> 
-                          <option value="<%= contact.id %>" ><%= `${contact.firstName} ${contact.lastName}` %></option>
+                          <option value="<%= contact.id %>" <%= contact.isCompanyAdmin ? 'selected' : '' %>><%= contact.firstName %> <%= contact.lastName %></option>
                         <% } %>
+                      <% } %>
                     </select>
-                    <span class="muted"><small>Hold `CTRL` to select multiple admins, or to deselect an admin</small></span>
-                    <% } %>
+                    <span class="muted"><small>Hold `CTRL` to select multiple admins, or to deselect an admin.<br />
+                      To add users to this list, first add them to their Location's "Contacts".
+                    </small></span>
                   <% } else { %>
                     <div class="alert alert-warning">Error loading admins data</div>
                   <% } %>
@@ -130,7 +132,7 @@
                 </div>
                 <div id="locationDropdown" style="display:none;">
                   <% if (currentCompany && currentCompany.locations) { %>
-                    <select name="chooseAdmins" id="chooseAdmins" form="updateCompanyAdmins" class="form-control">
+                    <select name="choosePrimaryLocation" id="choosePrimaryLocation" form="updateCompany" class="form-control">
                       <% for (let location of currentCompany.locations ) { %>
                         <option value="<%= location.id %>" ><%= location.name %></option>
                       <% } %>

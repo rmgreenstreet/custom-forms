@@ -233,6 +233,91 @@ module.exports = {
     });
     res.render('../views/company./edit.ejs', {company});
   },
+  async putCompanyEdit (req, res, next) {
+    // let currentCompany;
+    let existingAdmins;
+    let newPrimaryLocation;
+    let oldPrimaryLocation;
+
+    // try {
+    //   currentCompany = await Company.findById(req.user.company);
+    // } catch (err) {
+
+    // }
+
+    try {
+      existingAdmins = await User.find({
+        company: req.user.company,
+        isCompanyAdmin: true
+      });
+    } catch (err) {
+
+    }
+
+    for (let user of existingAdmins) {
+      if (!req.body.chooseAdmins.includes(user._id)) {
+        user.isCompanyAdmin = false;
+        try {
+          user.save();
+        } catch (err) {
+
+        };
+      }
+    }
+
+    for (let admin of req.body.chooseAdmins) {
+      let currentAdmin;
+      try {
+        currentAdmin = await User.findById(admin);
+      } catch (err) {
+
+      }
+
+      if (currentAdmin.isCompanyAdmin) {
+        continue;
+      } else {
+        currentAdmin.isCompanyAdmin = true;
+      }
+
+      try {
+        currentAdmin.save();
+      } catch (err) {
+
+      }
+    }
+    
+    try {
+      oldPrimaryLocation = await Location.find({
+        isPrimary: true,
+        company: req.user.company
+      });
+    } catch (err) {
+
+    }
+
+    if (oldPrimaryLocation._id.equals(req.body.choosePrimaryLocation)) {
+      continue;
+    } else {
+      try {
+        newPrimaryLocation = await Location.findById(req.body.choosePrimaryLocation);
+      } catch (err) {
+
+      }
+      oldPrimaryLocation.isPrimary = false;
+      newPrimaryLocation.isPrimary = true;
+      try {
+        await oldPrimaryLocation.save();
+      } catch (err) {
+
+      }
+      try {
+        await newPrimaryLocation.save();
+      } catch (err) {
+
+
+      }
+    }
+  },
   async getLocationEdit(req, res, next) {
     const location = await Location.findById(req.params.locationId).populate({
       path: 'contacts',
