@@ -1,5 +1,5 @@
 const express = require('express');
-const router = express.Router();
+const router = express.Router({mergeParams:true});
 const Form = require('../models/form');
 const { asyncErrorHandler, isLoggedIn, isAdmin, isOwner } = require('../middleware');
 const { getFormsSearch, getFormsIndex, getFormEdit } = require('../controllers/forms');

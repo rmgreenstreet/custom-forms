@@ -159,6 +159,19 @@ cancelLocationsEdit.on('click', function () {
   )
 });
 
+
+var showAddLocationButton = $('#showAddLocation');
+var addLocationDiv = $('#addLocation');
+
+showAddLocationButton.on('click', function() {
+  if(addLocationDiv.is(':visible')) {
+    this.textContent = 'Add Location';
+  } else {
+    this.textContent = 'Cancel';
+  }
+  addLocationDiv.toggle('slide');
+});
+
 //drag and drop functionality for form editor
 // var _el;
 

@@ -7,7 +7,7 @@ const fs = require('fs');
 
 module.exports = {
     async newObjectErrorHandler (err, objects, res) {
-        console.log(err);
+        console.error(err);
         for (let object of objects) {
             console.log(`Deleting created ${object.constructor.modelName} object to try again`);
             await object.constructor.findByIdAndDelete(object._id);
@@ -15,7 +15,7 @@ module.exports = {
         return res.redirect('/users/dashboard');
     },
     dashboardErrorHandler(err, message = `Error loading the page`) {
-        console.log(err);
+        console.error(err);
         req.session.error = message;
         return res.redirect('/');
     },

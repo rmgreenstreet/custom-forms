@@ -4,6 +4,7 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const mongoose = require('mongoose');
+
 require('mongoose-type-url');
 // const serveFavicon = require('serve-favicon');
 const passport = require('passport');
@@ -15,11 +16,13 @@ const sgMail = require('@sendgrid/mail');
 
 
 const User = require('./models/user');
+const { getStateNamesAndAbbrs } = require('./helpers')
 
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 const formsRouter = require('./routes/forms');
 const companiesRouter = require('./routes/companies');
+const locationsRouter = require('./routes/locations');
 
 const app = express();
 if (app.get('env') == 'development'){ require('dotenv').config(); };
@@ -88,6 +91,10 @@ app.use(async function (req,res,next) {
 	// }
 	req.user = await User.findOne({firstName: 'potato'});
 	res.locals.currentUser = req.user;
+	res.locals.states = getStateNamesAndAbbrs();
+	if(res.locals.states) {
+	  console.log('States Parsed');
+	}
   //set default page title if one is not specified
 	res.locals.title='Custom Forms';
 	//set success flash message
@@ -106,6 +113,7 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/forms', formsRouter);
 app.use('/companies', companiesRouter);
+app.use('/locations', locationsRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

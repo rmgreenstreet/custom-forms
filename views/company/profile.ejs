@@ -228,8 +228,18 @@
         </table>
         <div class="row mb-2">
           <div class="col text-center">
-            <a href="/locations/new" class="btn btn-primary">Add A Location</a>
+            <button class="btn btn-primary" id="showAddLocation">Add A Location</button>
           </div>
+        </div>
+        <div id="addLocation" style="display:none;">
+          <form action="/locations" method="POST" id="addLocationForm" enctype="multipart/form-data">
+            <%- include('../partials/addLocationForm.ejs') %>
+            <div class="form-row mb-1">
+              <div class="col col-md-6">
+                <button type="submit" class="btn btn-primary">Create</button>
+              </div>
+            </div>
+          </form>
         </div>
       </div>
     </div>

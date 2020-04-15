@@ -7,12 +7,7 @@ const Form = require('../models/form');
 const Question = require('../models/question');
 const Response = require('../models/response');
 
-const { newObjectErrorHandler, getStateNamesAndAbbrs, getRecentDocuments, dashboardErrorHandler, monthDiff } = require('../helpers');
-
-const states = getStateNamesAndAbbrs();
-if(states) {
-  console.log('States Parsed');
-}
+const { newObjectErrorHandler, getRecentDocuments, dashboardErrorHandler, monthDiff } = require('../helpers');
 
 module.exports = {
     async routeByRole(req, res, next) {

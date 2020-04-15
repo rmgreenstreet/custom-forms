@@ -1,8 +1,11 @@
 const express = require('express');
-const router = express.Router();
+const router = express.Router({mergeParams:true});
 const User = require('../models/user');
 const { asyncErrorHandler, isLoggedIn } = require('../middleware');
 const { routeByRole, sendInvitation } = require('../controllers/users');
+const multer = require('multer');
+const { storage } = require('../cloudinary');
+const upload = multer({ storage })
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {

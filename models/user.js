@@ -81,7 +81,7 @@ const userSchema = new Schema({
 
 userSchema.pre('remove', async function() {
     for (let response of this.responses) {
-        Response.findByIdAndRemove(response);
+        await Response.findByIdAndRemove(response);
     };
 });
 
