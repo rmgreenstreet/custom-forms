@@ -124,13 +124,15 @@ const locationSchema = new Schema({
 locationSchema.method('addDefaultForm', async function () {
     const defaultForm = await Form.create({});
     await defaultForm.addDefault();
+    await defaultForm.save();
     this.forms.push(defaultForm._id);
     await this.save();
 });
 
-locationSchema.pre('remove', async function() {
+locationSchema.pre('remove', async function() {f
+    const User = require('./user');
     for(let contact of this.contacts) {
-        User.findByIdAndRemove(contact);
+        await User.findByIdAndRemove(contact);
     }
 });
 

@@ -1,0 +1,136 @@
+<%- include("../partials/header") %>
+
+  <div class="container mt-5">
+      
+    <% if (typeof currentLocation !== 'undefined') { %>
+      <h1><%= currentLocation.name %></h1>
+    <% } else { %>
+      <div class="alert alert-warning">Error loading location data</div>
+    <% } %>
+    <div class="row shadow-sm mb-2">
+      <div class="col">
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col" class="border-0 bg-light" colspan="2">Location Details</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="border-0 align-middle">
+                <strong>Location Admin<%= currentLocation.contacts.length > 1 ? 's' : '' %></strong>
+              </td>
+              <td class="border-0 align-middle">
+                <% if (typeof currentLocation !== 'undefined') { %>
+                  <strong>
+                    <% for (let contact of currentLocation.contacts) { %>
+                      <a href="/users/<%= contact.id %>"><%= contact.firstName %> <%= contact.lastName %></a><%= currentLocation.contacts.indexOf(contact) !== currentLocation.contacts.length -1 ? ', ' : '' %>
+                    <% } %>
+                  </strong>
+                <% } else { %>
+                    <div class="alert alert-warning">Error loading location admin data</div>
+                <% } %>
+              </td>
+            </tr>
+            <tr>
+              <td class="border-0 align-middle">
+                <strong>Form Count</strong>
+              </td>
+              <td class="border-0 align-middle">
+                <% if (currentLocation.forms.length) { %>
+                  <strong><%= currentLocation.forms.length %></strong>
+                <% } else { %>
+                  <div class="alert alert-warning">Error loading forms data</div>
+                <% } %>
+              </td>
+            </tr>
+            <tr>
+              <td class="border-0 align-middle">
+                <strong>Total Users</strong>
+              </td>
+              <td class="border-0 align-middle">
+                <% if (typeof locationUserCount !== 'undefined') { %>
+                  <strong><%= locationUserCount %></strong>
+                <% } else { %>
+                  <div class="alert alert-warning">Error loading user data</div>
+                <% } %>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="row shadow-sm mb-2">
+      <div class="col">
+        <h2>Forms</h2>
+        <table class="table">
+          <thead>
+            <th scope="col" class="border-0 bg-light">
+              Title
+            </th>
+            <th scope="col" class="border-0 bg-light">
+              Questions
+            </th>
+            <th scope="col" class="border-0 bg-light">
+              Last Edited Date
+            </th>
+            <th scope="col" class="border-0 bg-light">
+              Last Edited By
+            </th>
+            <!-- <th scope="col" class="border-0 bg-light">
+              Edit/Remove
+            </th> -->
+          </thead>
+          <tbody>
+            <% if (typeof currentLocation !== 'undefined' && currentLocation.forms) { %>
+              <% currentLocation.forms.forEach(form => { %>
+                <tr>
+                  <td class="border-0 align-middle">
+                    <a href="/forms/<%= form.id %>"><strong><%= form.title %></strong></a>
+                  </td>
+                  <td class="border-0 align-middle">
+                    <strong><%= form.questions.length %></strong>
+                  </td>
+                  <td class="border-0 align-middle">
+                    <strong><%= form.lastEdited.when.todateString() %></strong>
+                  </td>
+                  <td class="border-0 align-middle">
+                    <% if (form.lastEdited.by == 'undefined') { %>
+                      <strong>System</strong>
+                    <% } else { %>
+                      <strong><%= form.lastEdited.by.firstName %> <%= form.lastEdited.by.lastName %></strong>
+                    <% } %>
+                  </td>
+                  <td class="border-0 align-middle">
+                    <strong>
+                      <% const currentMonthlyExpedited = location.expedited.find(item => item.month == new Date().getMonth() && item.year == new Date().getFullYear()) %>
+                      <%= (currentMonthlyExpedited ? currentMonthlyExpedited : 0) %>
+                    </strong>
+                  </td>
+                </tr>
+              <% }); %>
+            <% } else { %>
+              <div class="alert alert-warning">Error loading location data</div>
+            <% } %>
+            
+          </tbody>
+        </table>
+        <div class="row mb-2">
+          <div class="col text-center">
+            <a href="/forms/new" class="btn btn-primary" id="showAddForm">Add A Form</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row shadow-sm pb-3">
+      <div class="col">
+          <h3>Invitations/Completions/Setups</h3>
+          <canvas id="invitations-over-time" width="800" height="400">
+            <div class="chart-container" id="chart-container" ><img src="/images/line-graph-example.svg" alt=""></div>
+          </canvas>
+      </div>
+    </div>
+  </div>
+<script>
+</script>
+<%#- include("../partials/footer") %>

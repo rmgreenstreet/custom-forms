@@ -17,7 +17,7 @@ async function clearRecentItems() {
     await Company.deleteMany({created: {$gte: threeDaysAgo}})
     await Location.deleteMany({created: {$gte: threeDaysAgo}})
     await User.deleteMany({created: {$gte: threeDaysAgo}})
-    await Form.deleteMany({created: {$gte: threeDaysAgo}})
+    // await Form.deleteMany({created: {$gte: threeDaysAgo}})
     await Question.deleteMany({created: {$gte: threeDaysAgo}})
     await Response.deleteMany({created: {$gte: threeDaysAgo}})
 }

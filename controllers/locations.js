@@ -8,6 +8,10 @@ const Form = require('../models/form');
 const { newObjectErrorHandler, getStateNamesAndAbbrs } = require('../helpers');
 const states = getStateNamesAndAbbrs();
 
+async function test() {
+    console.log(await Form.findById('5e98d57337ace32908ca27f7'));
+}
+test();
 module.exports = {
     async getLocationsIndex (req,res,next) {
 
@@ -78,7 +82,41 @@ module.exports = {
         }
     },
     async getLocationProfile (req,res,next) {
+        let currentLocation;
+        let locationUserCount = 0;
+        try {
 
+            try {
+                currentLocation = await Location.findById(req.params.locationId)
+                .populate('contacts')
+                .populate('forms', 'title')
+                .populate('company', 'name');
+            } catch (err) {
+                console.error(err);
+                throw new Error('Error loading location data');
+            }
+
+            try {
+                locationUserCount = await User.countDocuments({
+                    location: currentLocation._id
+                });
+            } catch (err) {
+                console.error(err);
+                throw new Error('Error getting Location User count');
+            }
+
+            try {
+                console.log(currentLocation.forms);
+                await res.render('../views/locations/profile.ejs', {currentLocation, locationUserCount});
+            } catch (err) {
+                console.error(err);
+                throw Error('Error rendering Location Profile page')
+            }
+
+        } catch (err) {
+            req.session.error = err;
+            res.redirect('back');
+        }
     },
     async putLocationEdit (req,res,next) {
 

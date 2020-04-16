@@ -32,13 +32,13 @@ const formSchema = new Schema({
     }
 });
 
-formSchema.plugin(version,{collection:'form_versions'});
+// formSchema.plugin(version,{collection:'form_versions'});
 
 formSchema.method('addDefault', async function () {
     console.log('adding default questions to form')
     const defaultQuestions = await Question.find({isDefault:true}).sort('order');
     for (let question of defaultQuestions) {
-        await this.questions.push(question._id);
+        this.questions.push(question._id);
     }
     await this.save()
 });
