@@ -12,7 +12,7 @@ const upload = multer({ storage })
 router.get('/', asyncErrorHandler(getLocationsIndex));
 
 //GET Location Profile
-router.get('/:LocationId', asyncErrorHandler(getLocationProfile));
+router.get('/:locationId', asyncErrorHandler(getLocationProfile));
 
 //POST new Location
 router.post('/', upload.single('image'), asyncErrorHandler(postNewLocation))

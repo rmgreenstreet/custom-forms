@@ -91,10 +91,6 @@ app.use(async function (req,res,next) {
 	// }
 	req.user = await User.findOne({firstName: 'potato'});
 	res.locals.currentUser = req.user;
-	res.locals.states = getStateNamesAndAbbrs();
-	if(res.locals.states) {
-	  console.log('States Parsed');
-	}
   //set default page title if one is not specified
 	res.locals.title='Custom Forms';
 	//set success flash message

@@ -7,7 +7,9 @@ const Form = require('../models/form');
 // const { sendInvitation } = require('./users')
 const inputTypes = require('../models/inputTypes');
 
-const { newObjectErrorHandler, getRecentDocuments, monthDiff, dashboardErrorHandler } = require('../helpers');
+const { newObjectErrorHandler, getRecentDocuments, monthDiff, dashboardErrorHandler, getStateNamesAndAbbrs } = require('../helpers');
+
+const states = getStateNamesAndAbbrs();
 
 module.exports = {
   async getCompaniesIndex(req,res,next) {
@@ -157,7 +159,7 @@ module.exports = {
           {label:'Setups',payload:recentSetups,searchProperty:'completedSetup'}
         ]            
       ];
-      res.render('../views/company/profile.ejs', {locationAdmins, datePoints, beginDate, endDate, graphDatasets, currentCompany, userCount, companyAdmins, page: 'companyProfile', title: 'Company Profile'});
+      res.render('../views/company/profile.ejs', {states, locationAdmins, datePoints, beginDate, endDate, graphDatasets, currentCompany, userCount, companyAdmins, page: 'companyProfile', title: 'Company Profile'});
     } catch (err) {
       console.log(err);
       req.session.error = 'Error rendering Company profile';

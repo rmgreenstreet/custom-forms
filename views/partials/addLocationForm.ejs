@@ -102,7 +102,8 @@
     </div>
   </div>
   <div id="hiddenfields" style="display:none;">
-    <input type="text" name="companyId" id="companyId" value="<%= currentCompany ? currentCompany.id : '' %>">
+    
+    <input type="text" name="companyId" id="companyId" value="<%= typeof currentCompany !== 'undefined' ? currentCompany.id : '' %>">
   </div>
   <div class="form-row mb-1">
     <div class="col-md-6">

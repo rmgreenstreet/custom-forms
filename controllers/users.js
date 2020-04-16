@@ -7,7 +7,10 @@ const Form = require('../models/form');
 const Question = require('../models/question');
 const Response = require('../models/response');
 
-const { newObjectErrorHandler, getRecentDocuments, dashboardErrorHandler, monthDiff } = require('../helpers');
+const ejsLint = require('ejs-lint');
+
+const { newObjectErrorHandler, getRecentDocuments, dashboardErrorHandler, monthDiff, getStateNamesAndAbbrs } = require('../helpers');
+const states = getStateNamesAndAbbrs();
 
 module.exports = {
     async routeByRole(req, res, next) {
@@ -109,7 +112,8 @@ module.exports = {
                 {label:'Locations',payload:recentLocations,searchProperty:'created'}
               ]             
             ];
-            res.render('../views/owner/dashboard', {datePoints, states, beginDate, endDate, recentCompanies, allLocations, recentInvitations, recentForms,totalQuestions, totalCompanies, totalForms, graphDatasets, page:'ownerDashboard'});
+
+            await res.render('../views/owner/dashboard', {states, datePoints, beginDate, endDate, recentCompanies, allLocations, recentInvitations, recentForms,totalQuestions, totalCompanies, totalForms, graphDatasets, page:'ownerDashboard'});
           } catch (err) {
             dashboardErrorHandler(err,`Error loading dashboard`);
           };

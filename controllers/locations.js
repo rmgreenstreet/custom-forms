@@ -5,7 +5,8 @@ const Location = require('../models/location');
 const User = require('../models/user');
 const Form = require('../models/form');
 
-const { newObjectErrorHandler } = require('../helpers');
+const { newObjectErrorHandler, getStateNamesAndAbbrs } = require('../helpers');
+const states = getStateNamesAndAbbrs();
 
 module.exports = {
     async getLocationsIndex (req,res,next) {
@@ -27,7 +28,7 @@ module.exports = {
             }
 
             try {
-                let newLocation = req.body.company;
+                let newLocation = req.body.location;
                 newLocation.company = currentCompany._id;
                 createdLocation = await Location.create(newLocation);
                 try {
@@ -73,7 +74,7 @@ module.exports = {
         } catch (err) {
             req.session.error = err;
         } finally {
-            res.redirect('/users/dashboard');
+            res.redirect(`/companies/${currentCompany._id}`);
         }
     },
     async getLocationProfile (req,res,next) {
