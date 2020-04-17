@@ -1,6 +1,5 @@
 const createError = require('http-errors');
 const express = require('express');
-const fs = require('fs');
 const path = require('path');
 const rfs = require('rotating-file-stream')
 const cookieParser = require('cookie-parser');
@@ -77,8 +76,6 @@ app.use(passport.session());
 app.disable('x-powered-by');
 app.use(function(req, res, next){
 	res.locals.currentUser = req.user;
-	// res.locals.error = req.flash("error");
-	// res.locals.success = req.flash("success");
 	next();
 });
 
@@ -93,12 +90,9 @@ passport.deserializeUser(User.deserializeUser());
 
 //set local variables middleware
 app.use(async function (req,res,next) {
-	// if(!req.user) {
-	// 	req.user = await User.find({firstName:'potato'});
-	// }
-	req.user = await User.findOne({firstName: 'potato'});
+	if (app.get('env') == 'development'){ req.user = await User.findOne({firstName: 'potato'}); };
 	res.locals.currentUser = req.user;
-  //set default page title if one is not specified
+  	//set default page title if one is not specified
 	res.locals.title='Custom Forms';
 	//set success flash message
 	res.locals.success = req.session.success || "";
@@ -124,15 +118,17 @@ app.use(function(req, res, next) {
 });
 
 // error handler
-app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
+if (app.get('env') !== 'development'){
+	app.use(function(err, req, res, next) {
+	// set locals, only providing error in development
+	res.locals.message = err.message;
+	res.locals.error = req.app.get('env') === 'development' ? err : {};
 
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
-});
+	// render the error page
+	res.status(err.status || 500);
+	res.render('error');
+	});
+}
 
 
 const { seedDatabase, clearDatabase, seedDefaultQuestions, clearRecentItems} = require('./seeds.js');
@@ -145,7 +141,7 @@ async function databaseInit() {
 	// await seedDatabase();
 }
 
-databaseInit();
+if (app.get('env') == 'development'){databaseInit();}
 
 
 

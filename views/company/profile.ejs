@@ -215,7 +215,7 @@
                   <td class="border-0 align-middle">
                     <strong>
                       <% const currentMonthlyExpedited = location.expedited.find(item => item.month == new Date().getMonth() && item.year == new Date().getFullYear()) %>
-                      <%= (currentMonthlyExpedited ? currentMonthlyExpedited : 0) %>
+                      <%= (currentMonthlyExpedited ? currentMonthlyExpedited.total : 0) %>
                     </strong>
                   </td>
                 </tr>

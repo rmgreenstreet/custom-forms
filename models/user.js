@@ -169,6 +169,8 @@ async function checkForForbiddenWords (input) {
 
 };
 
+// userSchema.queue('sendInvitation', []);
+
 userSchema.plugin(passportLocalMongoose);
 
 module.exports = mongoose.model('User',userSchema);

@@ -123,9 +123,9 @@ const locationSchema = new Schema({
 
 locationSchema.method('addDefaultForm', async function () {
     const defaultForm = await Form.create({});
-    await defaultForm.addDefault();
+    // await defaultForm.addDefault();
     this.forms.push(defaultForm._id);
-    await this.save();
+    // await this.save();
 });
 
 locationSchema.pre('remove', async function() {f
@@ -138,10 +138,6 @@ locationSchema.pre('remove', async function() {f
 locationSchema.method('sendContactEmails', async function () {
     const User = require('./user');
     let contactEmails = [];
-    // const allContacts = await User.find({location:this._id});
-    // for (let contact of allContacts) {
-    //     contactEmails.push(contact.personalEmail);
-    // }
     try {
         for(let contact of this.contacts) {
             const currentContact = await User.findById(contact);
@@ -152,5 +148,7 @@ locationSchema.method('sendContactEmails', async function () {
         throw err;
     }
 });
+
+locationSchema.queue('addDefaultForm',[]);
 
 module.exports = mongoose.model('Location', locationSchema);

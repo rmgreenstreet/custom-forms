@@ -36,12 +36,12 @@ module.exports = {
                 let newLocation = req.body.location;
                 newLocation.company = currentCompany._id;
                 createdLocation = await Location.create(newLocation);
-                try {
-                    await createdLocation.addDefaultForm();
-                } catch (err) {
-                    await createdLocation.remove();
-                    throw err;
-                }
+                // try {
+                //     await createdLocation.addDefaultForm();
+                // } catch (err) {
+                //     await createdLocation.remove();
+                //     throw err;
+                // }
             } catch (err) {
                 console.error(err);
                 throw new Error('Error creating new Location');
