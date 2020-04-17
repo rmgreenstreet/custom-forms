@@ -53,7 +53,7 @@ formSchema.method('removeDefault',  async function () {
     this.save();
 });
 
-formSchema.queue('addDefault',[]);
+// formSchema.queue('addDefault',[]);
 
 // formSchema.post('init', async function () {
 //     await this.addDefault();

@@ -123,9 +123,9 @@ const locationSchema = new Schema({
 
 locationSchema.method('addDefaultForm', async function () {
     const defaultForm = await Form.create({});
-    // await defaultForm.addDefault();
+    await defaultForm.addDefault();
     this.forms.push(defaultForm._id);
-    // await this.save();
+    await t.his.save();
 });
 
 locationSchema.pre('remove', async function() {f
@@ -149,6 +149,6 @@ locationSchema.method('sendContactEmails', async function () {
     }
 });
 
-locationSchema.queue('addDefaultForm',[]);
+// locationSchema.queue('addDefaultForm',[]);
 
 module.exports = mongoose.model('Location', locationSchema);
