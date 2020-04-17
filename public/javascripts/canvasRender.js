@@ -9,11 +9,13 @@ function getPoints(items) {
     let points= datePoints.map(a => {
         return {...a}
     });
-    for (let item of items.payload) {
-        const workingDate = new Date(item[items.searchProperty])
-        const monthYear = `${workingDate.getMonth() + 1}/${workingDate.getFullYear()}`;
-        let workingPoint = points.find(point => point.x === monthYear);
-        workingPoint.y ++;
+    if (typeof items.payload !== 'undefined') {
+        for (let item of items.payload) {
+            const workingDate = new Date(item[items.searchProperty])
+            const monthYear = `${workingDate.getMonth() + 1}/${workingDate.getFullYear()}`;
+            let workingPoint = points.find(point => point.x === monthYear);
+            workingPoint.y ++;
+        }
     }
     return points;
 };

@@ -18,12 +18,12 @@ const formSchema = new Schema({
     ],
     created: {
         type: Date,
-        default: Date.now()
+        default: new Date()
     },
     lastEdited: {
         when: {
             type: Date,
-            default: Date.now()
+            default: new Date()
         },
         by: {
             type:Schema.Types.ObjectId,

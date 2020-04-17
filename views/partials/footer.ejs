@@ -6,16 +6,16 @@
                 </p>
             <!-- <script src="/javascripts/jquery-ui.min.js" ></script> -->
             <script>
-                <% if (graphDatasets) { %> 
+                <% if (typeof graphDatasets !== 'undefined') { %> 
                     var graphDatasets = <%- JSON.stringify(graphDatasets) %>;
                 <% } %>
-                <% if (beginDate) { %> 
+                <% if (typeof beginDate !== 'undefined') { %> 
                     var beginDate = <%- JSON.stringify(beginDate) %>;
                 <% } %>
-                <% if (endDate) { %> 
+                <% if (typeof endDate !== 'undefined') { %> 
                     var endDate = <%- JSON.stringify(endDate) %>;
                 <% } %>
-                <% if (datePoints) { %> 
+                <% if (typeof datePoints !== 'undefined') { %> 
                     var datePoints = <%- JSON.stringify(datePoints) %>;
                 <% } %>
             </script>

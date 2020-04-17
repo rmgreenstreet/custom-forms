@@ -3,7 +3,7 @@
   <div class="container mt-5">
       
     <% if (typeof currentLocation !== 'undefined') { %>
-      <h1><%= currentLocation.name %></h1>
+      <h1><%#= currentLocation.name %></h1>
     <% } else { %>
       <div class="alert alert-warning">Error loading location data</div>
     <% } %>
@@ -56,6 +56,17 @@
                 <% } %>
               </td>
             </tr>
+            <tr>
+              <td class="border-0 align-middle">
+                <strong>Expedited This Month</strong>
+              </td>
+              <td class="border-0 align-middle">
+                <strong>
+                  <% const currentMonthlyExpedited = currentLocation.expedited.find(item => item.month == new Date().getMonth() && item.year == new Date().getFullYear()) %>
+                  <%= (currentMonthlyExpedited ? currentMonthlyExpedited : 0) %>
+                </strong>
+              </td>
+            </tr>
           </tbody>
         </table>
       </div>
@@ -82,7 +93,7 @@
             </th> -->
           </thead>
           <tbody>
-            <% if (typeof currentLocation !== 'undefined' && currentLocation.forms) { %>
+            <% if (typeof currentLocation !== 'undefined') { %>
               <% currentLocation.forms.forEach(form => { %>
                 <tr>
                   <td class="border-0 align-middle">
@@ -92,20 +103,14 @@
                     <strong><%= form.questions.length %></strong>
                   </td>
                   <td class="border-0 align-middle">
-                    <strong><%= form.lastEdited.when.todateString() %></strong>
+                    <strong><%= moment(form.lastEdited.when).format('MMMM Do YYYY, h:mm a') %></strong>
                   </td>
                   <td class="border-0 align-middle">
-                    <% if (form.lastEdited.by == 'undefined') { %>
+                    <% if (!form.lastEdited.by) { %>
                       <strong>System</strong>
                     <% } else { %>
                       <strong><%= form.lastEdited.by.firstName %> <%= form.lastEdited.by.lastName %></strong>
                     <% } %>
-                  </td>
-                  <td class="border-0 align-middle">
-                    <strong>
-                      <% const currentMonthlyExpedited = location.expedited.find(item => item.month == new Date().getMonth() && item.year == new Date().getFullYear()) %>
-                      <%= (currentMonthlyExpedited ? currentMonthlyExpedited : 0) %>
-                    </strong>
                   </td>
                 </tr>
               <% }); %>
@@ -133,4 +138,4 @@
   </div>
 <script>
 </script>
-<%#- include("../partials/footer") %>
+<%- include("../partials/footer") %>

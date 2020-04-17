@@ -124,7 +124,6 @@ const locationSchema = new Schema({
 locationSchema.method('addDefaultForm', async function () {
     const defaultForm = await Form.create({});
     await defaultForm.addDefault();
-    await defaultForm.save();
     this.forms.push(defaultForm._id);
     await this.save();
 });
