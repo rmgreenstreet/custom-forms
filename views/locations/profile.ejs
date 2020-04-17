@@ -3,7 +3,7 @@
   <div class="container mt-5">
       
     <% if (typeof currentLocation !== 'undefined') { %>
-      <h1><%#= currentLocation.name %></h1>
+      <h1><%= currentLocation.name %></h1>
     <% } else { %>
       <div class="alert alert-warning">Error loading location data</div>
     <% } %>
@@ -71,7 +71,7 @@
         </table>
       </div>
     </div>
-    <div class="row shadow-sm mb-2">
+    <div class="row shadow-sm mb-3">
       <div class="col">
         <h2>Forms</h2>
         <table class="table">
@@ -127,12 +127,20 @@
         </div>
       </div>
     </div>
+    
     <div class="row shadow-sm pb-3">
       <div class="col">
-          <h3>Invitations/Completions/Setups</h3>
-          <canvas id="invitations-over-time" width="800" height="400">
-            <div class="chart-container" id="chart-container" ><img src="/images/line-graph-example.svg" alt=""></div>
-          </canvas>
+        <div class="row mb-3">
+          <div class="col">
+            <form action="/location/<%= currentLocation.id %>" class="form" method="POST">
+              <%- include('../partials/dateRangeForm.ejs') %>
+            </form>
+          </div>
+        </div>
+        <h3>Invitations/Completions/Setups</h3>
+        <canvas id="invitations-over-time" width="800" height="400">
+          <div class="chart-container" id="chart-container" ><img src="/images/line-graph-example.svg" alt=""></div>
+        </canvas>
       </div>
     </div>
   </div>

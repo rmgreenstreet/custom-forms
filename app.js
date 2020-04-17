@@ -1,5 +1,6 @@
 const createError = require('http-errors');
 const express = require('express');
+const fs = require('fs');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
@@ -13,10 +14,10 @@ const expressSession = require('express-session');
 const methodOverride = require('method-override');
 const expressSanitizer = require('express-sanitizer');
 const sgMail = require('@sendgrid/mail');
+const accessLogStream = fs.createWriteStream(path.join(__dirname, 'access.log'), { flags: 'a' })
 
 
 const User = require('./models/user');
-const { getStateNamesAndAbbrs } = require('./helpers')
 
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
@@ -46,7 +47,7 @@ mongoose.connect(process.env.DATABASE_URL,{
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
-app.use(logger('dev'));
+app.use(logger('dev', { stream: accessLogStream }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());

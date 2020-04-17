@@ -176,7 +176,7 @@ module.exports = {
                       {label:'Setups',payload:recentSetups,searchProperty:'completedSetup'}
                     ]            
                   ];
-                await res.render('../views/locations/profile.ejs', {datePoints, graphDatasets, moment, currentLocation, locationUserCount});
+                await res.render('../views/locations/profile.ejs', {beginDate, endDate, datePoints, graphDatasets, moment, currentLocation, locationUserCount});
             } catch (err) {
                 console.error(err);
                 throw Error('Error rendering Location Profile page')
