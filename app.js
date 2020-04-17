@@ -2,6 +2,7 @@ const createError = require('http-errors');
 const express = require('express');
 const fs = require('fs');
 const path = require('path');
+const rfs = require('rotating-file-stream')
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const mongoose = require('mongoose');
@@ -14,7 +15,11 @@ const expressSession = require('express-session');
 const methodOverride = require('method-override');
 const expressSanitizer = require('express-sanitizer');
 const sgMail = require('@sendgrid/mail');
-const accessLogStream = fs.createWriteStream(path.join(__dirname, 'access.log'), { flags: 'a' })
+// create a rotating write stream
+const accessLogStream = rfs.createStream('access.log', {
+	interval: '1d', // rotate daily
+	path: path.join(__dirname, 'log')
+});
 
 
 const User = require('./models/user');
@@ -47,7 +52,8 @@ mongoose.connect(process.env.DATABASE_URL,{
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
-app.use(logger('dev', { stream: accessLogStream }));
+app.use(logger('dev', { skip: function (req,res) { return res.statusCode < 400} }));
+app.use(logger('common', { stream: accessLogStream }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
