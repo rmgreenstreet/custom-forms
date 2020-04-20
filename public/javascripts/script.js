@@ -172,6 +172,18 @@ showAddLocationButton.on('click', function() {
   addLocationDiv.toggle('slide');
 });
 
+var showCreateForm = $('#showCreateForm');
+var createFormDiv = $('#createForm');
+
+showCreateForm.on('click', function() {
+  if(createFormDiv.is(':visible')) {
+    this.textContent = 'Add A Form';
+  } else {
+    this.textContent = 'Cancel';
+  }
+  createFormDiv.toggle('slide');
+});
+
 //drag and drop functionality for form editor
 // var _el;
 

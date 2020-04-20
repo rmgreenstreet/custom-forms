@@ -36,48 +36,100 @@ module.exports = {
     // console.log(allForms);
     res.render('../views/admin/forms/index.ejs',{location,allForms});
   },
-  async getFormCreate(req,res,next) {
+  async postFormCreate(req,res,next) {
+    try {
+      let currentLocation;
+      let newForm;
+      try {
+        currentLocation = await Location.findById(req.body.locationId);
+      } catch (err) {
+        console.error(err);
+        throw new Error('Error looking up location');
+      }
 
+      try {
+        newForm = await Form.create({title: req.body.form.title, 'lastEdited.by': req.user._id});
+        await newForm.addDefault();
+      } catch (err) {
+        console.error(err);
+        throw new Error('Error creating new form');
+      }
+
+      try {
+        currentLocation.forms.push(newForm._id);
+        await currentLocation.save();
+      } catch (err) {
+        console.error(err);
+        await newForm.remove();
+        throw new Error('Error adding form to location');
+      }
+      res.redirect(`/forms/${newForm._id}/edit`)
+
+    } catch (err) {
+      req.session.error = err;
+      res.redirect(`/locations/${req.params.locationId}`)
+    } 
   },
   async getFormEdit(req, res, next) {
-    const currentForm = await Form.findById(req.params.id).populate({
-      path: 'questions',
-      model:'Question'
-    });
-    console.log(inputTypes)
-    res.render('../views/admin/forms/edit.ejs', {currentForm,inputTypes});
+    let currentForm;
+    try {
+      try {
+        currentForm = await Form.findById(req.params.formId).populate({
+          path: 'questions',
+          model:'Question'
+        });
+      } catch (err) {
+        console.error(err);
+        throw new Error('Error getting form');
+      }
+
+      try {
+        res.render('../views/form/edit.ejs', {currentForm,inputTypes});
+      } catch (err) {
+        console.error(err);
+        throw new Error('Error loading form edit page');
+      }
+    } catch (err) {
+      req.session.error = err;
+      res.redirect(`/users/dashboard`);
+    }
+    
   },
   async deleteForm(req,res,next) {
     let currentLocation;
     try {
       //Remove the reference to the Form from the 'forms' array in the parent 'Location'
       try {
-        currentLocation = await Location.findOneAndUpdate(
+        currentLocation = await Location.findOne(
           {
             forms: mongoose.Types.ObjectId(req.params.formId)
-          }, 
-          {
-            $pull: {forms: req.params.formId}
           }
         );
       } catch (err) {
         console.error(err)
         throw new Error('Error removing Form from Location')
-      }
+      } 
       
       //Actually find and remove the 'Form' itself
       try {
-        await Form.findByIdAndRemove(req.params.formId);
-      } catch (err) {
-        console.error(err);
-        /* If the 'Form' can't be removed, re-add the reference to the form back into the 
-         parent 'Location's 'forms' array*/
-        await currentLocation.update({
-          $push: {forms: mongoose.Types.ObjectId(req.params.formId)}
+        new Promise(async (resolve, reject) => {
+          try {
+            await Form.findByIdAndRemove(req.params.formId);
+            resolve();
+          } catch (err) {
+            reject(err);
+          }
         })
+        .then(async () => {
+          await currentLocation.update({
+            $pull: {forms: mongoose.Types.ObjectId(req.params.formId)}
+          });
+        });
+      } catch (err) {
+        console.error(err);        
         throw new Error('Error deleting Form')
       }
-      
+      req.session.success = 'Form deleted!'
     } catch (err) {
       req.session.error = err;
     } finally {

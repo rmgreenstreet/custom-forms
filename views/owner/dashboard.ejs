@@ -40,12 +40,6 @@
             </div>
             <form action="/companies" method="POST" id="create-company-form" enctype="multipart/form-data">
                 <%- include('../partials/addLocationForm.ejs') %>
-                <div class="form-row mb-1">
-                  <div class="col-3">
-                    <p class="input-group-text">Primary Contact Information</p>
-                  </div>
-                </div>
-                <%- include('../partials/addUserForm.ejs') %>
                 <button type="submit" class="btn btn-secondary mt-2">Create</button>
             </form>
         </div>

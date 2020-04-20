@@ -230,16 +230,18 @@
           <div class="col text-center">
             <button class="btn btn-primary" id="showAddLocation">Add A Location</button>
           </div>
-        </div>
-        <div id="addLocation" style="display:none;">
-          <form action="/locations" method="POST" id="addLocationForm" enctype="multipart/form-data">
-            <%- include('../partials/addLocationForm.ejs') %>
-            <div class="form-row mb-1">
-              <div class="col col-md-6">
-                <button type="submit" class="btn btn-primary">Create</button>
+        </row>
+        <div class="row mb-2" id="addLocation" style="display:none;">
+          <div class="col text-center">
+            <form action="/locations" method="POST" id="addLocationForm" enctype="multipart/form-data">
+              <%- include('../partials/addLocationForm.ejs') %>
+              <div class="form-row mb-1">
+                <div class="col col-md-6">
+                  <button type="submit" class="btn btn-primary">Create</button>
+                </div>
               </div>
-            </div>
-          </form>
+            </form>
+          </div>
         </div>
       </div>
     </div>

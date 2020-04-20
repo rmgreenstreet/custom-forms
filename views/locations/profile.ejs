@@ -114,7 +114,9 @@
                   </td>
                   <td class="border-0 align-middle">
                       <a href="/forms/<%= form.id %>/edit" class="btn"><i class="fas fa-edit"></a></i><strong>/</strong>
-                      <form action="/forms/<%= form.id %>?_method=DELETE" class="form-inline" method="POST" style="display:inline;"><i class="fas fa-trash-alt btn"></i></form>
+                      <form action="/forms/<%= form.id %>?_method=DELETE" class="form-inline" method="POST" style="display:inline;">
+                        <button type="submit"><i class="fas fa-trash-alt btn"></i></button>
+                      </form>
                   </td>
                 </tr>
               <% }); %>
@@ -126,7 +128,21 @@
         </table>
         <div class="row mb-2">
           <div class="col text-center">
-            <a href="/forms/new" class="btn btn-primary" id="showAddForm">Add A Form</a>
+            <button class="btn btn-primary" id="showCreateForm">Add A Form</button>
+          </div>
+        </div>
+        <div class="row mb-2" id="createForm" style="display:none;">
+          <div class="col-6">
+            <form action="/forms/new" class="form" method="POST">
+              <div class="input-group mb-2">
+                <div class="input-group-prepend">
+                  <label for="form[title]" class="input-group-text">Form Name</label>
+                </div>
+                <input type="text" name="form[title]" id="form[title]" class="form-control" placeholder="Example: Exit Interview">
+              </div>
+              <input type="text" name="locationId" id="locationId" value="<%= currentLocation.id %>" hidden>
+              <button type="submit" class="btn btn-primary" >Create</button>
+            </form>
           </div>
         </div>
       </div>
