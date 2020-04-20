@@ -12,7 +12,7 @@ const { monthDiff, flipACoin, pickADate } = require('./helpers');
 const sampleImages = fs.readdirSync('./public/images/seeds');
 
 async function clearRecentItems() {
-    const threeDaysAgo = new Date(Date.now() - (1000 * 60 * 60 * 25 * 2));
+    const threeDaysAgo = new Date(Date.now() - (1000 * 60 * 60 * 24 * 3));
     // console.log(threeDaysAgo);
     await Company.deleteMany({created: {$gte: threeDaysAgo}})
     await Location.deleteMany({created: {$gte: threeDaysAgo}})

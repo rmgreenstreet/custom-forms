@@ -88,9 +88,9 @@
             <th scope="col" class="border-0 bg-light">
               Last Edited By
             </th>
-            <!-- <th scope="col" class="border-0 bg-light">
+            <th scope="col" class="border-0 bg-light">
               Edit/Remove
-            </th> -->
+            </th>
           </thead>
           <tbody>
             <% if (typeof currentLocation !== 'undefined') { %>
@@ -111,6 +111,10 @@
                     <% } else { %>
                       <strong><%= form.lastEdited.by.firstName %> <%= form.lastEdited.by.lastName %></strong>
                     <% } %>
+                  </td>
+                  <td class="border-0 align-middle">
+                      <a href="/forms/<%= form.id %>/edit" class="btn"><i class="fas fa-edit"></a></i><strong>/</strong>
+                      <form action="/forms/<%= form.id %>?_method=DELETE" class="form-inline" method="POST" style="display:inline;"><i class="fas fa-trash-alt btn"></i></form>
                   </td>
                 </tr>
               <% }); %>

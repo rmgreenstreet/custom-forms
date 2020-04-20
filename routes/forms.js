@@ -2,14 +2,15 @@ const express = require('express');
 const router = express.Router({mergeParams:true});
 const Form = require('../models/form');
 const { asyncErrorHandler, isLoggedIn, isAdmin, isOwner } = require('../middleware');
-const { getFormsSearch, getFormsIndex, getFormEdit } = require('../controllers/forms');
+const { getFormsSearch, getFormsIndex, getFormEdit, deleteForm } = require('../controllers/forms');
 
 //GET forms index
 router.get('/', (req, res) => {res.redirect('/companies')});
 
-//GET forms index for a particular company
-router.get('/:companyId', asyncErrorHandler(getFormsIndex));
+//GET form edit page
+router.get('/:formId/edit/', asyncErrorHandler(getFormEdit));
 
-router.get('/edit/:id', asyncErrorHandler(getFormEdit));
+//DELETE a form
+router.delete('/:formId', asyncErrorHandler(deleteForm))
 
 module.exports = router;

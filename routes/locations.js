@@ -20,6 +20,9 @@ router.post('/', upload.single('image'), asyncErrorHandler(postNewLocation))
 //GET forms index for a particular Location
 router.get('/:locationId/forms', asyncErrorHandler(getFormsIndex));
 
+//GET form creator for a particular location
+router.get('/:locationId/forms/new', asyncErrorHandler(getFormsIndex));
+
 //PUT updates to Location
 router.put('/:locationId', upload.single('image'), asyncErrorHandler(putLocationEdit));
 
