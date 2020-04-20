@@ -110,7 +110,7 @@ module.exports = {
         throw new Error('Error removing Form from Location')
       } 
       
-      //Actually find and remove the 'Form' itself
+      //Find the parent location, to be updated after deleting the form
       try {
         new Promise(async (resolve, reject) => {
           try {
@@ -120,6 +120,7 @@ module.exports = {
             reject(err);
           }
         })
+        /* only after the form is deleted, remove the reference from the parent Location */
         .then(async () => {
           await currentLocation.update({
             $pull: {forms: mongoose.Types.ObjectId(req.params.formId)}
