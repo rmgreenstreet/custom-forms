@@ -11,6 +11,7 @@
     "@sendgrid/mail": "^6.5.5",
     "cloudinary": "^1.21.0",
     "cookie-parser": "~1.4.4",
+    "create-error": "^0.3.1",
     "debug": "~2.6.9",
     "ejs": "^3.0.1",
     "express": "~4.16.1",
