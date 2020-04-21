@@ -8,17 +8,33 @@
                     <div class="card shadow-sm mb-2" id="<%= question.id %>">
                         <div class="card-body">
                             <h3 class="card-title" id="question<%= currentForm.questions.indexOf(question) %>Title"><%= question.title %></h3>
-                            <div class="input-group">
-                                <div class="input-group-prepend">
-                                    <label for="question<%= currentForm.questions.indexOf(question) %>Type" class="input-group-text">Question Type</label>
+                            <div class="form-row">
+                                <div class="col<%= question.inputType === 'Checkbox' || question.inputType === 'Radio' ? '-md-6' : '' %>">
+                                    <div class="input-group mb-2">
+                                        <div class="input-group-prepend">
+                                            <label for="question<%= currentForm.questions.indexOf(question) %>Type" class="input-group-text">Question Type</label>
+                                        </div>
+                                        <select name="questionType" id="question<%= currentForm.questions.indexOf(question) %>Type" class="form-control">
+                                            <% for (const type of inputTypes) { %> 
+                                            <option value="<%= type.htmlInputType %>" <%= question.inputType === type.htmlInputType ? 'selected' : '' %>>
+                                                <%= type.displayName %>
+                                            </option>
+                                            <% } %>
+                                        </select>
+                                    </div>
                                 </div>
-                                <select name="questionType" id="question<%= currentForm.questions.indexOf(question) %>Type" class="form-control">
-                                    <% for (const type of inputTypes) { %> 
-                                    <option value="<%= type.htmlInputType %>" <%= question.inputType === type.htmlInputType ? 'selected' : '' %>>
-                                        <%= type.displayName %>
-                                    </option>
-                                    <% } %>
-                                </select>
+                                <% if (question.inputType === 'Checkbox' || question.inputType === 'Radio') { %> 
+                                    <div class="col-md-6">
+                                        <% for (let value of question.values) { %>
+                                            <div class="input-group mb-1">
+                                                <div class="input-group-prepend">
+                                                    <label for="question<%= currentForm.questions.indexOf(question) %>value<%= question.values.indexOf(value) %>" class="input-group-text">Option <%= question.values.indexOf(value) +1 %></label>
+                                                </div>
+                                                <input type="text" name="question<%= currentForm.questions.indexOf(question) %>value<%= question.values.indexOf(value) %>" id="question<%= currentForm.questions.indexOf(question) %>value<%= question.values.indexOf(value) %>" value ="<%= question.values.indexOf(value) > -1 ? value : '' %>" class="form-control">
+                                            </div>
+                                            <% } %>
+                                    </div>
+                                <% } %>
                             </div>
                         </div>
                     </div>

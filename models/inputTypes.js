@@ -44,7 +44,7 @@ module.exports = [
         displayName: 'Single Line Text'
     },
     {
-        htmlInputType: 'TextArea',
+        htmlInputType: 'Textarea',
         displayName: 'Multi-Line Text Box'
     },
     {

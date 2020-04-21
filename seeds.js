@@ -62,6 +62,7 @@ async function seedDefaultQuestions() {
     try {
         console.log('adding default questions to database')
         const defaultQuestionsJSON = await JSON.parse(await fs.readFileSync('./private/defaultQuestions.json'));
+        console.log(defaultQuestionsJSON);
         for (let question of defaultQuestionsJSON) {
             // console.log(question);
             await Question.create(question);
