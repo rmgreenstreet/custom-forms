@@ -26,15 +26,15 @@
                     var datePoints = <%- JSON.stringify(datePoints) %>;
                 <% } %>
                 
-                if (beginMonth < 10) {
+                if (beginMonth && beginMonth < 10) {
                 beginMonth = '0'+beginMonth;
                 }
 
-                if (endMonth < 10) {
+                if (endMonth && endMonth < 10) {
                 endMonth = '0'+endMonth;
                 }
 
-                if (endDay < 10) {
+                if (endDay && endDay < 10) {
                 endDay = '0' + endDay
                 }
 

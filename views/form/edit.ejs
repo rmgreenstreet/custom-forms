@@ -1,7 +1,32 @@
 <%- include("../partials/header") %>
 
     <div class="container mt-5">
-      <%= currentForm.title %>
+        <h1>Edit <%= currentForm.title %></h1>
+        <form id="fullForm" action="/forms/<%= currentForm.id %>?_method=PUT" method="POST">
+            <% if (typeof currentForm !== 'undefined' && currentForm.questions.length > 0) { %>
+                <% for (const question of currentForm.questions) { %>
+                    <div class="card shadow-sm mb-2" id="<%= question.id %>">
+                        <div class="card-body">
+                            <h3 class="card-title" id="question<%= currentForm.questions.indexOf(question) %>Title"><%= question.title %></h3>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <label for="question<%= currentForm.questions.indexOf(question) %>Type" class="input-group-text">Question Type</label>
+                                </div>
+                                <select name="questionType" id="question<%= currentForm.questions.indexOf(question) %>Type" class="form-control">
+                                    <% for (const type of inputTypes) { %> 
+                                    <option value="<%= type.htmlInputType %>" <%= question.inputType === type.htmlInputType ? 'selected' : '' %>>
+                                        <%= type.displayName %>
+                                    </option>
+                                    <% } %>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                <% } %>
+            <% } else { %>
+                <div class="alert warning">No Questions Found For This Form</div>
+            <% } %>
+        </form>
     </div>
     <script>
     </script>

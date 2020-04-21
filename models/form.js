@@ -2,7 +2,6 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const version = require('mongoose-version');
 const Question = require('./question');
-const inputTypes = require('./inputTypes');
 
 
 const formSchema = new Schema({

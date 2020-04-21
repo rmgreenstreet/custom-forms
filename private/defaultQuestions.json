@@ -48,7 +48,7 @@
     },
     {
         "isDefault":true,
-        "title":"What Is Your Cell Phone Number?",
+        "title":"Which Company Provides Your Cell Service?",
         "inputName":"user[cellProvider]",
         "elementId":"cellProvider",
         "inputType":"Select",

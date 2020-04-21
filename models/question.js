@@ -1,6 +1,11 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const inputTypes = require('./inputTypes');
+const htmlInputTypes = [];
+
+inputTypes.forEach(type => {
+    htmlInputTypes.push(type.htmlInputType);
+});
 
 const questionSchema = new Schema ({
     sectionName: {
@@ -27,7 +32,7 @@ const questionSchema = new Schema ({
     inputType: {
         type: String,
         required: true,
-        enum: inputTypes
+        enum: htmlInputTypes
     },
     values: [],
     placeholder:String,

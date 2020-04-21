@@ -125,7 +125,7 @@ locationSchema.method('addDefaultForm', async function () {
     const defaultForm = await Form.create({});
     await defaultForm.addDefault();
     this.forms.push(defaultForm._id);
-    await t.his.save();
+    await this.save();
 });
 
 locationSchema.pre('remove', async function() {f

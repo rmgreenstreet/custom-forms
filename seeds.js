@@ -140,7 +140,7 @@ async function seedDatabase() {
                     console.log(`Location ${newLocation.name} created with ${newLocation.contacts.length} contacts`)
                     await createUsers(newLocation._id, companyId, 'User', (Math.ceil(Math.random() * 30)));
                     locationsArr.push(newLocation._id);
-                    // await newLocation.addDefaultForm();
+                    await newLocation.addDefaultForm();
                 }
             } catch(err) {
                 console.log(err);
