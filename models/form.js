@@ -43,17 +43,13 @@ formSchema.method('addDefault', async function () {
     console.log('adding default questions to form')
     const defaultQuestions = await Question.find({isDefault:true});
     for (let question of defaultQuestions) {
-        const currentSection = this.sections.find(section => section.title = question.sectionTitle)
+        const currentSection = this.sections.find(section => section.title === question.sectionTitle)
         if (typeof currentSection !== 'undefined') {
             console.log(`Adding question to existing section ${currentSection.title}`);
             currentSection.questions.push(question._id);
         } else {
             console.log(`Adding question to new section ${question.sectionTitle}`);
             this.sections.push({title: question.sectionTitle, questions: [question._id]})
-        }
-        if (question.isFollowUp) {
-            console.log(`Adding this follow up question to ${question.parentQuestionElementId}`);
-            currentSection.questions.find(parentQuestion => parentQuestion.elementId === question.parentQuestionElementId).followUpQuestions.push(question._id);
         }
     }
     await this.save()

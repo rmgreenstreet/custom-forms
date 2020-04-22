@@ -3,56 +3,78 @@
     <div class="container mt-5">
         <h1>Edit <%= currentForm.title %></h1>
         <form id="fullForm" action="/forms/<%= currentForm.id %>?_method=PUT" method="POST">
-            <% if (typeof currentForm !== 'undefined' && currentForm.questions.length > 0) { %>
-                <% for (const question of currentForm.questions) { %>
-                    <div class="card shadow-sm mb-2" id="<%= question.id %>">
+            <% if (typeof currentForm !== 'undefined' && currentForm.sections.length > 0) { %>
+
+                <% for (const section of currentForm.sections) { %>
+                    <section class="card shadow-sm mb-2" id="<%= section.title %>">
                         <div class="card-body">
-                            <div class="input-group mb-2">
-                                <div class="input-group-prepend">
-                                    <label for="question<%= currentForm.questions.indexOf(question) %>Title" class="input-group-text">Title</label>
+                            <div class="card-title">
+                                <div class="input-group form-section-label">
+                                    <div class="input-group-prepend">
+                                        <label for="<%= section.title %>" class="input-group-text">Section Title</label>
+                                    </div>
+                                    <input type="text" name="form[section][title]" id="<%= section.title %>" class="form-control form-control-lg" value="<%= section.title %>">
                                 </div>
-                                <input type="text" name="form[questions][title]" id="question<%= currentForm.questions.indexOf(question) %>Title" class="form-control" value="<%= question.title %>">
                             </div>
-                            <div class="form-row">
-                                <div class="col-md-6">
-                                    <div class="input-group mb-2">
-                                        <div class="input-group-prepend">
-                                            <label for="question<%= currentForm.questions.indexOf(question) %>Type" class="input-group-text">Question Type</label>
-                                        </div>
-                                        <select name="form[questions][inputType]" id="question<%= currentForm.questions.indexOf(question) %>Type" class="form-control">
-                                            <% for (const type of inputTypes) { %> 
-                                            <option value="<%= type.htmlInputType %>" <%= question.inputType === type.htmlInputType ? 'selected' : '' %>>
-                                                <%= type.displayName %>
-                                            </option>
-                                            <% } %>
-                                        </select>
-                                    </div>
-                                </div>
-                                <% if (question.inputType === 'Checkbox' || question.inputType === 'Radio' || question.inputType === 'Select') { %> 
-                                    <div class="col-md-6">
-                                        <% for (let value of question.values) { %>
-                                            <div class="input-group mb-1">
+                            <hr/>
+
+                            <div class="card-text">
+                                <% for (const question of section.questions) { %>
+                                    <div class="card shadow-sm mb-2" id="<%= question.id %>">
+                                        <div class="card-body">
+                                            <div class="input-group mb-2">
                                                 <div class="input-group-prepend">
-                                                    <label for="question<%= question.id %>Value<%= question.values.indexOf(value) %>" class="input-group-text">Option <%= question.values.indexOf(value) +1 %></label>
+                                                    <label for="question<%= section.questions.indexOf(question) %>Title" class="input-group-text">Question Title</label>
                                                 </div>
-                                                <input type="text" name="form[questions][values]" id="question<%= question.id %>Value<%= question.values.indexOf(value) %>" value ="<%= question.values.indexOf(value) > -1 ? value : '' %>" class="form-control">
+                                                <input type="text" name="form[questions][title]" id="question<%= section.questions.indexOf(question) %>Title" class="form-control" value="<%= question.title %>">
                                             </div>
-                                            <% } %>
-                                    </div>
-                                <% } else if (question.inputType !== 'File') { %>
-                                    <div class="col-md-6">
-                                        <div class="input-group mb-2">
-                                            <div class="input-group-prepend">
-                                                <label for="question<%= question.id %>Placeholder" class="input-group-text">Placeholder</label>
+                                            <div class="card-text">
+                                                <div class="form-row">
+                                                    <div class="col-md-6">
+                                                        <div class="input-group mb-2">
+                                                            <div class="input-group-prepend">
+                                                                <label for="question<%= section.questions.indexOf(question) %>Type" class="input-group-text">Question Type</label>
+                                                            </div>
+                                                            <select name="form[questions][inputType]" id="question<%= section.questions.indexOf(question) %>Type" class="form-control">
+                                                                <% for (const type of inputTypes) { %> 
+                                                                <option value="<%= type.htmlInputType %>" <%= question.inputType === type.htmlInputType ? 'selected' : '' %>>
+                                                                    <%= type.displayName %>
+                                                                </option>
+                                                                <% } %>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <% if (question.inputType === 'Checkbox' || question.inputType === 'Radio' || question.inputType === 'Select') { %> 
+                                                        <div class="col-md-6">
+                                                            <% for (let value of question.values) { %>
+                                                                <div class="input-group mb-1">
+                                                                    <div class="input-group-prepend">
+                                                                        <label for="question<%= question.id %>Value<%= question.values.indexOf(value) %>" class="input-group-text">Option <%= question.values.indexOf(value) +1 %></label>
+                                                                    </div>
+                                                                    <input type="text" name="form[questions][values]" id="question<%= question.id %>Value<%= question.values.indexOf(value) %>" value ="<%= question.values.indexOf(value) > -1 ? value : '' %>" class="form-control">
+                                                                </div>
+                                                                <% } %>
+                                                        </div>
+                                                    <% } else if (question.inputType !== 'File') { %>
+                                                        <div class="col-md-6">
+                                                            <div class="input-group mb-2">
+                                                                <div class="input-group-prepend">
+                                                                    <label for="question<%= question.id %>Placeholder" class="input-group-text">Placeholder</label>
+                                                                </div>
+                                                                <input type="text" name="form[questions][placeholder]" id="question<%= question.id %>Placeholder" class="form-control" value="<%= question.placeholder %>">
+                                                            </div>
+                                                        </div>
+                                                    <% } %>
+                                                </div>
                                             </div>
-                                            <input type="text" name="form[questions][placeholder]" id="question<%= question.id %>Placeholder" class="form-control" value="<%= question.placeholder %>">
                                         </div>
                                     </div>
                                 <% } %>
                             </div>
                         </div>
-                    </div>
+                    </section>
                 <% } %>
+
             <% } else { %>
                 <div class="alert warning">No Questions Found For This Form</div>
             <% } %>

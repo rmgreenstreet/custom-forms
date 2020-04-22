@@ -77,7 +77,7 @@ module.exports = {
         currentForm = await Form.findById(req.params.formId).populate({
           path: 'sections.questions',
           model:'Question'
-        });
+        }).sort('sections.questions.order');
       } catch (err) {
         console.error(err);
         throw new Error('Error getting form');

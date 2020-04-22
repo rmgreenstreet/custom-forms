@@ -10,3 +10,7 @@ tr a {
     color:inherit;
     text-decoration: underline;
 }
+
+.form-section-label {
+    font-size:2rem;
+}

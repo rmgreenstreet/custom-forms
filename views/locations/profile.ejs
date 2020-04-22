@@ -100,7 +100,11 @@
                     <a href="/forms/<%= form.id %>/edit"><strong><%= form.title %></strong></a>
                   </td>
                   <td class="border-0 align-middle">
-                    <strong><%= form.questions.length %></strong>
+                    <% let totalQuestions = 0 %>
+                    <% for (const section of form.sections) { %>
+                      <% totalQuestions += section.questions.length %>
+                    <% } %>
+                    <strong><%= totalQuestions %></strong>
                   </td>
                   <td class="border-0 align-middle">
                     <strong><%= moment(form.lastEdited.when).format('MMMM Do YYYY, h:mm a') %></strong>

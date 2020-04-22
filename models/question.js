@@ -44,15 +44,8 @@ const questionSchema = new Schema ({
     minLength:Number,
     maxLength:Number,
     followUpQuestions: [Schema.Types.ObjectId],
-    isFollowUp: {
-        type: Boolean,
-        default: false
-    },
     parentQuestionElementId: String,
-    order: {
-        type: Number,
-        required:true
-    }
+    order: Number
 });
 
 module.exports = mongoose.model('Question', questionSchema);

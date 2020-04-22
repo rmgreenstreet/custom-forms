@@ -134,9 +134,9 @@ if (app.get('env') !== 'development'){
 const { seedDatabase, clearDatabase, seedDefaultQuestions, clearRecentItems} = require('./seeds.js');
 
 async function databaseInit() {
-	await clearRecentItems();
-	// await seedDefaultQuestions();	
+	await clearRecentItems();	
 	// await clearDatabase();
+	// await seedDefaultQuestions();
 	await User.register({firstName: 'potato', lastName:'head',username:'potatohead', personalEmail:'test@test.com', role:'Owner'},'password');
 	// await seedDatabase();
 }

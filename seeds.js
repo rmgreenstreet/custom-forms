@@ -61,13 +61,23 @@ async function seedDefaultQuestions() {
     }
     try {
         console.log('adding default questions to database')
-        const defaultQuestionsJSON = await JSON.parse(await fs.readFileSync('./private/defaultQuestions.json'));
-        console.log(defaultQuestionsJSON);
-        for (let question of defaultQuestionsJSON) {
+        const defaultQuestions = await JSON.parse(await fs.readFileSync('./private/defaultQuestions.json'));
+        // console.log(defaultQuestionsJSON);
+        for (let question of defaultQuestions) {
             // console.log(question);
-            await Question.create(question);
+            let newQuestion = await Question.create(question);
+            if (typeof newQuestion.parentQuestionElementId !== 'undefined') {
+                console.log(`Adding this follow up question to ${newQuestion.parentQuestionElementId}`);
+                let parentQuestion = await Question.findOne({elementId: newQuestion.parentQuestionElementId});
+                if (typeof parentQuestion.followUpQuestions == 'undefined') {
+                    parentQuestion.followUpQuestions = [newQuestion._id];
+                } else {
+                    parentQuestion.followUpQuestions.push(newQuestion._id);
+                }
+                await parentQuestion.save();
+            }
         }
-        console.log(`${defaultQuestionsJSON.length} default questions added to database`);
+        console.log(`${defaultQuestions.length} default questions added to database`);
     } catch (err) {
         console.log(err.message);
     }
@@ -97,6 +107,30 @@ async function seedDatabase() {
     const companyCount = 10;
     const defaultQuestions = await Question.find({isDefault:true});
 
+    function getRandomNumber(min, max) {
+        let step1 = max - min + 1;
+        let step2 = Math.random() * step1;
+        return Math.floor(step2) + min;
+    }
+
+    function generateArray (start = 100, end = 1000) {
+        let arr = [];
+        for (let i = start; i <= end; i++) {
+            arr.push(i);
+        }
+        return arr;
+    }
+
+    let officeNumbersArray = generateArray(100, 1000);
+
+    function pickOfficeNumber () {
+        let randomIndex = getRandomNumber(0, officeNumbersArray.length -1);
+        let chosenNumber = officeNumbersArray[randomIndex];
+        officeNumbersArray.splice(randomIndex,1);
+        return chosenNumber
+    }
+
+
     async function createLocations(companyId) {
         return new Promise(async (resolve, reject) => {
             const locationCount = Math.ceil(Math.random() * 5);
@@ -110,7 +144,7 @@ async function seedDatabase() {
                     const randomImageIndex = Math.ceil(Math.random() * sampleImages.length);
                     const newLocation = await Location.create({
                         primary: isPrimary,
-                        officeNumber: Math.ceil(Math.random() * 1000).toString(),
+                        officeNumber: pickOfficeNumber().toString(),
                         name: faker.company.companyName(),
                         phone: faker.phone.phoneNumber(),
                         fax: faker.phone.phoneNumber(),

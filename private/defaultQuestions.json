@@ -85,7 +85,6 @@
         "isRequired":true,
         "minLength":4,
         "maxLength":20,
-        "isFollowUp":true,
         "sectionTitle":"Your Preferences",
         "parentQuestionElementId":"preferredEmailOne",
         "order":0
@@ -101,7 +100,6 @@
         "isRequired":true,
         "minLength":4,
         "maxLength":20,
-        "isFollowUp":true,
         "sectionTitle":"Your Preferences",
         "parentQuestionElementId":"preferredEmailOne",
         "order":1
@@ -128,7 +126,6 @@
         "placeholder":"Example: John@JohnSmith.com",
         "isRequired":true,
         "notes":"This address will be used on your website, business card, etc. instead of the Company Email",
-        "isFollowUp":true,
         "sectionTitle":"Your Preferences",
         "parentQuestionElementId":"hasExistingEmail"
     },
@@ -154,7 +151,6 @@
         "placeholder":"Example: https://facebook.com/John-Smith",
         "isRequired":false,
         "notes":"This link MUST be for a business page.<br /><a href=\"https://youtu.be/kgx4eRToS4E\">Click here</a> to learn how to find your correct public social media links to use in this field",
-        "isFollowUp":true,
         "sectionTitle":"Your Information",
         "parentQuestionElementId":"hasSocialMedia",
         "order":0
@@ -163,7 +159,7 @@
         "isDefault":true,
         "title":"Have You Already Purchased A Custom Domain From A Registrar That You Would Like To Use As Your Website Address?",
         "inputName":"user[hasDomain]",
-        "elementId":"hasdomain",
+        "elementId":"hasDomain",
         "inputType":"Radio",
         "values":["Yes","No"],
         "isRequired":true,
@@ -179,7 +175,6 @@
         "values":[],
         "placeholder":"Example: GoDaddy, BlueHost, etc",
         "isRequired":false,
-        "isFollowUp":true,
         "sectionTitle":"Miscellaneous Information",
         "parentQuestionElementId":"hasDomain",
         "order":0
@@ -193,7 +188,6 @@
         "values":[],
         "placeholder":"Example: john.j.smith@email.com",
         "isRequired":false,
-        "isFollowUp":true,
         "sectionTitle":"Miscellaneous Information",
         "parentQuestionElementId":"hasDomain",
         "order":1
@@ -207,7 +201,6 @@
         "values":[],
         "placeholder":"Example: Pa55w0rd123",
         "isRequired":false,
-        "isFollowUp":true,
         "sectionTitle":"Miscellaneous Information",
         "parentQuestionElementId":"hasDomain",
         "order":2
@@ -221,7 +214,6 @@
         "values":[],
         "placeholder":"Example: www.JohnSmith.com",
         "isRequired":false,
-        "isFollowUp":true,
         "sectionTitle":"Miscellaneous Information",
         "parentQuestionElementId":"hasDomain",
         "order":3
@@ -303,7 +295,6 @@
         "values":[],
         "placeholder":"Example: Spanish, Arabic, Cantonese",
         "isRequired":false,
-        "isFollowUp":true,
         "sectionTitle":"Your Information",
         "parentQuestionElementId":"doYouSpeakOtherLanguages"
     },
@@ -328,7 +319,6 @@
         "values":[],
         "placeholder":"Example: MBA, CRS, M.D., Ph,D., etc",
         "isRequired":false,
-        "isFollowUp":true,
         "sectionTitle":"Your Information",
         "parentQuestionElementId":"hasCertifications"
     },
@@ -378,7 +368,6 @@
         "values":[],
         "placeholder":"Example: Smith & Associates",
         "isRequired":false,
-        "isFollowUp":true,
         "sectionTitle":"Miscellaneous Information",
         "parentQuestionElementId":"hasATeam"
     },
@@ -410,7 +399,6 @@
         "inputType":"File",
         "values":[],
         "isRequired":false,
-        "isFollowUp":true,
         "notes":"Maximum file size 10 Megabytes. Accepts .jpg, .jpeg, .png",
         "sectionTitle":"Attachments",
         "parentQuestionElementId":"hasHeadShot"
@@ -434,7 +422,6 @@
         "inputType":"File",
         "values":[],
         "isRequired":false,
-        "isFollowUp":true,
         "notes":"Maximum file size 10 Megabytes. Accepts .jpg, .jpeg, .png",
         "sectionTitle":"Attachments",
         "parentQuestionElementId":"hasLogo"
