@@ -54,7 +54,7 @@ async function randomExpedited(createdDate) {
 
 async function seedDefaultQuestions() {
     try {
-        console.log('clearing all default questions from database')
+        console.log('clearing all questions from database')
         await Question.deleteMany({});
     } catch (err) {
         console.log(err.message);

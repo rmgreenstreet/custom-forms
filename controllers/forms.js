@@ -75,7 +75,7 @@ module.exports = {
     try {
       try {
         currentForm = await Form.findById(req.params.formId).populate({
-          path: 'questions',
+          path: 'sections.questions',
           model:'Question'
         });
       } catch (err) {

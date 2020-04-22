@@ -8,7 +8,7 @@ inputTypes.forEach(type => {
 });
 
 const questionSchema = new Schema ({
-    sectionName: {
+    sectionTitle: {
         type:String,
         required:false
     },
@@ -43,15 +43,12 @@ const questionSchema = new Schema ({
     notes: String,
     minLength:Number,
     maxLength:Number,
-    hasFollowUp: {
-        type:Boolean,
-        default:false
-    },
     followUpQuestions: [Schema.Types.ObjectId],
     isFollowUp: {
         type: Boolean,
         default: false
     },
+    parentQuestionElementId: String,
     order: {
         type: Number,
         required:true
