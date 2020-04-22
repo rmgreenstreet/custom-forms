@@ -1,4 +1,16 @@
 [   
+    
+    {
+        "isDefault":true,
+        "title":"Are You Completing This Questionnaire:",
+        "inputName":"user[selfOrOther]",
+        "elementId":"selfOrOther",
+        "inputType":"Radio",
+        "values":["Myself","On behalf of someone else"],
+        "isRequired":true,
+        "sectionTitle":"Your Information",
+        "order": 0
+    },
     {
         "isDefault":true,
         "title":"What Is Your First Name, To Be Shown Publicly To Clients?",
@@ -9,7 +21,8 @@
         "placeholder":"Example: Johnny",
         "isRequired":true,
         "notes":"If you go by a nickname, middle name, etc. enter that name here",
-        "sectionTitle":"Your Information"
+        "sectionTitle":"Your Information",
+        "order": 1
     },
     {
         "isDefault":true,
@@ -20,7 +33,8 @@
         "values":[],
         "placeholder":"Example: Smith",
         "isRequired":true,
-        "sectionTitle":"Your Information"
+        "sectionTitle":"Your Information",
+        "order": 2
     },
     {
         "isDefault":true,
@@ -32,11 +46,12 @@
         "placeholder":"Example: john.j.smith@email.com",
         "isRequired":true,
         "notes":"Initial setup confirmation will be sent to this address. After that, all communication will go to the email address chosen in the next section",
-        "sectionTitle":"Your Information"
+        "sectionTitle":"Your Information",
+        "order": 3
     },
     {
         "isDefault":true,
-        "title":"What Is Your Cell Phone Number?",
+        "title":"What Is Your Cell Phone Number, To Be Shown Publicly To Clients?",
         "inputName":"user[cell]",
         "elementId":"cell",
         "inputType":"Tel",
@@ -44,7 +59,8 @@
         "placeholder":"Example: 555-555-5555",
         "isRequired":true,
         "notes":"This number will be publicly displayed on your website for clients to contact you directly",
-        "sectionTitle":"Your Information"
+        "sectionTitle":"Your Information",
+        "order": 4
     },
     {
         "isDefault":true,
@@ -56,9 +72,150 @@
         "placeholder":"",
         "isRequired":true,
         "notes":"You can use <a href=\"https://www.textmagic.com/free-tools/carrier-lookup\">this page</a> to look up your provider, if you don't know",
-        "sectionTitle":"Your Information"
+        "sectionTitle":"Your Information",
+        "order": 5
     },
-    
+    {
+        "isDefault":true,
+        "title":"Do You Have Social Media Profiles You Would Like To Link On Your Website?",
+        "inputName":"user[hasSocialMedia]",
+        "elementId":"hasSocialMedia",
+        "inputType":"Radio",
+        "values":["Yes","No"],
+        "isRequired":true,
+        "notes":"Example: Facebook, Twitter, Instagram, Pinterest, etc.",
+        "followUpQuestions":[],
+        "sectionTitle":"Your Information",
+        "order": 6
+    },
+    {
+        "isDefault":true,
+        "title":"What Is The Link To Your Facebook Business Page?",
+        "inputName":"user[facebook]",
+        "elementId":"facebook",
+        "inputType":"Url",
+        "values":[],
+        "placeholder":"Example: https://facebook.com/John-Smith",
+        "isRequired":false,
+        "notes":"This link MUST be for a business page.<br /><a href=\"https://youtu.be/kgx4eRToS4E\">Click here</a> to learn how to find your correct public social media links to use in this field",
+        "sectionTitle":"Your Information",
+        "parentQuestionElementId":"hasSocialMedia",
+        "order":0
+    },
+    {
+        "isDefault":true,
+        "title":"Please Provide A Biography",
+        "inputName":"user[biography]",
+        "elementId":"biography",
+        "inputType":"Textarea",
+        "values":[],
+        "placeholder":"This biography will be copied and pasted into your public profiles for clients to see, exactly as it is entered here. No proofreading or correcting of any kind will be provided.",
+        "isRequired":false,
+        "sectionTitle":"Your Information",
+        "order": 7
+    },
+    {
+        "isDefault":true,
+        "title":"Do You Speak Any Languages Other Than English?",
+        "inputName":"user[doYouSpeakOtherLanguages]",
+        "elementId":"doYouSpeakOtherLanguages",
+        "inputType":"Radio",
+        "values":["Yes","No"],
+        "isRequired":true,
+        "notes":"English will be selected by default",
+        "followUpQuestions":[],
+        "sectionTitle":"Your Information",
+        "order": 8
+    },
+    {
+        "isDefault":true,
+        "title":"Please List Those Languages, Separated By A Comma",
+        "inputName":"user[otherLanguageList]",
+        "elementId":"otherLanguageList",
+        "inputType":"Text",
+        "values":[],
+        "placeholder":"Example: Spanish, Arabic, Cantonese",
+        "isRequired":false,
+        "sectionTitle":"Your Information",
+        "parentQuestionElementId":"doYouSpeakOtherLanguages"
+    },
+    {
+        "isDefault":true,
+        "title":"Have You Earned Any Additional Certifications In Your Field?",
+        "inputName":"user[hasCertificatons]",
+        "elementId":"hasCertifications",
+        "inputType":"Radio",
+        "values":["Yes","No"],
+        "isRequired":true,
+        "followUpQuestions":[],
+        "notes":"Example: MBA, CRS, M.D., Ph,D., etc",
+        "sectionTitle":"Your Information",
+        "order": 9
+    },
+    {
+        "isDefault":true,
+        "title":"Please List Your Certifications, Separated By Commas",
+        "inputName":"user[certifications]",
+        "elementId":"certifications",
+        "inputType":"Text",
+        "values":[],
+        "placeholder":"Example: MBA, CRS, M.D., Ph,D., etc",
+        "isRequired":false,
+        "sectionTitle":"Your Information",
+        "parentQuestionElementId":"hasCertifications"
+    },
+    {
+        "isDefault":true,
+        "title":"What Is Your Slogan/Catchphrase/Motto/Mantra?",
+        "inputName":"user[slogan]",
+        "elementId":"slogan",
+        "inputType":"Text",
+        "values":[],
+        "placeholder":"Example: Your Local Industry Expert!",
+        "isRequired":false,
+        "maxLength":45,
+        "notes":"Maximum 45 characters, including spaces and punctuation. <br />You are not required to have a slogan",
+        "sectionTitle":"Your Information",
+        "order": 10
+    },
+    {
+        "isDefault":true,
+        "title":"What Is The Username Sent To You By The System Or Your Office Administrator?",
+        "inputName":"user[companyUsername]",
+        "elementId":"companyUsername",
+        "inputType":"Text",
+        "values":[],
+        "placeholder":"Example: jsmith123",
+        "isRequired":true,
+        "notes":"We do not provide this username, this would have been sent to you separately",
+        "sectionTitle":"Access Information",
+        "order": 0
+    },
+    {
+        "isDefault":true,
+        "title":"What Is The Password Sent To You By The System Or Your Office Administrator?",
+        "inputName":"user[companyPassword]",
+        "elementId":"companyPassword",
+        "inputType":"Password",
+        "values":[],
+        "placeholder":"Example: qXuJ7Lhp",
+        "isRequired":true,
+        "notes":"We do not provide this password, this would have been sent to you separately. <br />Failure to provide either username or password will result in delays",
+        "sectionTitle":"Access Information",
+        "order": 1
+    },
+    {
+        "isDefault":true,
+        "title":"What Would You Like Your Password To Be Changed To?",
+        "inputName":"user[newPassword]",
+        "elementId":"newPassword",
+        "inputType":"Password",
+        "values":[],
+        "placeholder":"Example: Pa55w0rd123",
+        "isRequired":true,
+        "sectionTitle":"Your Preferences",
+        "order": 0
+    },
     {
         "isDefault":true,
         "title":"What Would You Like Your Company Email Address To Start With, Before The \"@\" Sign?",
@@ -72,7 +229,8 @@
         "minLength":4,
         "maxLength":20,
         "followUpQuestions":[],
-        "sectionTitle":"Your Preferences"
+        "sectionTitle":"Your Preferences",
+        "order": 1
     },
     {
         "isDefault":true,
@@ -114,7 +272,8 @@
         "isRequired":true,
         "notes":"A Company Email is required to be created, but you aren\"t required to use it if you don't want to",
         "followUpQuestions":[],
-        "sectionTitle":"Your Preferences"
+        "sectionTitle":"Your Preferences",
+        "order": 2
     },
     {
         "isDefault":true,
@@ -131,29 +290,17 @@
     },
     {
         "isDefault":true,
-        "title":"Do You Have Social Media Profiles You Would Like To Link On Your Website?",
-        "inputName":"user[hasSocialMedia]",
-        "elementId":"hasSocialMedia",
-        "inputType":"Radio",
-        "values":["Yes","No"],
-        "isRequired":true,
-        "notes":"Example: Facebook, Twitter, Instagram, Pinterest, etc.",
-        "followUpQuestions":[],
-        "sectionTitle":"Your Information"
-    },
-    {
-        "isDefault":true,
-        "title":"What Is The Link To Your Facebook Business Page?",
-        "inputName":"user[facebook]",
-        "elementId":"facebook",
-        "inputType":"Url",
+        "title":"Which Cities Would You Like To List As Specialties?",
+        "inputName":"user[specialties]",
+        "elementId":"specialties",
+        "inputType":"Textarea",
         "values":[],
-        "placeholder":"Example: https://facebook.com/John-Smith",
+        "placeholder":"Example: Los Angeles, Burbank, Malibu, etc. Maximum 10 or 140 charactersThe city your office is located in will be added by default. CANNOT be \"Greater LA Area\"",
+        "maxLength":140,
         "isRequired":false,
-        "notes":"This link MUST be for a business page.<br /><a href=\"https://youtu.be/kgx4eRToS4E\">Click here</a> to learn how to find your correct public social media links to use in this field",
-        "sectionTitle":"Your Information",
-        "parentQuestionElementId":"hasSocialMedia",
-        "order":0
+        "notes":"This does NOT in any way limit you to working only in these cities. This is just a sample to show some of your work area to clients.",
+        "sectionTitle":"Your Preferences",
+        "order": 3
     },
     {
         "isDefault":true,
@@ -164,7 +311,8 @@
         "values":["Yes","No"],
         "isRequired":true,
         "followUpQuestions":[],
-        "sectionTitle":"Miscellaneous Information"
+        "sectionTitle":"Miscellaneous Information",
+        "order": 4
     },
     {
         "isDefault":true,
@@ -220,136 +368,6 @@
     },
     {
         "isDefault":true,
-        "title":"What Is The Username Sent To You By The System Or Your Office Administrator?",
-        "inputName":"user[companyUsername]",
-        "elementId":"companyUsername",
-        "inputType":"Text",
-        "values":[],
-        "placeholder":"Example: jsmith123",
-        "isRequired":true,
-        "notes":"We do not provide this username, this would have been sent to you separately",
-        "sectionTitle":"Access Information"
-    },
-    {
-        "isDefault":true,
-        "title":"What Is The Password Sent To You By The System Or Your Office Administrator?",
-        "inputName":"user[companyPassword]",
-        "elementId":"companyPassword",
-        "inputType":"Password",
-        "values":[],
-        "placeholder":"Example: qXuJ7Lhp",
-        "isRequired":true,
-        "notes":"We do not provide this password, this would have been sent to you separately. <br />Failure to provide either username or password will result in delays",
-        "sectionTitle":"Access Information"
-    },
-    {
-        "isDefault":true,
-        "title":"What Would You Like Your Password To Be Changed To?",
-        "inputName":"user[newPassword]",
-        "elementId":"newPassword",
-        "inputType":"Password",
-        "values":[],
-        "placeholder":"Example: Pa55w0rd123",
-        "isRequired":true,
-        "sectionTitle":"Your Preferences"
-    },
-    {
-        "isDefault":true,
-        "title":"Are You Completing This Questionnaire:",
-        "inputName":"user[selfOrOther]",
-        "elementId":"selfOrOther",
-        "inputType":"Radio",
-        "values":["Myself","On behalf of someone else"],
-        "isRequired":true,
-        "sectionTitle":"Miscellaneous Information"
-    },
-    {
-        "isDefault":true,
-        "title":"Please Provide A Biography",
-        "inputName":"user[biography]",
-        "elementId":"biography",
-        "inputType":"Textarea",
-        "values":[],
-        "placeholder":"This biography will be copied and pasted into your public profiles for clients to see, exactly as it is entered here. No proofreading or correcting of any kind will be provided.",
-        "isRequired":false,
-        "sectionTitle":"Your Information"
-    },
-    {
-        "isDefault":true,
-        "title":"Do You Speak Any Languages Other Than English?",
-        "inputName":"user[doYouSpeakOtherLanguages]",
-        "elementId":"doYouSpeakOtherLanguages",
-        "inputType":"Radio",
-        "values":["Yes","No"],
-        "isRequired":true,
-        "notes":"English will be selected by default",
-        "followUpQuestions":[],
-        "sectionTitle":"Your Information"
-    },
-    {
-        "isDefault":true,
-        "title":"Please List Those Languages, Separated By A Comma",
-        "inputName":"user[otherLanguageList]",
-        "elementId":"otherLanguageList",
-        "inputType":"Text",
-        "values":[],
-        "placeholder":"Example: Spanish, Arabic, Cantonese",
-        "isRequired":false,
-        "sectionTitle":"Your Information",
-        "parentQuestionElementId":"doYouSpeakOtherLanguages"
-    },
-    {
-        "isDefault":true,
-        "title":"Have You Earned Any Additional Certifications In Your Field?",
-        "inputName":"user[hasCertificatons]",
-        "elementId":"hasCertifications",
-        "inputType":"Radio",
-        "values":["Yes","No"],
-        "isRequired":true,
-        "followUpQuestions":[],
-        "notes":"Example: MBA, CRS, M.D., Ph,D., etc",
-        "sectionTitle":"Your Information"
-    },
-    {
-        "isDefault":true,
-        "title":"Please List Your Certifications, Separated By Commas",
-        "inputName":"user[certifications]",
-        "elementId":"certifications",
-        "inputType":"Text",
-        "values":[],
-        "placeholder":"Example: MBA, CRS, M.D., Ph,D., etc",
-        "isRequired":false,
-        "sectionTitle":"Your Information",
-        "parentQuestionElementId":"hasCertifications"
-    },
-    {
-        "isDefault":true,
-        "title":"What Is Your Slogan/Catchphrase/Motto/Mantra?",
-        "inputName":"user[slogan]",
-        "elementId":"slogan",
-        "inputType":"Text",
-        "values":[],
-        "placeholder":"Example: Your Local Industry Expert!",
-        "isRequired":false,
-        "maxLength":45,
-        "notes":"Maximum 45 characters, including spaces and punctuation. <br />You are not required to have a slogan",
-        "sectionTitle":"Your Information"
-    },
-    {
-        "isDefault":true,
-        "title":"Which Cities Would You Like To List As Specialties?",
-        "inputName":"user[specialties]",
-        "elementId":"specialties",
-        "inputType":"Textarea",
-        "values":[],
-        "placeholder":"Example: Los Angeles, Burbank, Malibu, etc. Maximum 10 or 140 charactersThe city your office is located in will be added by default. CANNOT be \"Greater LA Area\"",
-        "maxLength":140,
-        "isRequired":false,
-        "notes":"This does NOT in any way limit you to working only in these cities. This is just a sample to show some of your work area to clients.",
-        "sectionTitle":"Your Preferences"
-    },
-    {
-        "isDefault":true,
         "title":"Will You Be Joining Or Forming A Team?",
         "inputName":"user[hasATeam]",
         "elementId":"hasATeam",
@@ -357,7 +375,8 @@
         "values":["Yes","No"],
         "isRequired":true,
         "followUpQuestions":[],
-        "sectionTitle":"Miscellaneous Information"
+        "sectionTitle":"Miscellaneous Information",
+        "order": 5
     },
     {
         "isDefault":true,
@@ -378,7 +397,8 @@
         "elementId":"comments",
         "inputType":"Textarea",
         "isRequired":false,
-        "sectionTitle":"Miscellaneous Information"
+        "sectionTitle":"Miscellaneous Information",
+        "order": 6
     },
     {
         "isDefault":true,
@@ -389,7 +409,8 @@
         "values":["Yes","No"],
         "isRequired":true,
         "followUpQuestions":[],
-        "sectionTitle":"Attachments"
+        "sectionTitle":"Attachments",
+        "order": 0
     },
     {
         "isDefault":true,
@@ -412,7 +433,8 @@
         "values":["Yes","No"],
         "isRequired":true,
         "followUpQuestions":[],
-        "sectionTitle":"Attachments"
+        "sectionTitle":"Attachments",
+        "order": 1
     },
     {
         "isDefault":true,

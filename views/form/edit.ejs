@@ -9,9 +9,9 @@
                     <section class="card shadow-sm mb-2" id="<%= section.title %>">
                         <div class="card-body">
                             <div class="card-title">
-                                <div class="input-group form-section-label">
+                                <div class="input-group">
                                     <div class="input-group-prepend">
-                                        <label for="<%= section.title %>" class="input-group-text">Section Title</label>
+                                        <label for="<%= section.title %>" class="input-group-text"><strong>Section Title</strong></label>
                                     </div>
                                     <input type="text" name="form[section][title]" id="<%= section.title %>" class="form-control form-control-lg" value="<%= section.title %>">
                                 </div>
@@ -20,13 +20,16 @@
 
                             <div class="card-text">
                                 <% for (const question of section.questions) { %>
-                                    <div class="card shadow-sm mb-2" id="<%= question.id %>">
+                                    <div class="card shadow-sm mb-2" id="<%= question.id %>" draggable="true">
+                                        <div class="row mr-1 mt-1 mb-0">
+                                            <div class="col text-right"><i class="fas fa-arrows-alt"></i></div>
+                                        </div>
                                         <div class="card-body">
                                             <div class="input-group mb-2">
                                                 <div class="input-group-prepend">
                                                     <label for="question<%= section.questions.indexOf(question) %>Title" class="input-group-text">Question Title</label>
                                                 </div>
-                                                <input type="text" name="form[questions][title]" id="question<%= section.questions.indexOf(question) %>Title" class="form-control" value="<%= question.title %>">
+                                                <input type="text" name="form[sections][questions][title]" id="question<%= section.questions.indexOf(question) %>Title" class="form-control" value="<%= question.title %>">
                                             </div>
                                             <div class="card-text">
                                                 <div class="form-row">
@@ -35,7 +38,7 @@
                                                             <div class="input-group-prepend">
                                                                 <label for="question<%= section.questions.indexOf(question) %>Type" class="input-group-text">Question Type</label>
                                                             </div>
-                                                            <select name="form[questions][inputType]" id="question<%= section.questions.indexOf(question) %>Type" class="form-control">
+                                                            <select name="form[sections][questions][inputType]" id="question<%= section.questions.indexOf(question) %>Type" class="form-control">
                                                                 <% for (const type of inputTypes) { %> 
                                                                 <option value="<%= type.htmlInputType %>" <%= question.inputType === type.htmlInputType ? 'selected' : '' %>>
                                                                     <%= type.displayName %>
@@ -51,7 +54,7 @@
                                                                     <div class="input-group-prepend">
                                                                         <label for="question<%= question.id %>Value<%= question.values.indexOf(value) %>" class="input-group-text">Option <%= question.values.indexOf(value) +1 %></label>
                                                                     </div>
-                                                                    <input type="text" name="form[questions][values]" id="question<%= question.id %>Value<%= question.values.indexOf(value) %>" value ="<%= question.values.indexOf(value) > -1 ? value : '' %>" class="form-control">
+                                                                    <input type="text" name="form[sections][questions][values]" id="question<%= question.id %>Value<%= question.values.indexOf(value) %>" value ="<%= question.values.indexOf(value) > -1 ? value : '' %>" class="form-control">
                                                                 </div>
                                                                 <% } %>
                                                         </div>
@@ -61,10 +64,18 @@
                                                                 <div class="input-group-prepend">
                                                                     <label for="question<%= question.id %>Placeholder" class="input-group-text">Placeholder</label>
                                                                 </div>
-                                                                <input type="text" name="form[questions][placeholder]" id="question<%= question.id %>Placeholder" class="form-control" value="<%= question.placeholder %>">
+                                                                <input type="text" name="form[sections][questions][placeholder]" id="question<%= question.id %>Placeholder" class="form-control" value="<%= question.placeholder %>">
                                                             </div>
                                                         </div>
                                                     <% } %>
+                                                </div>
+                                                <div class="form-row">
+                                                    <div class="col-6">
+                                                        <div class="form-check">
+                                                            <input type="checkbox" name="form[section][questions][required]" id="question<%= question.id %>IsRequired" class="form-check-input" <%= question.isRequired ? 'checked' : '' %>>
+                                                            <label for="question<%= question.id %>IsRequired" class="form-check-label">Required?</label>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
