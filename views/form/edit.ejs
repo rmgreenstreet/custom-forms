@@ -6,7 +6,7 @@
             <% if (typeof currentForm !== 'undefined' && currentForm.sections.length > 0) { %>
 
                 <% for (const section of currentForm.sections) { %>
-                    <section class="card shadow-sm mb-2" id="<%= section.title %>">
+                    <section class="card shadow-sm mb-2" id="<%= section.title %>" draggable="true">
                         <div class="row mr-1 mt-1 mb-0">
                             <div class="col text-right"><i class="fas fa-arrows-alt"></i></div>
                         </div>
