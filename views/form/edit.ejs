@@ -6,11 +6,11 @@
             <% if (typeof currentForm !== 'undefined' && currentForm.sections.length > 0) { %>
 
                 <% for (const section of currentForm.sections) { %>
-                    <section class="card shadow-sm mb-2 formSection" id="<%= section.title %>" draggable="true">
+                    <section class="card shadow-sm mb-2 formSection" id="<%= section.title %>" ondragstart=dragStart(event)>
                         <div class="card-body">
-                            <div class="row mb-2">
-                                <div class="col"><h3 class="sectionTitle">Section: <%= section.title %></h3></strong></div>
-                                <div class="col text-right"><i class="fas fa-arrows-alt"></i></div>
+                            <div class="row mb-2 sectionTitle">
+                                <div class="col"><h3 class="">Section: <%= section.title %></h3></strong></div>
+                                <div class="col text-right"><i class="fas fa-arrows-alt dragHandle"></i></div>
                             </div>
                             <div class="sectionBody<%= currentForm.sections.indexOf(section) === 0 ? ' active' : '' %>">
                                 <div class="card-title">
@@ -25,11 +25,11 @@
     
                                 <div class="card-text">
                                     <% for (const question of section.questions) { %>
-                                        <div class="card shadow-sm mb-2 formQuestion" id="<%= question.id %>" draggable="true">
-                                            <div class="row mr-1 mt-1 mb-0">
-                                                <div class="col text-right"><i class="fas fa-arrows-alt"></i></div>
-                                            </div>
+                                        <div class="card shadow-sm mb-2 formQuestion" id="<%= question.id %>">
                                             <div class="card-body">
+                                                <div class="row mb-2">
+                                                    <div class="col text-right"><i class="fas fa-arrows-alt"></i></div>
+                                                </div>
                                                 <div class="input-group mb-2">
                                                     <div class="input-group-prepend">
                                                         <label for="question<%= section.questions.indexOf(question) %>Title" class="input-group-text">Question Title</label>

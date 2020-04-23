@@ -1,24 +1,37 @@
 var formEditor = document.querySelector('#fullForm');
 
-// var sections = document.querySelectorAll('.formSection');
+var sections = document.querySelectorAll('.formSection');
 var questions = document.querySelectorAll('.formQuestion');
 var collapseLinks = document.querySelectorAll('.collapseSection');
 var addQuestionLinks = document.querySelectorAll('.addQuestionLink');
 var addSectionLinks = document.querySelectorAll('.addSection');
 
-formEditor.addEventListener('click', function (e) {
-    var sectionTitles = Array.from(document.querySelectorAll('.sectionTitle'));
-    for (let i = 0; i < sectionTitles.length; i++) {
-        var panel = sectionTitles[i].parentElement.parentElement.nextElementSibling;
-        panel.classList.remove('active');
-    }
+for (let section of sections) {
+    section.addEventListener('click', function (e) {
+        for (let section of sections) {
+            section.querySelector('.sectionBody').classList.remove('active');
+        }
+        e.currentTarget.querySelector('.sectionBody').classList.add('active');
+    });
+}
 
-    if (e.target !== e.currentTarget) {
-        var tgt = e.target.parentElement.parentElement.nextElementSibling;
-        tgt.classList.add("active");
-      }
-});
 
+var dragHandles = document.querySelectorAll('.dragHandle');
+
+// for (var handle of dragHandles) {
+//     handle.addEventListener('mousedown', function (e) {
+//         e.target.parentNode.parentNode.parentNode.setAttribute('draggable', 'true');
+//     });
+    
+//     handle.addEventListener('mouseup', function (e) {
+//         e.target.parentNode.setAttribute('draggable', 'false')
+//     });
+// }
+
+// function dragStart(e) {
+//     e.preventDefault();
+//     e.dataTransfer.setData('text/plain', e.target);
+// }
 
 
 // $( function() {
