@@ -34,16 +34,23 @@ tr a {
     color:inherit;
 }
 
+.sectionTitle {
+    color: inherit;
+    cursor: pointer;
+}
 
-.sectionBody {
+.sectionTitle:hover {
+    color: inherit;
+}
+
+/* .sectionBody {
     max-height: 0;
     overflow: hidden;
-    transition: 0.2s ease-out;
+    transition: all 0.2s ease-out;
   }
   
 .sectionBody.active {
     max-height: 100%;
-    height:auto;
     overflow: hidden;
-    transition: 0.2s ease-out;
-}
+    transition: all 0.2s ease-out;
+} */

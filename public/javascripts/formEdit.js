@@ -6,14 +6,14 @@ var collapseLinks = document.querySelectorAll('.collapseSection');
 var addQuestionLinks = document.querySelectorAll('.addQuestionLink');
 var addSectionLinks = document.querySelectorAll('.addSection');
 
-for (let section of sections) {
-    section.addEventListener('click', function (e) {
-        for (let section of sections) {
-            section.querySelector('.sectionBody').classList.remove('active');
-        }
-        e.currentTarget.querySelector('.sectionBody').classList.add('active');
-    });
-}
+// for (let section of sections) {
+//     section.addEventListener('click', function (e) {
+//         for (let section of sections) {
+//             section.querySelector('.sectionBody').classList.remove('active');
+//         }
+//         e.currentTarget.querySelector('.sectionBody').classList.add('active');
+//     });
+// }
 
 
 var dragHandles = document.querySelectorAll('.dragHandle');
