@@ -14,3 +14,36 @@ tr a {
 .form-section-label {
     font-size:1.5rem;
 }
+
+.addQuestionLink {
+    text-decoration: underline;
+    color: inherit;
+    font-size: 1.5rem;
+}
+
+.addQuestionLink:hover {
+    color: inherit;
+}
+
+.collapseSection {
+    text-decoration:underline;
+    color:inherit;
+}
+
+.collapseSection:hover {
+    color:inherit;
+}
+
+
+.sectionBody {
+    max-height: 0;
+    overflow: hidden;
+    transition: 0.2s ease-out;
+  }
+  
+.sectionBody.active {
+    max-height: 100%;
+    height:auto;
+    overflow: hidden;
+    transition: 0.2s ease-out;
+}

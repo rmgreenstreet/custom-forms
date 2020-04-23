@@ -69,7 +69,7 @@ async function seedDefaultQuestions() {
             if (typeof newQuestion.parentQuestionElementId !== 'undefined') {
                 console.log(`Adding this follow up question to ${newQuestion.parentQuestionElementId}`);
                 let parentQuestion = await Question.findOne({elementId: newQuestion.parentQuestionElementId});
-                if (typeof parentQuestion.followUpQuestions == 'undefined') {
+                if (typeof parentQuestion.followUpQuestions == 'null') {
                     parentQuestion.followUpQuestions = [newQuestion._id];
                 } else {
                     parentQuestion.followUpQuestions.push(newQuestion._id);

@@ -403,7 +403,7 @@
     {
         "isDefault":true,
         "title":"Do You Have A Picture Of Yourself That You Would Like To Display On Your Website For Clients To See?",
-        "inputName":"user[hasHeadShot]",
+        "inputName":"user[hasHeadshot]",
         "elementId":"hasHeadshot",
         "inputType":"Radio",
         "values":["Yes","No"],
@@ -422,7 +422,8 @@
         "isRequired":false,
         "notes":"Maximum file size 10 Megabytes. Accepts .jpg, .jpeg, .png",
         "sectionTitle":"Attachments",
-        "parentQuestionElementId":"hasHeadShot"
+        "parentQuestionElementId":"hasHeadshot",
+        "accepts": "image/*"
     },
     {
         "isDefault":true,
@@ -440,13 +441,14 @@
         "isDefault":true,
         "title":"Please Upload Your Logo",
         "inputName":"user[image]",
-        "elementId":"logo",
+        "elementId":"user[logo]",
         "inputType":"File",
         "values":[],
         "isRequired":false,
         "notes":"Maximum file size 10 Megabytes. Accepts .jpg, .jpeg, .png",
         "sectionTitle":"Attachments",
-        "parentQuestionElementId":"hasLogo"
+        "parentQuestionElementId":"hasLogo",
+        "accepts": "image/*"
     },
     {
         "isDefault":true,
