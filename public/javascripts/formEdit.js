@@ -5,54 +5,64 @@ var questions = document.querySelectorAll('.formQuestion');
 var collapseLinks = document.querySelectorAll('.collapseSection');
 var addQuestionLinks = document.querySelectorAll('.addQuestionLink');
 var addSectionLinks = document.querySelectorAll('.addSection');
-
-// for (let section of sections) {
-//     section.addEventListener('click', function (e) {
-//         for (let section of sections) {
-//             section.querySelector('.sectionBody').classList.remove('active');
-//         }
-//         e.currentTarget.querySelector('.sectionBody').classList.add('active');
-//     });
-// }
-
-
+var sectionBodies = document.querySelectorAll('.sectionBody');
 var dragHandles = document.querySelectorAll('.dragHandle');
 
+formEditor.ondragover = dragOver;
+
 for (var handle of dragHandles) {
-    handle.onmousedown = makeParentDraggable
-    handle.onmouseup = makeParentNotDraggable
+    handle.addEventListener('mousedown', function (e) {makeParentDraggable(e, '.draggable')});
+    handle.addEventListener('mouseup', function (e) {makeParentNotDraggable(e, '.draggable')});
 }
 
 for (var section of sections) {
     section.ondragstart = dragStart;
     section.ondragend = dragEnd;
+    section.ondrop = dragDrop;
 }
 
-function makeParentDraggable() {
-    this.closest('section').setAttribute('draggable', 'true');
+for (var question of questions) {
+    question.ondragstart = dragStart;
+    question.ondragend = dragEnd;
 }
 
-function makeParentNotDraggable() {
-    this.closest('section').setAttribute('draggable', 'false');
+for (var sectionBody of sectionBodies) {
+    sectionBody.ondragover = dragOver;
+}
+
+function makeParentDraggable(e, selector) {
+    e.target.closest(selector).setAttribute('draggable', 'true');
+    e.target.closest(selector).querySelector('.collapse').classList.remove('show');
+}
+
+function makeParentNotDraggable(e, selector) {
+    e.target.closest(selector).setAttribute('draggable', 'false');
+    e.target.closest(selector).querySelector('.collapse').classList.add('show');
 }
 
 function dragStart() {
     this.classList.add('dragging');
 };
-function dragEnd() {
+function dragEnd(e) {
+    e.preventDefault();
     this.classList.remove('dragging');
 };
 
-formEditor.ondragover = dragOver;
-
 function dragOver(e) {
-    const draggable = document.querySelector('.dragging');
+    e.preventDefault();
+    const draggable = e.currentTarget.querySelector('.dragging');
     const afterElement = getDragAfterElement(this, e.clientY);
     if (afterElement === null) {
         this.appendChild(draggable);
     } else {
         this.insertBefore(draggable, afterElement);
     }
+}
+
+function dragDrop (e) {
+    console.log(e.target);
+    e.preventDefault();
+    this.classList.remove('dragging');
 }
 
 function getDragAfterElement(container, y) {
