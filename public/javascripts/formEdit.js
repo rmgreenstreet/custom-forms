@@ -18,37 +18,52 @@ var addSectionLinks = document.querySelectorAll('.addSection');
 
 var dragHandles = document.querySelectorAll('.dragHandle');
 
-// for (var handle of dragHandles) {
-//     handle.addEventListener('mousedown', function (e) {
-//         e.target.parentNode.parentNode.parentNode.setAttribute('draggable', 'true');
-//     });
-    
-//     handle.addEventListener('mouseup', function (e) {
-//         e.target.parentNode.setAttribute('draggable', 'false')
-//     });
-// }
+for (var handle of dragHandles) {
+    handle.onmousedown = makeParentDraggable
+    handle.onmouseup = makeParentNotDraggable
+}
 
-// function dragStart(e) {
-//     e.preventDefault();
-//     e.dataTransfer.setData('text/plain', e.target);
-// }
+for (var section of sections) {
+    section.ondragstart = dragStart;
+    section.ondragend = dragEnd;
+}
 
+function makeParentDraggable() {
+    this.closest('section').setAttribute('draggable', 'true');
+}
 
-// $( function() {
-//     $( "#fullForm" )
-//       .accordion({
-//         header: "> div > h3"
-//       })
-//       .sortable({
-//         axis: "y",
-//         handle: ".fa-arrows-alt",
-//         stop: function( event, ui ) {
-//           // IE doesn't register the blur when sorting
-//           // so trigger focusout handlers to remove .ui-state-focus
-//           ui.item.children( "h3" ).triggerHandler( "focusout" );
- 
-//           // Refresh accordion to handle new order
-//           $( this ).accordion( "refresh" );
-//         }
-//       });
-//   } );
+function makeParentNotDraggable() {
+    this.closest('section').setAttribute('draggable', 'false');
+}
+
+function dragStart() {
+    this.classList.add('dragging');
+};
+function dragEnd() {
+    this.classList.remove('dragging');
+};
+
+formEditor.ondragover = dragOver;
+
+function dragOver(e) {
+    const draggable = document.querySelector('.dragging');
+    const afterElement = getDragAfterElement(this, e.clientY);
+    if (afterElement === null) {
+        this.appendChild(draggable);
+    } else {
+        this.insertBefore(draggable, afterElement);
+    }
+}
+
+function getDragAfterElement(container, y) {
+    const draggableElements = [...container.querySelectorAll('section:not(.dragging)')];
+    return draggableElements.reduce((closest, child) => {
+        const box = child.getBoundingClientRect();
+        const offset = y - box.top - box.height / 2;
+        if (offset < 0 && offset > closest.offset) {
+            return {offset: offset, element: child};
+        } else {
+            return closest;
+        };
+    }, { offset: Number.NEGATIVE_INFINITY }).element;
+}
