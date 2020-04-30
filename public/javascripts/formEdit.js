@@ -1,56 +1,58 @@
-var formEditor = document.querySelector('#fullForm');
+// const Sortable = require("sortablejs");
 
 var sections = document.querySelectorAll('.formSection');
 var questions = document.querySelectorAll('.formQuestion');
-var collapseLinks = document.querySelectorAll('.collapseSection');
 var addQuestionLinks = document.querySelectorAll('.addQuestionLink');
 var addSectionLinks = document.querySelectorAll('.addSection');
-var sectionBodies = document.querySelectorAll('.sectionBody');
-var dragHandles = document.querySelectorAll('.dragHandle');
 
-formEditor.ondragover = dragOver;
 
-for (var handle of dragHandles) {
-    handle.addEventListener('mousedown', function (e) {makeParentDraggable(e, '.draggable')});
-    handle.addEventListener('mouseup', function (e) {makeParentNotDraggable(e, '.draggable')});
-}
+var formEditor = new Sortable(document.querySelector('#fullForm'), {
+    group: {name: 'sections', pull: false, put: false},
+    handle:'.sectionDragHandle',
+    animation:150,
+    draggable: 'section'
+});
 
+var sortableSections = [];
 for (var section of sections) {
+    // var currentSection = new Sortable(section.querySelector('.card-text'), {
+    //     group: {name: `section${sections.indexOf(section)}`, put:true},
+    //     handle: '.questionDragHandle',
+    //     draggable: '.formQuestion',
+    //     swapThreshold: 0.65
+    // });
+    // sortableSections.push(currentSection);
     section.ondragstart = dragStart;
     section.ondragend = dragEnd;
-    section.ondrop = dragDrop;
+    section.ondragover = dragEnd;
+    section.querySelector('.card-text').ondragover = dragOver;
 }
 
 for (var question of questions) {
-    question.ondragstart = dragStart;
-    question.ondragend = dragEnd;
+    question.ondragstart = function(e) {
+        e.stopPropagation();
+        e.currentTarget.querySelector('.collapse').classList.remove('show');
+        this.classList.add('dragging');
+    };
+    question.ondragend = function(e) {
+        e.currentTarget.querySelector('.collapse').classList.add('show');
+        this.classList.remove('dragging');
+    };
 }
 
-for (var sectionBody of sectionBodies) {
-    sectionBody.ondragover = dragOver;
+function dragStart(e) {
+    e.currentTarget.querySelector('.collapse').classList.remove('show');
 }
-
-function makeParentDraggable(e, selector) {
-    e.target.closest(selector).setAttribute('draggable', 'true');
-    e.target.closest(selector).querySelector('.collapse').classList.remove('show');
-}
-
-function makeParentNotDraggable(e, selector) {
-    e.target.closest(selector).setAttribute('draggable', 'false');
-    e.target.closest(selector).querySelector('.collapse').classList.add('show');
-}
-
-function dragStart() {
-    this.classList.add('dragging');
-};
 function dragEnd(e) {
-    e.preventDefault();
-    this.classList.remove('dragging');
-};
+    for (var section of sections) {
+        section.querySelector('.collapse').classList.remove('show');
+    }
+    e.currentTarget.querySelector('.collapse').classList.add('show');
+}
 
 function dragOver(e) {
     e.preventDefault();
-    const draggable = e.currentTarget.querySelector('.dragging');
+    const draggable = document.querySelector('.dragging');
     const afterElement = getDragAfterElement(this, e.clientY);
     if (afterElement === null) {
         this.appendChild(draggable);
@@ -59,14 +61,8 @@ function dragOver(e) {
     }
 }
 
-function dragDrop (e) {
-    console.log(e.target);
-    e.preventDefault();
-    this.classList.remove('dragging');
-}
-
 function getDragAfterElement(container, y) {
-    const draggableElements = [...container.querySelectorAll('section:not(.dragging)')];
+    const draggableElements = [...container.querySelectorAll('.draggable:not(.dragging)')];
     return draggableElements.reduce((closest, child) => {
         const box = child.getBoundingClientRect();
         const offset = y - box.top - box.height / 2;
@@ -76,4 +72,42 @@ function getDragAfterElement(container, y) {
             return closest;
         };
     }, { offset: Number.NEGATIVE_INFINITY }).element;
+}
+
+function dragEnter(e) {
+    e.stopPropagation();
+}
+
+
+// changing inputs for form options based on input type selected
+var inputTypeSelectors = document.querySelectorAll('.typeSelector');
+
+
+function getInputTypeSelectors() {
+    inputTypeSelectors = document.querySelectorAll('.typeSelector');
+}
+
+function addInputTypeSelector(newElement) {
+    inputTypeSelectors.push(newElement);
+}
+
+function addInputTypeChangeListener(list) {
+    for (var item of list) {
+        item.addEventListener('change', function (e) {
+            setAppropriateOptions(e.target);
+        })
+    }
+}
+
+function setAppropriateOptions(item) {
+    var optionsSection = item.closest('.questionBody').querySelector('.typeOptions');
+    if (e.target.value === 'Checkbox' || e.target.value === 'Radio' || e.target.value === 'Select') {
+        optionsSection.innerHTML = `
+            <div class="input-group mb-1 typeOptions">
+                <div class="input-group-prepend">
+                    <label for=""
+                </div>
+            </div>
+        `;
+    }
 }
