@@ -7,7 +7,7 @@
             <% if (typeof currentForm !== 'undefined' && currentForm.sections.length > 0) { %>
 
                 <% for (const section of currentForm.sections) { %>
-                    <section class="card shadow-sm mb-2 formSection draggable" id="section<%= currentForm.sections.indexOf(section) %>" draggable="true">
+                    <section class="card shadow-sm mb-2 formSection draggable" id="section<%= currentForm.sections.indexOf(section) %>" >
                         <div class="card-body">
                             <div class="row mb-2" id="section<%= section.id %>Title">
                                 <div class="col"><button class="btn btn-link sectionTitle"  data-toggle="collapse" data-target="#section<%= section.id %>" aria-expanded="<%= currentForm.sections.indexOf(section) === 0 ? 'true' : 'false' %>" aria-controls="section<%= section.id %>" type="button" ><h3 class="">Section: <%= section.title %></h3></button></strong></div>
@@ -23,8 +23,12 @@
                                     </div>
                                 </div>
                                 <hr/>
+
+
+
+
     
-                                <div class="card-text" id="section<%= section.id %>Body">
+                                <div class="card-text questionList" id="section<%= section.id %>Body">
                                     <% for (const question of section.questions) { %>
                                         <div class="card shadow-sm mb-2 formQuestion draggable" id="<%= question.id %>" draggable="true">
                                             <div class="card-body">
@@ -55,9 +59,9 @@
                                                                 </div>
                                                             </div>
                                                             <% if (question.inputType === 'Checkbox' || question.inputType === 'Radio' || question.inputType === 'Select') { %> 
-                                                                <div class="col-md-6">
+                                                                <div class="col-md-6 typeOptions">
                                                                     <% for (let value of question.values) { %>
-                                                                        <div class="input-group mb-1 typeOptions">
+                                                                        <div class="input-group mb-2">
                                                                             <div class="input-group-prepend">
                                                                                 <label for="question<%= question.id %>Value<%= question.values.indexOf(value) %>" class="input-group-text">Option <%= question.values.indexOf(value) +1 %></label>
                                                                             </div>
@@ -66,13 +70,17 @@
                                                                         <% } %>
                                                                 </div>
                                                             <% } else if (question.inputType !== 'File') { %>
-                                                                <div class="col-md-6">
+                                                                <div class="col-md-6 typeOptions">
                                                                     <div class="input-group mb-2">
                                                                         <div class="input-group-prepend">
                                                                             <label for="question<%= question.id %>Placeholder" class="input-group-text">Placeholder</label>
                                                                         </div>
                                                                         <input type="text" name="form[sections][questions][placeholder]" id="question<%= question.id %>Placeholder" class="form-control valueOption" value="<%= question.placeholder %>">
                                                                     </div>
+                                                                </div>
+                                                            <% } else { %>
+                                                                <div class="col-md-6 typeOptions">
+
                                                                 </div>
                                                             <% } %>
                                                         </div>
@@ -101,6 +109,41 @@
             <% } else { %>
                 <div class="alert warning">No Questions Found For This Form</div>
             <% } %>
+            
+            <template id="blankQuestion">
+                <div class="card shadow-sm mb-2 formQuestion draggable">
+                    <div class="card-body">
+                        <div class="row mb-2">
+                            <div class="col text-right"><i class="fas fa-arrows-alt questionDragHandle"></i></div>
+                        </div>
+                        <div class="input-group mb-2">
+                            <div class="input-group-prepend">
+                                <label for="newQuestion${newQuestions.indexOf(this)}Title" class="input-group-text newQuestionTitleLabel">Question Title</label>
+                            </div>
+                            <input type="text" name="form[sections][questions][title]" id="newQuestion${newQuestions.indexOf(this)}Title" class="form-control newQuestionTitleField" placeholder="New Question Title">
+                        </div>
+                        <div class="questionBody collapse show">
+                            <div class="card-text">
+                                <div class="form-row">
+                                    <div class="col-md-6">
+                                        <div class="input-group mb-2">
+                                            <div class="input-group-prepend">
+                                                <label for="newQuestion${newQuestions.indexOf(this)}Type" class="input-group-text newQuestionTypeLabel">Question Type</label>
+                                            </div>
+                                            <select name="form[sections][questions][inputType]" id="newQuestion${newQuestions.indexOf(this)}Type" class="form-control typeSelector">
+                                                
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 typeOptions">
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+            </template>
         </form>
         <div class="row">
             <div class="col card-text"><strong><a href="" class="addSectionLink"><i class="fas fa-plus"></i> Add Section</a></strong></div>

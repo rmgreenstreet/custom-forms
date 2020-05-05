@@ -43,9 +43,9 @@ tr a {
     color: inherit;
 }
 
-.dragging {
+/* .dragging {
     opacity:.7;
-}
+} */
 
 .dragHandle {
     cursor: pointer;
