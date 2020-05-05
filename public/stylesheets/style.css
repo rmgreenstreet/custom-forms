@@ -21,7 +21,7 @@ tr a {
     font-size: 1.5rem;
 }
 
-.addQuestionLink:hover {
+.addQuestionLink:hover, .addOptionLink:hover {
     color: inherit;
 }
 
@@ -43,9 +43,11 @@ tr a {
     color: inherit;
 }
 
-/* .dragging {
-    opacity:.7;
-} */
+.addOptionLink {
+    text-decoration: underline;
+    color: inherit;
+    font-size: 1rem;
+}
 
 .dragHandle {
     cursor: pointer;

@@ -3,6 +3,7 @@
 var sections = document.querySelectorAll('.formSection');
 var questions = document.querySelectorAll('.formQuestion');
 var addQuestionLinks = document.querySelectorAll('.addQuestionLink');
+var addOptionLinks = document.querySelectorAll('.addOptionLink');
 var addSectionLinks = document.querySelectorAll('.addSection');
 var questionDragHandles = document.querySelectorAll('.questionDragHandle');
 
@@ -201,14 +202,6 @@ function getDragAfterElement(container, y) {
 var inputTypeSelectors = document.querySelectorAll('.typeSelector');
 
 
-function getInputTypeSelectors() {
-    inputTypeSelectors = document.querySelectorAll('.typeSelector');
-}
-
-function addInputTypeSelector(newElement) {
-    inputTypeSelectors.push(newElement);
-}
-
 function addInputTypeChangeListener(list) {
     for (var item of list) {
         item.addEventListener('change', function (e) {
@@ -252,7 +245,7 @@ function setAppropriateOptions(e, item) {
     }
 }
 
-var newQuestionTypeSelector = inputTypes.map(function(type) {
+var typeSelectorOptions = inputTypes.map(function(type) {
     return `
         <option value="${type.htmlInputType}">${type.displayName}</option>
     `
@@ -266,7 +259,7 @@ for (var link of addQuestionLinks) {
         var newQuestion = 
         {
             id: `newQuestion${newQuestions.length}`,
-            options: newQuestionTypeSelector.join()
+            options: typeSelectorOptions.join()
         }
         
         newQuestions.push(newQuestion);
@@ -278,9 +271,21 @@ for (var link of addQuestionLinks) {
         blankQuestion.querySelector('.newQuestionTitleField').id = `${newQuestion.id}Title`;
         blankQuestion.querySelector('.newQuestionTypeLabel').for = `${newQuestion.id}Type`;
         blankQuestion.querySelector('.typeSelector').id = `${newQuestion.id}Type`;
-        blankQuestion.querySelector('.typeSelector').innerHTML = newQuestionTypeSelector;
+        blankQuestion.querySelector('.typeSelector').innerHTML = typeSelectorOptions;
         addInputTypeChangeListener([blankQuestion.querySelector('.typeSelector')]);
 
         this.closest('.sectionBody').querySelector('.questionList').append(blankQuestion)
+    })
+}
+
+/* Add new option to question types that allow it (checkbox, radio, select) */
+for (var link of addOptionLinks) {
+    link.addEventListener('click', function(e) {
+        e.preventDefault();
+        var parentQuestion = this.closest('.formQuestion');
+        var existingOptions = parentQuestion.querySelectorAll('option');
+        var newOption = new DocumentFragment()
+
+        parentQuestion.querySelector('.typeOptions').insertBefore(newOption, this);
     })
 }
