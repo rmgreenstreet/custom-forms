@@ -49,6 +49,6 @@ tr a {
     font-size: 1rem;
 }
 
-.dragHandle {
+.sectionDragHandle, .questionDragHandle {
     cursor: pointer;
 }

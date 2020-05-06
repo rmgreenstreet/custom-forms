@@ -6,6 +6,7 @@ var addQuestionLinks = document.querySelectorAll('.addQuestionLink');
 var addOptionLinks = document.querySelectorAll('.addOptionLink');
 var addSectionLinks = document.querySelectorAll('.addSection');
 var questionDragHandles = document.querySelectorAll('.questionDragHandle');
+var questionDeleteButtons = document.querySelectorAll('.questionDeleteButton');
 
 for (var handle of questionDragHandles) {
     handle.onmousedown = function(e) {
@@ -263,8 +264,7 @@ for (var link of addQuestionLinks) {
         }
         
         newQuestions.push(newQuestion);
-        var template = document.querySelector('#blankQuestion');
-        var blankQuestion = template.content.cloneNode(true);
+        var blankQuestion = document.querySelector('#blankQuestion').content.cloneNode(true);
 
         blankQuestion.querySelector('.formQuestion').id = newQuestion.id;
         blankQuestion.querySelector('.newQuestionTitleLabel').for = `${newQuestion.id}Title`;
@@ -273,8 +273,11 @@ for (var link of addQuestionLinks) {
         blankQuestion.querySelector('.typeSelector').id = `${newQuestion.id}Type`;
         blankQuestion.querySelector('.typeSelector').innerHTML = typeSelectorOptions;
         addInputTypeChangeListener([blankQuestion.querySelector('.typeSelector')]);
+        addDeleteButtonListener([blankQuestion.querySelector('.questionDeleteButton')]);
 
-        this.closest('.sectionBody').querySelector('.questionList').append(blankQuestion)
+        this.closest('.sectionBody')
+        .querySelector('.questionList')
+        .append(blankQuestion)
     })
 }
 
@@ -283,9 +286,25 @@ for (var link of addOptionLinks) {
     link.addEventListener('click', function(e) {
         e.preventDefault();
         var parentQuestion = this.closest('.formQuestion');
-        var existingOptions = parentQuestion.querySelectorAll('option');
-        var newOption = new DocumentFragment()
-
-        parentQuestion.querySelector('.typeOptions').insertBefore(newOption, this);
+        var existingOptions = parentQuestion.querySelectorAll('.valueOption');
+        var optionId = `question${this.closest('.formQuestion').id}Value${existingOptions.length}`;
+        var optionLabel = document.createTextNode(`Option${existingOptions.length}`)
+        var newOption = document.querySelector('#blankOption').content.cloneNode(true);
+        newOption.querySelector('.input-group-text').for = optionId;
+        // newOption.querySelector('.input-group-text').appendChild(optionLabel);
+        newOption.querySelector('.input-group-text').textContent = `Option ${existingOptions.length+1}`;
+        newOption.querySelector('.valueOption').id = optionId;
+        
+        this.closest('.typeOptions').insertBefore(newOption, this.closest('.row'));
     })
+}
+
+//Delete Question
+function addDeleteButtonListener (list = []) {
+    for (var item of list) {
+        item.addEventListener('click', function(e) {
+            e.preventDefault();
+            this.closest('.formQuestion').remove(0);
+        })
+    }
 }

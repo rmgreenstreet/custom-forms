@@ -98,6 +98,11 @@
                                                         </div>
                                                     </div>
                                                 </div>
+                                                <div class="row">
+                                                    <div class="col text-right">
+                                                        <i class="fas fa-trash-alt btn questionDeleteButton"></i>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     <% } %>
@@ -145,8 +150,13 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="row">
+                            <div class="col text-right">
+                                <i class="fas fa-trash-alt btn questionDeleteButton"></i>
+                            </div>
+                        </div>
                     </div>
-                    </div>
+                </div>
             </template>
 
             <template id="blankOption">
@@ -154,7 +164,7 @@
                     <div class="input-group-prepend">
                         <label for="" class="input-group-text">Option </label>
                     </div>
-                    <input type="text" name="form[sections][questions][values]" id="" class="form-control valueOption" placeholder="New">
+                    <input type="text" name="form[sections][questions][values]" id="" class="form-control valueOption" placeholder="New Option">
                     
                 </div>
             </template>
