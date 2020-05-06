@@ -223,6 +223,9 @@ function setAppropriateOptions(e, item) {
                 </div>
                 <input type="text" name="form[sections][questions][values]" id="question${item.closest('.formQuestion').id}Value0" class="form-control valueOption" >
             </div>
+            <div class="row">
+                <div class="col card-text"><a href="" class="addOptionLink"><i class="fas fa-plus"></i> Add Option</a></div>
+            </div>
         `;
     } else if (item.value !== 'File') {
         optionsSection.innerHTML = `
@@ -272,6 +275,7 @@ for (var link of addQuestionLinks) {
         blankQuestion.querySelector('.newQuestionTypeLabel').for = `${newQuestion.id}Type`;
         blankQuestion.querySelector('.typeSelector').id = `${newQuestion.id}Type`;
         blankQuestion.querySelector('.typeSelector').innerHTML = typeSelectorOptions;
+        blankQuestion.querySelector('.typeSelector').selectedIndex = - 1
         addInputTypeChangeListener([blankQuestion.querySelector('.typeSelector')]);
         addDeleteButtonListener([blankQuestion.querySelector('.questionDeleteButton')]);
 
