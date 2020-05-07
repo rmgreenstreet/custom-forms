@@ -4,7 +4,7 @@ var sections = document.querySelectorAll('.formSection');
 var questions = document.querySelectorAll('.formQuestion');
 var addQuestionLinks = document.querySelectorAll('.addQuestionLink');
 var addOptionLinks = document.querySelectorAll('.addOptionLink');
-var addSectionLinks = document.querySelectorAll('.addSection');
+var addSectionLink = document.querySelector('.addSectionLink');
 var questionDragHandles = document.querySelectorAll('.questionDragHandle');
 var questionDeleteButtons = document.querySelectorAll('.questionDeleteButton');
 
@@ -166,11 +166,11 @@ for (var question of questions) {
 //     // alert(`${e.currentTarget.id}`)
 // }
 
-// function collapseAllSections() {
-//     for (var section of sections) {
-//         section.querySelector('.collapse').classList.remove('show');
-//     }
-// }
+function collapseAllSections() {
+    for (var section of sections) {
+        section.querySelector('.collapse').classList.remove('show');
+    }
+}
 
 function dragOver(e) {
     e.preventDefault();
@@ -256,10 +256,8 @@ var typeSelectorOptions = inputTypes.map(function(type) {
 })
 
 var newQuestions = [];
-
-for (var link of addQuestionLinks) {
-    link.addEventListener('click', function(e) {
-        e.preventDefault();
+function addQuestionLinkListener(e, link) {
+    e.preventDefault();
         var newQuestion = 
         {
             id: `newQuestion${newQuestions.length}`,
@@ -279,9 +277,14 @@ for (var link of addQuestionLinks) {
         addInputTypeChangeListener([blankQuestion.querySelector('.typeSelector')]);
         addDeleteButtonListener([blankQuestion.querySelector('.questionDeleteButton')]);
 
-        this.closest('.sectionBody')
+        link.closest('.sectionBody')
         .querySelector('.questionList')
         .append(blankQuestion)
+}
+
+for (var link of addQuestionLinks) {
+    link.addEventListener('click', function(e) {
+        addQuestionLinkListener(e, this);
     })
 }
 
@@ -292,11 +295,11 @@ for (var link of addOptionLinks) {
         var parentQuestion = this.closest('.formQuestion');
         var existingOptions = parentQuestion.querySelectorAll('.valueOption');
         var optionId = `question${this.closest('.formQuestion').id}Value${existingOptions.length}`;
-        var optionLabel = document.createTextNode(`Option${existingOptions.length}`)
+        var optionLabel = document.createTextNode(`Option ${existingOptions.length + 1}`)
         var newOption = document.querySelector('#blankOption').content.cloneNode(true);
         newOption.querySelector('.input-group-text').for = optionId;
         // newOption.querySelector('.input-group-text').appendChild(optionLabel);
-        newOption.querySelector('.input-group-text').textContent = `Option ${existingOptions.length+1}`;
+        newOption.querySelector('.input-group-text').textContent = optionLabel;
         newOption.querySelector('.valueOption').id = optionId;
         
         this.closest('.typeOptions').insertBefore(newOption, this.closest('.row'));
@@ -311,4 +314,34 @@ function addDeleteButtonListener (list = []) {
             this.closest('.formQuestion').remove(0);
         })
     }
+}
+
+addDeleteButtonListener(questionDeleteButtons);
+
+//TODO: Change event listener for for section title to update title
+
+var newSections = []
+//Add New section -- Remember to make the section a Sortable instance
+addSectionLink.onclick = function(e) {
+    e.preventDefault();
+    collapseAllSections();
+    var newSection = {
+        sectionNumber: `section${sections.length + 1}`
+    }
+    newSections.push(newSection);
+    var blankSection = document.querySelector('#blankSection').content.cloneNode(true);
+    blankSection.querySelector('section').id = newSection.sectionNumber;
+    blankSection.querySelector('.row').id = `${newSection.sectionNumber}Title`;
+    blankSection.querySelector('.sectionTitle').setAttribute('data-target', newSection.sectionNumber);
+    blankSection.querySelector('.sectionTitle').setAttribute('aria-controls', `${newSections.length + 1}`);
+    blankSection.querySelector('.sectionBody').id = `${newSections.length + 1}`;
+    blankSection.querySelector('.sectionBody').setAttribute('aria-labelledby', `section`);
+    blankSection.querySelector('label').for = `${newSection.sectionNumber}TitleField`;
+    blankSection.querySelector('input').id = `${newSection.sectionNumber}Title`;
+    blankSection.querySelector('.addQuestionLink').onclick = function(e) {
+        addQuestionLinkListener(e, this);
+    };
+    blankSection.querySelector('.addQuestionLink').dispatchEvent(new Event('click'));
+
+    document.querySelector('#fullForm').appendChild(blankSection);
 }
