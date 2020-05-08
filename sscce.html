@@ -41,8 +41,118 @@
                             </div>
                         </div>
 
-                        <div class="card-text questionList" id="question1">
-                            <div class="card shadow-sm my-2 formQuestion draggable">
+                        <div class="card-text questionList">
+                            <div class="card shadow-sm my-2 formQuestion draggable" id="question1">
+                                <div class="card-body">
+                                    <div class="row mb-2">
+                                        <div class="col text-right">
+                                            <span class="questionHandle">++</span>
+                                        </div>
+                                    </div>
+                                    <div class="input-group mb-2">
+                                        <div class="input-group-prepend">
+                                            <label for="question1Title" class="input-group-text">Question Title</label>
+                                        </div>
+                                        <input type="text" name="form[sections][questions][title]" id="question1Title" class="form-control">
+                                    </div>
+                                    <div class="card-text questionBody collapse show"><!-- combine questionbody/collapse into card-text -->
+                                        <div class="form-row">
+                                            <div class="col-md-6">
+                                                <div class="input-group mb-2">
+                                                    <div class="input-group-prepend">
+                                                        <label for="question1Type" class="input-group-text" id="question1TypeLabel">Type</label>
+                                                    </div>
+                                                    <select name="form[sections][questions][inputType" id="question1Type" class="form-control">
+                                                        <option value="1">Type 1</option>
+                                                        <option value="2">Type 2</option>
+                                                        <option value="3">Type 3</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 typeOptions">
+                                                <div class="input-group mb-2">
+                                                    <div class="input-group-prepend">
+                                                        <label for="question1Value1" class="input-group-text" id="question1Value1Label">Option 1</label>
+                                                    </div>
+                                                    <input type="text" name="form[sections][questoins][values]" id="question1Value1" class="form-control">
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col card-text"><a href="" class="addOptionLink"><i class="fas fa-plus"></i> Add Option</a></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-row">
+                                            <div class="col-6">
+                                                <div class="form-check">
+                                                    <input type="checkbox" name="form[sections][questions][isRequired]" id="question1IsRequired" class="form-check-input" >
+                                                    <label for="question1IsRequired" class="form-check-label">Required?</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col text-right">
+                                            <i class="fas fa-trash-alt btn questionDeleteButton"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card shadow-sm my-2 formQuestion draggable" id="question1">
+                                <div class="card-body">
+                                    <div class="row mb-2">
+                                        <div class="col text-right">
+                                            <span class="questionHandle">++</span>
+                                        </div>
+                                    </div>
+                                    <div class="input-group mb-2">
+                                        <div class="input-group-prepend">
+                                            <label for="question1Title" class="input-group-text">Question Title</label>
+                                        </div>
+                                        <input type="text" name="form[sections][questions][title]" id="question1Title" class="form-control">
+                                    </div>
+                                    <div class="card-text questionBody collapse show"><!-- combine questionbody/collapse into card-text -->
+                                        <div class="form-row">
+                                            <div class="col-md-6">
+                                                <div class="input-group mb-2">
+                                                    <div class="input-group-prepend">
+                                                        <label for="question1Type" class="input-group-text" id="question1TypeLabel">Type</label>
+                                                    </div>
+                                                    <select name="form[sections][questions][inputType" id="question1Type" class="form-control">
+                                                        <option value="1">Type 1</option>
+                                                        <option value="2">Type 2</option>
+                                                        <option value="3">Type 3</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 typeOptions">
+                                                <div class="input-group mb-2">
+                                                    <div class="input-group-prepend">
+                                                        <label for="question1Value1" class="input-group-text" id="question1Value1Label">Option 1</label>
+                                                    </div>
+                                                    <input type="text" name="form[sections][questoins][values]" id="question1Value1" class="form-control">
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col card-text"><a href="" class="addOptionLink"><i class="fas fa-plus"></i> Add Option</a></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-row">
+                                            <div class="col-6">
+                                                <div class="form-check">
+                                                    <input type="checkbox" name="form[sections][questions][isRequired]" id="question1IsRequired" class="form-check-input" >
+                                                    <label for="question1IsRequired" class="form-check-label">Required?</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col text-right">
+                                            <i class="fas fa-trash-alt btn questionDeleteButton"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card shadow-sm my-2 formQuestion draggable" id="question1">
                                 <div class="card-body">
                                     <div class="row mb-2">
                                         <div class="col text-right">
@@ -128,8 +238,8 @@
                             </div>
                         </div>
 
-                        <div class="card-text questionList" id="question1">
-                            <div class="card shadow-sm my-2 formQuestion draggable">
+                        <div class="card-text questionList">
+                            <div class="card shadow-sm my-2 formQuestion draggable" id="question1">
                                 <div class="card-body">
                                     <div class="row mb-2">
                                         <div class="col text-right">
@@ -307,24 +417,27 @@
                 Sortable.create(fullForm, sortableFormOptions);
 
                 var sections = document.querySelectorAll('section');
-                for(var section of sections) {
-                    Sortable.create(section.querySelector('.questionList'), {
+                sections.prototype.indexOf = Array.prototype.indexOf;
+                for (var section of sections) {
+
+                    var sortableSection = new Sortable(section.querySelector('.questionList'), {
                         group: {
-                            name: section.id,
+                            // name: `section${sections.indexOf(section)}`,
                             pull: true,
-                            put: true
+                            put: true,
                         },
-                        handle: '.questionHandle',
-                        animation: 150,
-                        draggable: '.formQuestion'
+                        draggable: '.draggable',
+                        handle: '.questionDragHandle',
+                        animation: 150
                     })
 
-                    section.ondragstart = collapseAllSections;
+                    section.ondragstart = function(e) {
+                        collapseAllSections(e);
+                        this.classList.add('dragging');
+                    };
 
                     section.ondragend = function (e) {
-                        toggleCollapse(this.querySelector('.collapse'));
-                        if(!e.target.classList.contains('formQuestion')) {
-                        }
+                        this.querySelector('.collapse').classList.add('show');
                     }
 
                     section.ondragenter = function(e) {
@@ -336,10 +449,9 @@
                         }
                     }
                     section.ondrop = function(e) {
-                        toggleCollapse(this.querySelector('.collapse'));
+                        this.querySelector('.collapse').classList.add('show');
                     }
-
-                }
+                    }
 
                 function collapseAllSections(e) {
                     if(!e.target.classList.contains('formQuestion')){
@@ -359,29 +471,26 @@
                 var questions = document.querySelectorAll('.formQuestion');
                 for (var question of questions) {
                     question.ondragstart = function(e) {
-                        // e.stopPropagation();
                         this.classList.add('dragging');
                         this.querySelector('.collapse').classList.remove('show');
-                        // e.dataTransfer.setData('text/html', this);
                     }
                     question.ondragend = function(e) {
-                        // e.stopPropagation();
                         this.classList.remove('dragging');
                         this.querySelector('.collapse').classList.add('show');
                     }
 
-                    // var typeSelector = question.querySelector('.typeSelector')
-                    // if (typeSelector.value == 'File') {
-                    //     if (typeSelector[typeSelector.selectedIndex].text == 'File Upload') {
-                    //         question.querySelector('.typeOptions').innerHTML = `
-                    //             <p>Accepted Filetypes: .PDF, .DOC, .DOCX, .PPT, .PPTX, .XLS, .XLSX, .CSV </p>
-                    //         `
-                    //     } else if (typeSelector[typeSelector.selectedIndex].text == 'Image Upload') {
-                    //         question.querySelector('.typeOptions').innerHTML = `
-                    //             <p>Accepted Filetypes: .JPG, .JPEG, .PNG </p>
-                    //         `
-                    //     }
-                    // }
+                    var typeSelector = question.querySelector('.typeSelector')
+                    if (typeSelector.value == 'File') {
+                        if (typeSelector[typeSelector.selectedIndex].text == 'File Upload') {
+                            question.querySelector('.typeOptions').innerHTML = `
+                                <p>Accepted Filetypes: .PDF, .DOC, .DOCX, .PPT, .PPTX, .XLS, .XLSX, .CSV </p>
+                            `
+                        } else if (typeSelector[typeSelector.selectedIndex].text == 'Image Upload') {
+                            question.querySelector('.typeOptions').innerHTML = `
+                                <p>Accepted Filetypes: .JPG, .JPEG, .PNG </p>
+                            `
+                        }
+                    }
 
                 }
             </script>

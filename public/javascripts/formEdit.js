@@ -24,6 +24,29 @@ var sortableFormOptions = {
 
 var formEditor = new Sortable(fullForm, sortableFormOptions);
 
+function addSectionDragListeners(item) {
+    item.ondragstart = function(e) {
+        collapseAllSections(e);
+        this.classList.add('dragging');
+    };
+
+    item.ondragend = function (e) {
+        this.querySelector('.collapse').classList.add('show');
+    }
+
+    item.ondragenter = function(e) {
+        for (var section of sections) {
+            section.querySelector('.collapse').classList.remove('show');
+        }
+        if(document.querySelector('.dragging').classList.contains('formQuestion')) {
+            this.querySelector('.collapse').classList.add('show');
+        }
+    }
+    item.ondrop = function(e) {
+        this.querySelector('.collapse').classList.add('show');
+    }
+}
+
 for (var section of sections) {
 
     var sortableSection = new Sortable(section.querySelector('.questionList'), {
@@ -37,12 +60,13 @@ for (var section of sections) {
         animation: 150
     })
 
-    section.ondragstart = collapseAllSections;
+    section.ondragstart = function(e) {
+        collapseAllSections(e);
+        this.classList.add('dragging');
+    };
 
     section.ondragend = function (e) {
-        toggleCollapse(this.querySelector('.collapse'));
-        if(!e.target.classList.contains('formQuestion')) {
-        }
+        this.querySelector('.collapse').classList.add('show');
     }
 
     section.ondragenter = function(e) {
@@ -54,19 +78,16 @@ for (var section of sections) {
         }
     }
     section.ondrop = function(e) {
-        toggleCollapse(this.querySelector('.collapse'));
+        this.querySelector('.collapse').classList.add('show');
     }
 }
 
 for (var question of questions) {
     question.ondragstart = function(e) {
-        // e.stopPropagation();
         this.classList.add('dragging');
         this.querySelector('.collapse').classList.remove('show');
-        // e.dataTransfer.setData('text/html', this);
     }
     question.ondragend = function(e) {
-        // e.stopPropagation();
         this.classList.remove('dragging');
         this.querySelector('.collapse').classList.add('show');
     }
@@ -102,29 +123,29 @@ function toggleCollapse(element) {
 }
 
 
-function dragOver(e) {
-    e.preventDefault();
-    const draggable = document.querySelector('.dragging');
-    const afterElement = getDragAfterElement(this, e.clientY);
-    if (afterElement === null) {
-        this.appendChild(draggable);
-    } else {
-        this.insertBefore(draggable, afterElement);
-    }
-}
+// function dragOver(e) {
+//     e.preventDefault();
+//     const draggable = document.querySelector('.dragging');
+//     const afterElement = getDragAfterElement(this, e.clientY);
+//     if (afterElement === null) {
+//         this.appendChild(draggable);
+//     } else {
+//         this.insertBefore(draggable, afterElement);
+//     }
+// }
 
-function getDragAfterElement(container, y) {
-    const draggableElements = [...container.querySelectorAll('.draggable:not(.dragging)')];
-    return draggableElements.reduce((closest, child) => {
-        const box = child.getBoundingClientRect();
-        const offset = y - box.top - box.height / 2;
-        if (offset < 0 && offset > closest.offset) {
-            return {offset: offset, element: child};
-        } else {
-            return closest;
-        };
-    }, { offset: Number.NEGATIVE_INFINITY }).element;
-}
+// function getDragAfterElement(container, y) {
+//     const draggableElements = [...container.querySelectorAll('.draggable:not(.dragging)')];
+//     return draggableElements.reduce((closest, child) => {
+//         const box = child.getBoundingClientRect();
+//         const offset = y - box.top - box.height / 2;
+//         if (offset < 0 && offset > closest.offset) {
+//             return {offset: offset, element: child};
+//         } else {
+//             return closest;
+//         };
+//     }, { offset: Number.NEGATIVE_INFINITY }).element;
+// }
 
 
 
@@ -209,7 +230,7 @@ function addQuestionLinkListener(e, link) {
 
         link.closest('.sectionBody')
         .querySelector('.questionList')
-        .append(blankQuestion)
+        .append(blankQuestion);
 }
 
 for (var link of addQuestionLinks) {
@@ -254,7 +275,7 @@ var newSections = []
 //Add New section
 addSectionLink.onclick = function(e) {
     e.preventDefault();
-    collapseAllSections();
+    collapseAllSections(e);
     var newSection = {
         sectionNumber: `section${sections.length + 1}`
     }
@@ -273,10 +294,21 @@ addSectionLink.onclick = function(e) {
     };
     blankSection.querySelector('.addQuestionLink').dispatchEvent(new Event('click'));
 
-    document.querySelector('#fullForm').append(blankSection);
+    fullForm.append(blankSection);
     sections = document.querySelectorAll('section');
-    sections[sections.length - 1].ondragstart = collapseAllSections;
-    sections[sections.length - 1].ondragend = function (e) {
-        toggleCollapse(this.querySelector('.collapse'));
-    }
+    // sections[sections.length - 1].ondragstart = collapseAllSections;
+    // sections[sections.length - 1].ondragend = function (e) {
+    //     toggleCollapse(this.querySelector('.collapse'));
+    // }
+    addSectionDragListeners(sections[sections.length - 1])
+    new Sortable(sections[sections.length - 1].querySelector('.questionList'), {
+        group: {
+            name: `section${sections.indexOf(section)}`,
+            pull: true,
+            put: true,
+        },
+        draggable: '.draggable',
+        handle: '.questionDragHandle',
+        animation: 150
+    })
 }
