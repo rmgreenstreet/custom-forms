@@ -10,10 +10,10 @@
                     <section class="card shadow-sm mb-2 formSection draggable" id="section<%= currentForm.sections.indexOf(section) %>" >
                         <div class="card-body">
                             <div class="row mb-2" id="section<%= section.id %>Title">
-                                <div class="col"><button class="btn btn-link sectionTitle"  data-toggle="collapse" data-target="#section<%= section.id %>" aria-expanded="<%= currentForm.sections.indexOf(section) === 0 ? 'true' : 'false' %>" aria-controls="section<%= section.id %>" type="button" ><h3 class="">Section: <%= section.title %></h3></button></strong></div>
+                                <div class="col"><button class="btn btn-link sectionTitle"  data-toggle="collapse" data-target="#section<%= section.id %>Body" aria-expanded="<%= currentForm.sections.indexOf(section) === 0 ? 'true' : 'false' %>" aria-controls="section<%= section.id %>" type="button" ><h3 class="">Section: <%= section.title %></h3></button></strong></div>
                                 <div class="col text-right"><i class="fas fa-arrows-alt sectionDragHandle"></i></div>
                             </div>
-                            <div class="sectionBody collapse<%= currentForm.sections.indexOf(section) === 0 ? ' show' : '' %>" id="section<%= section.id %>" data-parent="#fullForm" aria-labelledby="section<%= section.id %>Title">
+                            <div class="sectionBody collapse<%= currentForm.sections.indexOf(section) === 0 ? ' show' : '' %>" id="section<%= section.id %>Body" data-parent="#fullForm" aria-labelledby="section<%= section.id %>Title">
                                 <div class="card-title">
                                     <div class="input-group">
                                         <div class="input-group-prepend">
@@ -25,7 +25,7 @@
                                 <hr/>
                                 <div class="card-text questionList">
                                     <% for (const question of section.questions) { %>
-                                        <div class="card shadow-sm mb-2 formQuestion draggable" id="<%= question.id %>" draggable="true">
+                                        <div class="card shadow-sm mb-2 formQuestion draggable" id="<%= question.id %>">
                                             <div class="card-body">
                                                 <div class="row mb-2">
                                                     <div class="col text-right"><i class="fas fa-arrows-alt questionDragHandle"></i></div>
@@ -36,59 +36,57 @@
                                                     </div>
                                                     <input type="text" name="form[sections][questions][title]" id="question<%= section.questions.indexOf(question) %>Title" class="form-control" value="<%= question.title %>">
                                                 </div>
-                                                <div class="questionBody collapse show">
-                                                    <div class="card-text">
-                                                        <div class="form-row">
-                                                            <div class="col-md-6">
-                                                                <div class="input-group mb-2">
-                                                                    <div class="input-group-prepend">
-                                                                        <label for="question<%= question.id %>Type" class="input-group-text">Question Type</label>
-                                                                    </div>
-                                                                    <select name="form[sections][questions][inputType]" id="question<%= question.id %>Type" class="form-control typeSelector">
-                                                                        <% for (const type of inputTypes) { %> 
-                                                                        <option value="<%= type.htmlInputType %>" <%= question.inputType === type.htmlInputType ? 'selected' : '' %>>
-                                                                            <%= type.displayName %>
-                                                                        </option>
-                                                                        <% } %>
-                                                                    </select>
+                                                <div class="card-text questionBody collapse show">
+                                                    <div class="form-row">
+                                                        <div class="col-md-6">
+                                                            <div class="input-group mb-2">
+                                                                <div class="input-group-prepend">
+                                                                    <label for="question<%= question.id %>Type" class="input-group-text">Question Type</label>
                                                                 </div>
-                                                            </div>
-                                                            <% if (question.inputType === 'Checkbox' || question.inputType === 'Radio' || question.inputType === 'Select') { %> 
-                                                                <div class="col-md-6 typeOptions">
-                                                                    <% for (let value of question.values) { %>
-                                                                        <div class="input-group mb-2">
-                                                                            <div class="input-group-prepend">
-                                                                                <label for="question<%= question.id %>Value<%= question.values.indexOf(value) %>" class="input-group-text">Option <%= question.values.indexOf(value) +1 %></label>
-                                                                            </div>
-                                                                            <input type="text" name="form[sections][questions][values]" id="question<%= question.id %>Value<%= question.values.indexOf(value) %>" value ="<%= question.values.indexOf(value) > -1 ? value : '' %>" class="form-control valueOption">
-                                                                            
-                                                                        </div>
+                                                                <select name="form[sections][questions][inputType]" id="question<%= question.id %>Type" class="form-control typeSelector">
+                                                                    <% for (const type of inputTypes) { %> 
+                                                                    <option value="<%= type.htmlInputType %>" <%= question.inputType === type.htmlInputType ? 'selected' : '' %>>
+                                                                        <%= type.displayName %>
+                                                                    </option>
                                                                     <% } %>
-                                                                    <div class="row">
-                                                                        <div class="col card-text"><a href="" class="addOptionLink"><i class="fas fa-plus"></i> Add Option</a></div>
-                                                                    </div>
-                                                                </div>
-                                                            <% } else if (question.inputType !== 'File') { %>
-                                                                <div class="col-md-6 typeOptions">
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <% if (question.inputType === 'Checkbox' || question.inputType === 'Radio' || question.inputType === 'Select') { %> 
+                                                            <div class="col-md-6 typeOptions">
+                                                                <% for (let value of question.values) { %>
                                                                     <div class="input-group mb-2">
                                                                         <div class="input-group-prepend">
-                                                                            <label for="question<%= question.id %>Placeholder" class="input-group-text">Placeholder</label>
+                                                                            <label for="question<%= question.id %>Value<%= question.values.indexOf(value) %>" class="input-group-text">Option <%= question.values.indexOf(value) +1 %></label>
                                                                         </div>
-                                                                        <input type="text" name="form[sections][questions][placeholder]" id="question<%= question.id %>Placeholder" class="form-control valueOption" value="<%= question.placeholder %>">
+                                                                        <input type="text" name="form[sections][questions][values]" id="question<%= question.id %>Value<%= question.values.indexOf(value) %>" value ="<%= question.values.indexOf(value) > -1 ? value : '' %>" class="form-control valueOption">
+                                                                        
                                                                     </div>
+                                                                <% } %>
+                                                                <div class="row">
+                                                                    <div class="col card-text"><a href="" class="addOptionLink"><i class="fas fa-plus"></i> Add Option</a></div>
                                                                 </div>
-                                                            <% } else { %>
-                                                                <div class="col-md-6 typeOptions">
+                                                            </div>
+                                                        <% } else if (question.inputType !== 'File') { %>
+                                                            <div class="col-md-6 typeOptions">
+                                                                <div class="input-group mb-2">
+                                                                    <div class="input-group-prepend">
+                                                                        <label for="question<%= question.id %>Placeholder" class="input-group-text">Placeholder</label>
+                                                                    </div>
+                                                                    <input type="text" name="form[sections][questions][placeholder]" id="question<%= question.id %>Placeholder" class="form-control valueOption" value="<%= question.placeholder %>">
+                                                                </div>
+                                                            </div>
+                                                        <% } else { %>
+                                                            <div class="col-md-6 typeOptions">
 
-                                                                </div>
-                                                            <% } %>
-                                                        </div>
-                                                        <div class="form-row">
-                                                            <div class="col-6">
-                                                                <div class="form-check">
-                                                                    <input type="checkbox" name="form[sections][questions][isRequired]" id="question<%= question.id %>IsRequired" class="form-check-input" <%= question.isRequired ? 'checked' : '' %>>
-                                                                    <label for="question<%= question.id %>IsRequired" class="form-check-label">Required?</label>
-                                                                </div>
+                                                            </div>
+                                                        <% } %>
+                                                    </div>
+                                                    <div class="form-row">
+                                                        <div class="col-6">
+                                                            <div class="form-check">
+                                                                <input type="checkbox" name="form[sections][questions][isRequired]" id="question<%= question.id %>IsRequired" class="form-check-input" <%= question.isRequired ? 'checked' : '' %>>
+                                                                <label for="question<%= question.id %>IsRequired" class="form-check-label">Required?</label>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -125,14 +123,12 @@
                             <div class="col"><button class="btn btn-link sectionTitle" data-toggle="collapse" data-target="" aria-expanded="true" aria-controls="" type="button" ><h3 class="">New Section</h3></button></strong></div>
                             <div class="col text-right"><i class="fas fa-arrows-alt sectionDragHandle"></i></div>
                         </div>
-                        <div class="sectionBody collapse show" id="" data-parent="#fullForm" aria-labelledby="">
-                            <div class="card-title">
-                                <div class="input-group">
-                                    <div class="input-group-prepend">
-                                        <label for="" class="input-group-text"><strong>Section Title</strong></label>
-                                    </div>
-                                    <input type="text" name="form[section][title]" id="" class="form-control form-control-lg" placeholder="New Section Title">
+                        <div class="card-title sectionBody collapse show" id="" data-parent="#fullForm" aria-labelledby="">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <label for="" class="input-group-text"><strong>Section Title</strong></label>
                                 </div>
+                                <input type="text" name="form[section][title]" id="" class="form-control form-control-lg" placeholder="New Section Title">
                             </div>
                             <hr/>
                             <div class="card-text questionList">

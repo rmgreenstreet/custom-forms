@@ -1,5 +1,6 @@
 // const Sortable = require("sortablejs");
 
+var fullForm = document.querySelector('#fullForm');
 var sections = document.querySelectorAll('.formSection');
 var questions = document.querySelectorAll('.formQuestion');
 var addQuestionLinks = document.querySelectorAll('.addQuestionLink');
@@ -14,49 +15,47 @@ for (var handle of questionDragHandles) {
     }
 }
 
-
-var formEditor = new Sortable(document.querySelector('#fullForm'), {
+var sortableFormOptions = {
     group: {name: 'sections', pull: false, put: false},
     handle:'.sectionDragHandle',
     animation:150,
     draggable: 'section'
-});
+};
+
+var formEditor = new Sortable(fullForm, sortableFormOptions);
 
 for (var section of sections) {
 
-    new Sortable(section, {
+    var sortableSection = new Sortable(section.querySelector('.questionList'), {
         group: {
             name: `section${sections.indexOf(section)}`,
             pull: true,
             put: true,
         },
-        draggable: '.formQuestion',
+        draggable: '.draggable',
         handle: '.questionDragHandle',
         animation: 150
     })
 
-    section.ondragstart = function(e) {
+    section.ondragstart = collapseAllSections;
+
+    section.ondragend = function (e) {
+        toggleCollapse(this.querySelector('.collapse'));
+        if(!e.target.classList.contains('formQuestion')) {
+        }
+    }
+
+    section.ondragenter = function(e) {
         for (var section of sections) {
             section.querySelector('.collapse').classList.remove('show');
         }
+        if(document.querySelector('.dragging').classList.contains('formQuestion')) {
+            this.querySelector('.collapse').classList.add('show');
+        }
     }
-    section.ondragend = function (e) {
-        this.querySelector('.collapse').classList.add('show');
+    section.ondrop = function(e) {
+        toggleCollapse(this.querySelector('.collapse'));
     }
-    // section.ondragover = function(e) {
-    //     for (var section of sections) {
-    //         section.querySelector('.collapse').classList.remove('show');
-    //     }
-    //     if(document.querySelector('.dragging').classList.contains('formQuestioin')) {
-    //         this.querySelector('.collapse').classList.add('show');
-    //     }
-    // }
-    // section.ondragleave = function(e) {
-    //     this.querySelector('.collapse').classList.remove('show');
-    // }
-    // section.ondragover = function(e) {
-    //     e.preventDefault();
-    // };
 }
 
 for (var question of questions) {
@@ -64,23 +63,13 @@ for (var question of questions) {
         // e.stopPropagation();
         this.classList.add('dragging');
         this.querySelector('.collapse').classList.remove('show');
-        e.dataTransfer.setData('text/html', this);
+        // e.dataTransfer.setData('text/html', this);
     }
     question.ondragend = function(e) {
         // e.stopPropagation();
         this.classList.remove('dragging');
         this.querySelector('.collapse').classList.add('show');
     }
-    // question.ondragenter = function(e) {
-    //     e.stopPropagation();
-    // }
-    // question.ondragover = function(e) {
-    //     e.stopPropagation();
-        
-    // }
-    // question.onmousedown = function(e) {
-    //     e.stopPropagation();
-    // }
 
     var typeSelector = question.querySelector('.typeSelector')
     if (typeSelector.value == 'File') {
@@ -97,80 +86,21 @@ for (var question of questions) {
 
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// // var sortableSections = [];
-// for (var section of sections) {
-//     // var currentSection = new Sortable(section.querySelector('.card-text'), {
-//     //     group: {name: `section${sections.indexOf(section)}`, put:true},
-//     //     handle: '.questionDragHandle',
-//     //     draggable: '.formQuestion',
-//     //     swapThreshold: 0.65
-//     // });
-//     // sortableSections.push(currentSection);
-//     section.ondragstart = dragStart;
-//     section.ondragend = dragEnd;
-//     section.ondragleave = dragLeave;
-//     section.ondragover = function(e) {
-//         if (e.target.classList.contains('formQuestion')) {
-//             // for (var section of sections) {
-//             //     section.querySelector('.collapse').classList.remove('show');
-//             // }
-//             e.currentTarget.querySelector('.collapse').classList.add('show');
-//         }
-//     };
-//     section.querySelector('.card-text').ondragover = dragOver;
-// }
-
-// for (var question of questions) {
-//     question.ondragstart = function(e) {
-//         e.dataTransfer.setData('text/html', this);
-//         e.stopPropagation();
-//         this.querySelector('.collapse').classList.remove('show');
-//         this.classList.add('dragging');
-//     };
-//     question.ondragend = function(e) {
-//         this.querySelector('.collapse').classList.add('show');
-//         this.classList.remove('dragging');
-//     };
-// }
-
-// function dragStart(e) {
-//     e.stopPropagation();
-//     // e.preventDefault();
-//     e.currentTarget.querySelector('.collapse').classList.remove('show');
-// }
-// function dragEnd(e) {
-//     collapseAllSections()
-//     e.currentTarget.querySelector('.collapse').classList.add('show');
-// }
-
-// function dragLeave(e) {
-//     // e.preventDefault();
-//     collapseAllSections();
-//     // alert(`${e.currentTarget.id}`)
-// }
-
-function collapseAllSections() {
-    for (var section of sections) {
-        section.querySelector('.collapse').classList.remove('show');
+function collapseAllSections(e) {
+    if(!e.target.classList.contains('formQuestion')){
+        for (var section of sections) {
+            section.querySelector('.collapse').classList.remove('show');
+        }
     }
 }
+function toggleCollapse(element) {
+    if (element.classList.contains('show')) {
+        element.classList.remove('show');
+    } else {
+        element.classList.add('show');
+    }
+}
+
 
 function dragOver(e) {
     e.preventDefault();
@@ -321,7 +251,7 @@ addDeleteButtonListener(questionDeleteButtons);
 //TODO: Change event listener for for section title to update title
 
 var newSections = []
-//Add New section -- Remember to make the section a Sortable instance
+//Add New section
 addSectionLink.onclick = function(e) {
     e.preventDefault();
     collapseAllSections();
@@ -331,11 +261,11 @@ addSectionLink.onclick = function(e) {
     newSections.push(newSection);
     var blankSection = document.querySelector('#blankSection').content.cloneNode(true);
     blankSection.querySelector('section').id = newSection.sectionNumber;
-    blankSection.querySelector('.row').id = `${newSection.sectionNumber}Title`;
-    blankSection.querySelector('.sectionTitle').setAttribute('data-target', newSection.sectionNumber);
-    blankSection.querySelector('.sectionTitle').setAttribute('aria-controls', `${newSections.length + 1}`);
-    blankSection.querySelector('.sectionBody').id = `${newSections.length + 1}`;
-    blankSection.querySelector('.sectionBody').setAttribute('aria-labelledby', `section`);
+    blankSection.querySelector('.row').id = `newSection${newSections.length}Title`;
+    blankSection.querySelector('.sectionTitle').setAttribute('data-target', `#newSection${newSections.length}`);
+    blankSection.querySelector('.sectionTitle').setAttribute('aria-controls', `newSection${newSections.length}`);
+    blankSection.querySelector('.sectionBody').id = `newSection${newSections.length}`;
+    blankSection.querySelector('.sectionBody').setAttribute('aria-labelledby', `newSection${newSections.length}Title`);
     blankSection.querySelector('label').for = `${newSection.sectionNumber}TitleField`;
     blankSection.querySelector('input').id = `${newSection.sectionNumber}Title`;
     blankSection.querySelector('.addQuestionLink').onclick = function(e) {
@@ -343,5 +273,10 @@ addSectionLink.onclick = function(e) {
     };
     blankSection.querySelector('.addQuestionLink').dispatchEvent(new Event('click'));
 
-    document.querySelector('#fullForm').appendChild(blankSection);
+    document.querySelector('#fullForm').append(blankSection);
+    sections = document.querySelectorAll('section');
+    sections[sections.length - 1].ondragstart = collapseAllSections;
+    sections[sections.length - 1].ondragend = function (e) {
+        toggleCollapse(this.querySelector('.collapse'));
+    }
 }
