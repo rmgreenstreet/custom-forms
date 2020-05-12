@@ -26,7 +26,7 @@ var formEditor = new Sortable(fullForm, sortableFormOptions);
 
 function addSectionDragListeners(item) {
     item.ondragstart = function(e) {
-    	fullForm.style.height = (fullForm.scrollHeight) + 'px';
+    	fullForm.style.height = (fullForm.offsetHeight) + 'px';
         collapseAllSections(e);
     };
 
@@ -63,7 +63,7 @@ for (var section of sections) {
     })
 
     section.ondragstart = function(e) {
-    	fullForm.style.height = (fullForm.scrollHeight) + 'px';
+    	fullForm.style.height = (fullForm.offsetHeight) + 'px';
         collapseAllSections(e);
     };
 
@@ -88,7 +88,7 @@ for (var section of sections) {
 
 function addQuestionEventListeners(item) {
     item.ondragstart = function(e) {
-    	fullForm.style.height = (fullForm.scrollHeight) + 'px';
+    	fullForm.style.height = (fullForm.offsetHeight) + 'px';
         this.classList.add('dragging');
         this.querySelector('.collapse').classList.remove('show');
     }
@@ -114,7 +114,7 @@ function addQuestionEventListeners(item) {
 
 for (var question of questions) {
     question.ondragstart = function(e) {
-    	fullForm.style.height = (fullForm.scrollHeight) + 'px';
+    	fullForm.style.height = (fullForm.offsetHeight) + 'px';
         this.classList.add('dragging');
         this.querySelector('.collapse').classList.remove('show');
     }
