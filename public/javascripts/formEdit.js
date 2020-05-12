@@ -26,12 +26,13 @@ var formEditor = new Sortable(fullForm, sortableFormOptions);
 
 function addSectionDragListeners(item) {
     item.ondragstart = function(e) {
+    	fullForm.style.height = (fullForm.scrollHeight) + 'px';
         collapseAllSections(e);
-        this.classList.add('dragging');
     };
 
     item.ondragend = function (e) {
         this.querySelector('.collapse').classList.add('show');
+        fullForm.style.height='';
     }
 
     item.ondragenter = function(e) {
@@ -47,11 +48,12 @@ function addSectionDragListeners(item) {
     }
 }
 
+var sectionsIndex = 0;
 for (var section of sections) {
 
     var sortableSection = new Sortable(section.querySelector('.questionList'), {
         group: {
-            name: `section${sections.indexOf(section)}`,
+            name: `section${sectionsIndex}`,
             pull: true,
             put: true,
         },
@@ -61,12 +63,13 @@ for (var section of sections) {
     })
 
     section.ondragstart = function(e) {
+    	fullForm.style.height = (fullForm.scrollHeight) + 'px';
         collapseAllSections(e);
-        this.classList.add('dragging');
     };
 
     section.ondragend = function (e) {
         this.querySelector('.collapse').classList.add('show');
+        fullForm.style.height='';
     }
 
     section.ondragenter = function(e) {
@@ -80,16 +83,45 @@ for (var section of sections) {
     section.ondrop = function(e) {
         this.querySelector('.collapse').classList.add('show');
     }
+    sectionsIndex ++;
+}
+
+function addQuestionEventListeners(item) {
+    item.ondragstart = function(e) {
+    	fullForm.style.height = (fullForm.scrollHeight) + 'px';
+        this.classList.add('dragging');
+        this.querySelector('.collapse').classList.remove('show');
+    }
+    item.ondragend = function(e) {
+        this.classList.remove('dragging');
+        this.querySelector('.collapse').classList.add('show');
+        fullForm.style.height='';
+    }
+
+    var typeSelector = item.querySelector('.typeSelector')
+    if (typeSelector.value == 'File') {
+        if (typeSelector[typeSelector.selectedIndex].text == 'File Upload') {
+            item.querySelector('.typeOptions').innerHTML = `
+                <p>Accepted Filetypes: .PDF, .DOC, .DOCX, .PPT, .PPTX, .XLS, .XLSX, .CSV </p>
+            `
+        } else if (typeSelector[typeSelector.selectedIndex].text == 'Image Upload') {
+            item.querySelector('.typeOptions').innerHTML = `
+                <p>Accepted Filetypes: .JPG, .JPEG, .PNG </p>
+            `
+        }
+    }
 }
 
 for (var question of questions) {
     question.ondragstart = function(e) {
+    	fullForm.style.height = (fullForm.scrollHeight) + 'px';
         this.classList.add('dragging');
         this.querySelector('.collapse').classList.remove('show');
     }
     question.ondragend = function(e) {
         this.classList.remove('dragging');
         this.querySelector('.collapse').classList.add('show');
+        fullForm.style.height='';
     }
 
     var typeSelector = question.querySelector('.typeSelector')
@@ -121,34 +153,6 @@ function toggleCollapse(element) {
         element.classList.add('show');
     }
 }
-
-
-// function dragOver(e) {
-//     e.preventDefault();
-//     const draggable = document.querySelector('.dragging');
-//     const afterElement = getDragAfterElement(this, e.clientY);
-//     if (afterElement === null) {
-//         this.appendChild(draggable);
-//     } else {
-//         this.insertBefore(draggable, afterElement);
-//     }
-// }
-
-// function getDragAfterElement(container, y) {
-//     const draggableElements = [...container.querySelectorAll('.draggable:not(.dragging)')];
-//     return draggableElements.reduce((closest, child) => {
-//         const box = child.getBoundingClientRect();
-//         const offset = y - box.top - box.height / 2;
-//         if (offset < 0 && offset > closest.offset) {
-//             return {offset: offset, element: child};
-//         } else {
-//             return closest;
-//         };
-//     }, { offset: Number.NEGATIVE_INFINITY }).element;
-// }
-
-
-
 
 // changing inputs for form options based on input type selected
 var inputTypeSelectors = document.querySelectorAll('.typeSelector');
@@ -296,14 +300,10 @@ addSectionLink.onclick = function(e) {
 
     fullForm.append(blankSection);
     sections = document.querySelectorAll('section');
-    // sections[sections.length - 1].ondragstart = collapseAllSections;
-    // sections[sections.length - 1].ondragend = function (e) {
-    //     toggleCollapse(this.querySelector('.collapse'));
-    // }
     addSectionDragListeners(sections[sections.length - 1])
-    new Sortable(sections[sections.length - 1].querySelector('.questionList'), {
+    var newSectionSortable = new Sortable(sections[sections.length - 1].querySelector('.questionList'), {
         group: {
-            name: `section${sections.indexOf(section)}`,
+            name: `section${sectionsIndex}`,
             pull: true,
             put: true,
         },
@@ -311,4 +311,7 @@ addSectionLink.onclick = function(e) {
         handle: '.questionDragHandle',
         animation: 150
     })
+    sectionsIndex++;
+    addQuestionEventListeners(sections[sections.length - 1].querySelector('.formQuestion'));
+    window.scrollBy(0,-100)
 }

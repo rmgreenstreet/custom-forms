@@ -62,7 +62,7 @@
                                                     <div class="input-group-prepend">
                                                         <label for="question1Type" class="input-group-text" id="question1TypeLabel">Type</label>
                                                     </div>
-                                                    <select name="form[sections][questions][inputType" id="question1Type" class="form-control">
+                                                    <select name="form[sections][questions][inputType" id="question1Type" class="form-control typeSelector">
                                                         <option value="1">Type 1</option>
                                                         <option value="2">Type 2</option>
                                                         <option value="3">Type 3</option>
@@ -117,7 +117,7 @@
                                                     <div class="input-group-prepend">
                                                         <label for="question1Type" class="input-group-text" id="question1TypeLabel">Type</label>
                                                     </div>
-                                                    <select name="form[sections][questions][inputType" id="question1Type" class="form-control">
+                                                    <select name="form[sections][questions][inputType" id="question1Type" class="form-control typeSelector">
                                                         <option value="1">Type 1</option>
                                                         <option value="2">Type 2</option>
                                                         <option value="3">Type 3</option>
@@ -172,7 +172,7 @@
                                                     <div class="input-group-prepend">
                                                         <label for="question1Type" class="input-group-text" id="question1TypeLabel">Type</label>
                                                     </div>
-                                                    <select name="form[sections][questions][inputType" id="question1Type" class="form-control">
+                                                    <select name="form[sections][questions][inputType" id="question1Type" class="form-control typeSelector">
                                                         <option value="1">Type 1</option>
                                                         <option value="2">Type 2</option>
                                                         <option value="3">Type 3</option>
@@ -259,7 +259,7 @@
                                                     <div class="input-group-prepend">
                                                         <label for="question1Type" class="input-group-text" id="question1TypeLabel">Type</label>
                                                     </div>
-                                                    <select name="form[sections][questions][inputType" id="question1Type" class="form-control">
+                                                    <select name="form[sections][questions][inputType" id="question1Type" class="form-control typeSelector">
                                                         <option value="1">Type 1</option>
                                                         <option value="2">Type 2</option>
                                                         <option value="3">Type 3</option>
@@ -352,7 +352,7 @@
                                                     <div class="input-group-prepend">
                                                         <label for="" class="input-group-text" id="">Type</label>
                                                     </div>
-                                                    <select name="form[sections][questions][inputType" id="" class="form-control">
+                                                    <select name="form[sections][questions][inputType" id="" class="form-control typeSelector">
                                                         <option value="1">Type 1</option>
                                                         <option value="2">Type 2</option>
                                                         <option value="3">Type 3</option>
@@ -417,12 +417,12 @@
                 Sortable.create(fullForm, sortableFormOptions);
 
                 var sections = document.querySelectorAll('section');
-                sections.prototype.indexOf = Array.prototype.indexOf;
+                var sectionsIndex = 0;
                 for (var section of sections) {
 
                     var sortableSection = new Sortable(section.querySelector('.questionList'), {
                         group: {
-                            // name: `section${sections.indexOf(section)}`,
+                            name: `section${sectionsIndex}`,
                             pull: true,
                             put: true,
                         },
@@ -451,7 +451,8 @@
                     section.ondrop = function(e) {
                         this.querySelector('.collapse').classList.add('show');
                     }
-                    }
+                    sectionsIndex ++;
+                }
 
                 function collapseAllSections(e) {
                     if(!e.target.classList.contains('formQuestion')){
@@ -469,6 +470,7 @@
                 }
 
                 var questions = document.querySelectorAll('.formQuestion');
+                
                 for (var question of questions) {
                     question.ondragstart = function(e) {
                         this.classList.add('dragging');
