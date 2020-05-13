@@ -8,6 +8,7 @@ var addOptionLinks = document.querySelectorAll('.addOptionLink');
 var addSectionLink = document.querySelector('.addSectionLink');
 var questionDragHandles = document.querySelectorAll('.questionDragHandle');
 var questionDeleteButtons = document.querySelectorAll('.questionDeleteButton');
+var optionValues = document.querySelectorAll('.questionValue')
 
 for (var handle of questionDragHandles) {
     handle.onmousedown = function(e) {
@@ -39,7 +40,7 @@ function addSectionDragListeners(item) {
         for (var section of sections) {
             section.querySelector('.collapse').classList.remove('show');
         }
-        if(document.querySelector('.dragging').classList.contains('formQuestion')) {
+        if(document.querySelector('.dragging').classList.contains('preventCollapse')) {
             this.querySelector('.collapse').classList.add('show');
         }
     }
@@ -62,85 +63,54 @@ for (var section of sections) {
         animation: 150
     })
 
-    section.ondragstart = function(e) {
-    	fullForm.style.height = (fullForm.offsetHeight) + 'px';
-        collapseAllSections(e);
-    };
-
-    section.ondragend = function (e) {
-        this.querySelector('.collapse').classList.add('show');
-        fullForm.style.height='';
-    }
-
-    section.ondragenter = function(e) {
-        for (var section of sections) {
-            section.querySelector('.collapse').classList.remove('show');
-        }
-        if(document.querySelector('.dragging').classList.contains('formQuestion')) {
-            this.querySelector('.collapse').classList.add('show');
-        }
-    }
-    section.ondrop = function(e) {
-        this.querySelector('.collapse').classList.add('show');
-    }
+    addSectionDragListeners(section);
     sectionsIndex ++;
 }
 
 function addQuestionEventListeners(item) {
     item.ondragstart = function(e) {
     	fullForm.style.height = (fullForm.offsetHeight) + 'px';
-        this.classList.add('dragging');
-        this.querySelector('.collapse').classList.remove('show');
+        item.classList.add('dragging');
+        item.querySelector('.collapse').classList.remove('show');
     }
     item.ondragend = function(e) {
-        this.classList.remove('dragging');
-        this.querySelector('.collapse').classList.add('show');
+        item.classList.remove('dragging');
+        item.querySelector('.collapse').classList.add('show');
         fullForm.style.height='';
     }
-
-    var typeSelector = item.querySelector('.typeSelector')
-    if (typeSelector.value == 'File') {
-        if (typeSelector[typeSelector.selectedIndex].text == 'File Upload') {
-            item.querySelector('.typeOptions').innerHTML = `
-                <p>Accepted Filetypes: .PDF, .DOC, .DOCX, .PPT, .PPTX, .XLS, .XLSX, .CSV </p>
-            `
-        } else if (typeSelector[typeSelector.selectedIndex].text == 'Image Upload') {
-            item.querySelector('.typeOptions').innerHTML = `
-                <p>Accepted Filetypes: .JPG, .JPEG, .PNG </p>
-            `
+    item.ondragover = function(e) {
+        if(document.querySelector('.dragging').classList.contains('preventCollapse')) {
+            item.querySelector('.collapse').classList.add('show');
         }
     }
 }
 
 for (var question of questions) {
-    question.ondragstart = function(e) {
-    	fullForm.style.height = (fullForm.offsetHeight) + 'px';
-        this.classList.add('dragging');
-        this.querySelector('.collapse').classList.remove('show');
-    }
-    question.ondragend = function(e) {
-        this.classList.remove('dragging');
-        this.querySelector('.collapse').classList.add('show');
-        fullForm.style.height='';
-    }
 
-    var typeSelector = question.querySelector('.typeSelector')
-    if (typeSelector.value == 'File') {
-        if (typeSelector[typeSelector.selectedIndex].text == 'File Upload') {
-            question.querySelector('.typeOptions').innerHTML = `
-                <p>Accepted Filetypes: .PDF, .DOC, .DOCX, .PPT, .PPTX, .XLS, .XLSX, .CSV </p>
-            `
-        } else if (typeSelector[typeSelector.selectedIndex].text == 'Image Upload') {
-            question.querySelector('.typeOptions').innerHTML = `
-                <p>Accepted Filetypes: .JPG, .JPEG, .PNG </p>
-            `
-        }
-    }
+    addQuestionEventListeners(question);
+
+    var sortableQuestion = new Sortable(question.querySelector('.typeOptions'), {
+        group: {
+            name: `question${questions.indexOf(question)}`,
+            pull: true,
+            put: true
+        },
+        draggable: '.draggable',
+        handle: 'label'
+    })
+    
 
 }
 
+for (var value of optionValues) {
+    value.ondragstart = function(e) {
+        e.stopPropagation();
+        this.classList.add('dragging');
+    }
+}
+
 function collapseAllSections(e) {
-    if(!e.target.classList.contains('formQuestion')){
+    if(!e.target.classList.contains('preventCollapse')){
         for (var section of sections) {
             section.querySelector('.collapse').classList.remove('show');
         }

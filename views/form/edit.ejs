@@ -25,7 +25,7 @@
                                 <hr/>
                                 <div class="card-text questionList">
                                     <% for (const question of section.questions) { %>
-                                        <div class="card shadow-sm mb-2 formQuestion draggable" id="<%= question.id %>">
+                                        <div class="card shadow-sm mb-2 formQuestion draggable preventCollapse" id="<%= question.id %>">
                                             <div class="card-body">
                                                 <div class="row mb-2">
                                                     <div class="col text-right"><i class="fas fa-arrows-alt questionDragHandle"></i></div>
@@ -55,7 +55,7 @@
                                                         <% if (question.inputType === 'Checkbox' || question.inputType === 'Radio' || question.inputType === 'Select') { %> 
                                                             <div class="col-md-6 typeOptions">
                                                                 <% for (let value of question.values) { %>
-                                                                    <div class="input-group mb-2">
+                                                                    <div class="input-group mb-2 draggable questionValue preventCollapse">
                                                                         <div class="input-group-prepend">
                                                                             <label for="question<%= question.id %>Value<%= question.values.indexOf(value) %>" class="input-group-text">Option <%= question.values.indexOf(value) +1 %></label>
                                                                         </div>
@@ -147,7 +147,7 @@
             </template>
 
             <template id="blankQuestion">
-                <div class="card shadow-sm mb-2 formQuestion draggable">
+                <div class="card shadow-sm mb-2 formQuestion draggable preventCollapse">
                     <div class="card-body">
                         <div class="row mb-2">
                             <div class="col text-right"><i class="fas fa-arrows-alt questionDragHandle"></i></div>
