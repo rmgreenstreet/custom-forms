@@ -141,14 +141,19 @@ function setAppropriateOptions(e, item) {
         optionsSection.innerHTML = `
             <div class="input-group mb-2">
                 <div class="input-group-prepend">
-                    <label for="question${item.closest('.formQuestion').id}Value0" class="input-group-text valueDragHandle">Option 1</label>
+                    <label for="question${item.closest('.formQuestion').id}Value0" class="input-group-text optionDragHandle"><i class="fas fa-arrows-alt"></i></label>
                 </div>
-                <input type="text" name="form[sections][questions][values]" id="question${item.closest('.formQuestion').id}Value0" class="form-control valueOption" >
+                <input type="text" name="form[sections][questions][values]" id="question${item.closest('.formQuestion').id}Value0" class="form-control valueOption" placeholder="New Option">
             </div>
             <div class="row">
                 <div class="col card-text"><a href="" class="addOptionLink"><i class="fas fa-plus"></i> Add Option</a></div>
             </div>
         `;
+        addOptionLinks = document.querySelectorAll('.addOptionLink');
+        for (var link of addOptionLinks) {
+            addOptionLinkListener(link);
+        }
+
     } else if (item.value !== 'File') {
         optionsSection.innerHTML = `
             <div class="input-group mb-2">
@@ -210,22 +215,23 @@ for (var link of addQuestionLinks) {
     })
 }
 
-/* Add new option to question types that allow it (checkbox, radio, select) */
-for (var link of addOptionLinks) {
-    link.addEventListener('click', function(e) {
+function addOptionLinkListener(item) {
+    item.addEventListener('click', function(e) {
         e.preventDefault();
         var parentQuestion = this.closest('.formQuestion');
         var existingOptions = parentQuestion.querySelectorAll('.valueOption');
         var optionId = `question${this.closest('.formQuestion').id}Value${existingOptions.length}`;
-        var optionLabel = document.createTextNode(`Option ${existingOptions.length + 1}`)
         var newOption = document.querySelector('#blankOption').content.cloneNode(true);
         newOption.querySelector('.input-group-text').for = optionId;
-        // newOption.querySelector('.input-group-text').appendChild(optionLabel);
-        newOption.querySelector('.input-group-text').textContent = optionLabel;
         newOption.querySelector('.valueOption').id = optionId;
         
         this.closest('.typeOptions').insertBefore(newOption, this.closest('.row'));
     })
+}
+
+/* Add new option to question types that allow it (checkbox, radio, select) */
+for (var link of addOptionLinks) {
+    addOptionLinkListener(link);
 }
 
 //Delete Question
