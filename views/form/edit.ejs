@@ -55,9 +55,9 @@
                                                         <% if (question.inputType === 'Checkbox' || question.inputType === 'Radio' || question.inputType === 'Select') { %> 
                                                             <div class="col-md-6 typeOptions">
                                                                 <% for (let value of question.values) { %>
-                                                                    <div class="input-group mb-2 draggable questionValue preventCollapse">
+                                                                    <div class="input-group mb-2 draggable questionOption preventCollapse">
                                                                         <div class="input-group-prepend">
-                                                                            <label for="question<%= question.id %>Value<%= question.values.indexOf(value) %>" class="input-group-text">Option <%= question.values.indexOf(value) +1 %></label>
+                                                                            <label for="question<%= question.id %>Value<%= question.values.indexOf(value) %>" class="input-group-text optionDragHandle">Option <%= question.values.indexOf(value) +1 %></label>
                                                                         </div>
                                                                         <input type="text" name="form[sections][questions][values]" id="question<%= question.id %>Value<%= question.values.indexOf(value) %>" value ="<%= question.values.indexOf(value) > -1 ? value : '' %>" class="form-control valueOption">
                                                                         
