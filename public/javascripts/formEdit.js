@@ -7,22 +7,19 @@ var addQuestionLinks = document.querySelectorAll('.addQuestionLink');
 var addOptionLinks = document.querySelectorAll('.addOptionLink');
 var addSectionLink = document.querySelector('.addSectionLink');
 var questionDeleteButtons = document.querySelectorAll('.questionDeleteButton');
-// var questionDragHandles = document.querySelectorAll('.questionDragHandle');
-// var optionDragHandles = document.querySelectorAll('.optionDragHandle');
-
-// for (var handle of questionDragHandles) {
-//     handle.onmousedown = function(e) {
-//         e.stopPropagation();
-//     }
-// }
-// for (var handle of optionDragHandles) {
-//     handle.onmousedown = function(e) {
-//         e.stopPropagation();
-//     }
-// }
+var questionOptions = document.querySelectorAll('.questionOption');
+for(var option of questionOptions) {
+    option.ondragstart = function(e) {
+        this.classList.add('dragging');
+        // e.stopPropagation();
+    }
+    option.ondragend = function(e) {
+        this.classList.remove('dragging');
+    }
+}
 
 var sortableFormOptions = {
-    group: {name: 'sections', pull: false, put: false},
+    group: {name: 'fullForm', pull: false, put: false},
     handle:'.sectionDragHandle',
     animation:150,
     draggable: 'section'
@@ -59,9 +56,9 @@ for (var section of sections) {
 
     var sortableSection = new Sortable(section.querySelector('.questionList'), {
         group: {
-            name: `section${sectionsIndex}`,
-            pull: true,
-            put: true,
+            name: `sections`,
+            pull: 'sections',
+            put: 'sections',
         },
         draggable: '.formQuestion',
         handle: '.questionDragHandle',
@@ -73,37 +70,42 @@ for (var section of sections) {
 }
 
 function addQuestionEventListeners(item) {
+    /* Checking to see if the item being dragged is an option for a question so that
+    the question won't collapse if it is */
     item.ondragstart = function(e) {
-    	fullForm.style.height = (fullForm.offsetHeight) + 'px';
-        item.classList.add('dragging');
-        item.querySelector('.collapse').classList.remove('show');
+        if (!e.target.classList.contains('questionOption')) {
+            fullForm.style.height = (fullForm.offsetHeight) + 'px';
+            this.classList.add('dragging');
+            this.querySelector('.collapse').classList.remove('show');
+        };
     }
     item.ondragend = function(e) {
-        item.classList.remove('dragging');
-        item.querySelector('.collapse').classList.add('show');
+        this.classList.remove('dragging');
+        this.querySelector('.collapse').classList.add('show');
         fullForm.style.height='';
     }
     item.ondragenter = function(e) {
         if(document.querySelector('.dragging').classList.contains('preventCollapse')) {
-            item.querySelector('.collapse').classList.add('show');
+            this.querySelector('.collapse').classList.add('show');
         }
     }
 }
 
 for (var question of questions) {
 
+    addQuestionEventListeners(question);
+
     var sortableOptions = new Sortable(question.querySelector('.typeOptions'), {
         group: {
-            name: `question${questions.indexOf(question)}`,
-            pull: true,
-            put: true
+            name: `questions`,
+            pull: 'questions',
+            put: 'questions'
         },
         draggable: '.questionOption',
         handle: '.optionDragHandle',
-        animation: 150
+        animation: 150,
+        swapThreshold: .6
     });
-
-    addQuestionEventListeners(question);
 }
 
 function collapseAllSections(e) {
@@ -139,7 +141,7 @@ function setAppropriateOptions(e, item) {
     var optionsSection = item.closest('.questionBody').querySelector('.typeOptions');
     if (item.value === 'Checkbox' || item.value === 'Radio' || item.value === 'Select') {
         optionsSection.innerHTML = `
-            <div class="input-group mb-2">
+            <div class="input-group mb-2 questionOption draggable preventCollapse">
                 <div class="input-group-prepend">
                     <label for="question${item.closest('.formQuestion').id}Value0" class="input-group-text optionDragHandle"><i class="fas fa-arrows-alt"></i></label>
                 </div>
@@ -219,11 +221,11 @@ function addOptionLinkListener(item) {
     item.addEventListener('click', function(e) {
         e.preventDefault();
         var parentQuestion = this.closest('.formQuestion');
-        var existingOptions = parentQuestion.querySelectorAll('.valueOption');
+        var existingOptions = parentQuestion.querySelectorAll('.questionOption');
         var optionId = `question${this.closest('.formQuestion').id}Value${existingOptions.length}`;
         var newOption = document.querySelector('#blankOption').content.cloneNode(true);
         newOption.querySelector('.input-group-text').for = optionId;
-        newOption.querySelector('.valueOption').id = optionId;
+        newOption.querySelector('.questionOption').id = optionId;
         
         this.closest('.typeOptions').insertBefore(newOption, this.closest('.row'));
     })
