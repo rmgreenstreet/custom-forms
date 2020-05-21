@@ -7,16 +7,20 @@ var addQuestionLinks = document.querySelectorAll('.addQuestionLink');
 var addOptionLinks = document.querySelectorAll('.addOptionLink');
 var addSectionLink = document.querySelector('.addSectionLink');
 var questionDeleteButtons = document.querySelectorAll('.questionDeleteButton');
-var questionOptions = document.querySelectorAll('.questionOption');
-for(var option of questionOptions) {
-    option.ondragstart = function(e) {
-        this.classList.add('dragging');
-        // e.stopPropagation();
-    }
-    option.ondragend = function(e) {
-        this.classList.remove('dragging');
+
+function addOptionDragListeners() {
+    var questionOptions = document.querySelectorAll('.questionOption');
+    for(var option of questionOptions) {
+        option.ondragstart = function(e) {
+            this.classList.add('dragging');
+            // e.stopPropagation();
+        }
+        option.ondragend = function(e) {
+            this.classList.remove('dragging');
+        }
     }
 }
+
 
 var sortableFormOptions = {
     group: {name: 'fullForm', pull: false, put: false},
@@ -228,6 +232,7 @@ function addOptionLinkListener(item) {
         newOption.querySelector('.questionOption').id = optionId;
         
         this.closest('.typeOptions').insertBefore(newOption, this.closest('.row'));
+        addOptionDragListeners();
     })
 }
 
