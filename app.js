@@ -138,7 +138,7 @@ async function databaseInit() {
 	// await clearDatabase();
 	// await seedDefaultQuestions();
 	// await seedDatabase();
-	await User.register({firstName: 'potato', lastName:'head',username:'potatohead', personalEmail:'test@test.com', role:'Owner'},'password');
+	// await User.register({firstName: 'potato', lastName:'head',username:'potatohead', personalEmail:'test@test.com', role:'Owner'},'password');
 }
 
 if (app.get('env') == 'development'){databaseInit();}

@@ -84,12 +84,12 @@
                                                     <div class="form-row">
                                                         <div class="col-6">
                                                             <div class="form-check form-check-inline">
-                                                                <input type="checkbox" name="form[sections][questions][isRequired]" id="question<%= question.id %>IsRequired" class="form-check-input" <%= question.isRequired ? 'checked' : '' %>>
+                                                                <input type="checkbox" name="form[sections][questions][isRequired]" id="" class="form-check-input" >
                                                                 <label for="question<%= question.id %>IsRequired" class="form-check-label">Required?</label>
                                                             </div>
                                                             <div class="form-check form-check-inline">
                                                                 <input type="checkbox" name="form[sections][questions][hasFollowUp]" id="question<%= question.id %>hasFollowUp" class="form-check-input" <%= question.followUpQuestions.length > 0  ? 'checked' : '' %>>
-                                                                <label for="question<%= question.id %>hasFollowUp" class="form-check-label">Follow Up Questions?</label>
+                                                                <label for="" class="form-check-label">Follow Up Questions?</label>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -100,10 +100,13 @@
                                                                     <div class="col-6">
                                                                         <h4>Follow Up Questions</h4>
                                                                     </div>
+                                                                    <hr />
                                                                 </div>
                                                                 <div class="row">
-                                                                    <div class="col">
-                                                                        
+                                                                    <div class="col followUpQuestionsBody">
+                                                                        <% for (const followUp of question.followUpQuestions) { %> 
+                                                                            <%= followUp.title %>
+                                                                        <% } %>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -193,6 +196,18 @@
                                     <div class="col-md-6 typeOptions">
                                         
                                     </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="col-6">
+                                <div class="form-check form-check-inline">
+                                    <input type="checkbox" name="form[sections][questions][isRequired]" id="" class="form-check-input" >
+                                    <label for="" class="form-check-label">Required?</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input type="checkbox" name="form[sections][questions][hasFollowUp]" id="" class="form-check-input" >
+                                    <label for="" class="form-check-label">Follow Up Questions?</label>
                                 </div>
                             </div>
                         </div>

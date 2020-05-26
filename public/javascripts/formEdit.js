@@ -295,3 +295,9 @@ addSectionLink.onclick = function(e) {
     addQuestionEventListeners(sections[sections.length - 1].querySelector('.formQuestion'));
     window.scrollBy(0,-100)
 }
+
+
+/* TODO: Rewrite the 'edit' page to use client side JS 
+to use templates to write questions to page instead of ejs, 
+to enable reusability of code 
+(or else see if you can reuse functions in ejs?) */
