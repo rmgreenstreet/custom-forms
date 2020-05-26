@@ -83,12 +83,32 @@
                                                     </div>
                                                     <div class="form-row">
                                                         <div class="col-6">
-                                                            <div class="form-check">
+                                                            <div class="form-check form-check-inline">
                                                                 <input type="checkbox" name="form[sections][questions][isRequired]" id="question<%= question.id %>IsRequired" class="form-check-input" <%= question.isRequired ? 'checked' : '' %>>
                                                                 <label for="question<%= question.id %>IsRequired" class="form-check-label">Required?</label>
                                                             </div>
+                                                            <div class="form-check form-check-inline">
+                                                                <input type="checkbox" name="form[sections][questions][hasFollowUp]" id="question<%= question.id %>hasFollowUp" class="form-check-input" <%= question.followUpQuestions.length > 0  ? 'checked' : '' %>>
+                                                                <label for="question<%= question.id %>hasFollowUp" class="form-check-label">Follow Up Questions?</label>
+                                                            </div>
                                                         </div>
                                                     </div>
+                                                    <% if (question.followUpQuestions.length > 0 ) { %>
+                                                        <div class="form-row mt-3 border rounded">
+                                                            <div class="col">
+                                                                <div class="row">
+                                                                    <div class="col-6">
+                                                                        <h4>Follow Up Questions</h4>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col">
+                                                                        
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    <% } %>
                                                 </div>
                                                 <div class="row">
                                                     <div class="col text-right">
