@@ -21,6 +21,8 @@ function addOptionDragListeners() {
     }
 }
 
+addOptionDragListeners();
+
 
 var sortableFormOptions = {
     group: {name: 'fullForm', pull: false, put: false},
@@ -55,7 +57,6 @@ function addSectionDragListeners(item) {
     }
 }
 
-var sectionsIndex = 0;
 for (var section of sections) {
 
     var sortableSection = new Sortable(section.querySelector('.questionList'), {
@@ -70,7 +71,6 @@ for (var section of sections) {
     })
 
     addSectionDragListeners(section);
-    sectionsIndex ++;
 }
 
 function addQuestionEventListeners(item) {
@@ -89,7 +89,8 @@ function addQuestionEventListeners(item) {
         fullForm.style.height='';
     }
     item.ondragenter = function(e) {
-        if(document.querySelector('.dragging').classList.contains('preventCollapse')) {
+        var dragging = document.querySelector('.dragging')
+        if(dragging.classList.contains('preventCollapse') && dragging !== this) {
             this.querySelector('.collapse').classList.add('show');
         }
     }
