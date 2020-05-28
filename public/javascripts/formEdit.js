@@ -298,16 +298,16 @@ addSectionLink.onclick = function(e) {
 }
 
 
-/* TODO: Rewrite the 'edit' page to use client side JS 
-to use templates to write questions to page instead of ejs, 
-to enable reusability of code 
-(or else see if you can reuse functions in ejs?) */
+/* 
 
-/* Update: Can send helper functions into EJS 
-the same as any variable, through the res.render call */
+TODO:
+- Make sure templates have all necessary components 
+- Remove EJS loops from edit File
+- JSON.stringify currentForm variable so front-end has access to it
+- Write function to loop through sections and draw onto page
+- Write function to loop through questions 
+and call it within section drawing function
+- Write function to loop through options (based on question type)
+and call it within question drawing function
 
-/* Update: I've almost decided to just JSON.stringify the form variable
-into the front end code and have it be drawn on the page
-on the front end, rather than by EJS on the back end and then
-sent as plain HTML to the browser. Waiting to see if anyone on
-stackoverflow has a better idea */
+*/

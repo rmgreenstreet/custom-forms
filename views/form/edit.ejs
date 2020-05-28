@@ -62,7 +62,7 @@
                                                                         <input type="text" name="form[sections][questions][values]" id="question<%= question.id %>Value<%= question.values.indexOf(value) %>" value ="<%= question.values.indexOf(value) > -1 ? value : '' %>" class="form-control valueOption">
                                                                     </div>
                                                                 <% } %>
-                                                                <div class="row">
+                                                                <div class="row addOptionLinkContainer">
                                                                     <div class="col card-text"><a href="" class="addOptionLink"><i class="fas fa-plus"></i> Add Option</a></div>
                                                                 </div>
                                                             </div>
@@ -199,7 +199,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="form-row">
+                        <div class="form-row requiredOrFollowUp">
                             <div class="col-6">
                                 <div class="form-check form-check-inline">
                                     <input type="checkbox" name="form[sections][questions][isRequired]" id="" class="form-check-input" >
@@ -211,31 +211,18 @@
                                 </div>
                             </div>
                         </div>
-                        <%# if (question.followUpQuestions.length > 0 ) { %>
-                            <div class="form-row mt-3 border rounded">
-                                <div class="col">
-                                    <div class="row">
-                                        <div class="col-6">
-                                            <h4>Follow Up Questions</h4>
-                                        </div>
-                                        <hr />
-                                    </div>
-                                    <div class="row">
-                                        <div class="col followUpQuestionsBody">
-                                            <%# for (const followUp of question.followUpQuestions) { %> 
-                                                <%#= followUp.title %>
-                                            <%# } %>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        <%# } %>
                         <div class="row">
                             <div class="col text-right">
                                 <i class="fas fa-trash-alt btn questionDeleteButton"></i>
                             </div>
                         </div>
                     </div>
+                </div>
+            </template>
+
+            <template id="blankAddOptionLink">
+                <div class="row addOptionLinkContainer">
+                    <div class="col card-text"><a href="" class="addOptionLink"><i class="fas fa-plus"></i> Add Option</a></div>
                 </div>
             </template>
 
@@ -246,6 +233,22 @@
                     </div>
                     <input type="text" name="form[sections][questions][values]" id="" class="form-control valueOption" placeholder="New Option">
                     
+                </div>
+            </template>
+            <template id="blankFollowUpQuestions">
+                <div class="form-row mt-3 border rounded followUpQuestions">
+                    <div class="col">
+                        <div class="row">
+                            <div class="col-6">
+                                <h4>Follow Up Questions</h4>
+                            </div>
+                            <hr />
+                        </div>
+                        <div class="row">
+                            <div class="col followUpQuestionsBody">
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </template>
         </form>
