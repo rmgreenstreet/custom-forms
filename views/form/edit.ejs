@@ -5,7 +5,7 @@
         <form id="fullForm" action="/forms/<%= currentForm.id %>?_method=PUT" method="POST">
                 
         </form>
-        <div class="row">
+        <div class="row" id="addSectionLinkRow">
             <div class="col card-text"><strong><a href="" class="addSectionLink"><i class="fas fa-plus"></i> Add Section</a></strong></div>
         </div>
     </div>
@@ -13,15 +13,15 @@
         <section class="card shadow-sm mb-2 formSection draggable" id="" >
             <div class="card-body">
                 <div class="row mb-2">
-                    <div class="col"><button class="btn btn-link sectionTitle" data-toggle="collapse" data-target="" aria-expanded="true" aria-controls="" type="button" ><h3 class="">New Section</h3></button></strong></div>
+                    <div class="col"><button class="btn btn-link sectionTitle" data-toggle="collapse" data-target="" aria-expanded="false" aria-controls="" type="button" ><h3 id="">New Section</h3></button></strong></div>
                     <div class="col text-right"><i class="fas fa-arrows-alt sectionDragHandle"></i></div>
                 </div>
                 <div class="card-title sectionBody collapse show" id="" data-parent="#fullForm" aria-labelledby="">
                     <div class="input-group">
                         <div class="input-group-prepend">
-                            <label for="" class="input-group-text"><strong>Section Title</strong></label>
+                            <label for="" class="input-group-text sectionTitleFieldLabel"><strong>Section Title</strong></label>
                         </div>
-                        <input type="text" name="form[section][title]" id="" class="form-control form-control-lg" placeholder="New Section Title">
+                        <input type="text" name="form[section][title]" id="" class="form-control form-control-lg sectionTitleField" placeholder="New Section Title">
                     </div>
                     <hr/>
                     <div class="card-text questionList">
