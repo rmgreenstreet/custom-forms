@@ -1,6 +1,12 @@
 // const Sortable = require("sortablejs");
 
 var fullForm = document.querySelector('#fullForm');
+var addSectionLink = document.querySelector('.addSectionLink');
+var typeSelectorOptions = inputTypes.map(function(type) {
+    return `
+        <option value="${type.htmlInputType}">${type.displayName}</option>
+    `
+});
 
 async function drawForm(workingForm) {
     if (workingForm.sections.length > 0) {
@@ -8,24 +14,26 @@ async function drawForm(workingForm) {
             fullForm.insertBefore(await makeSection(section), fullForm.querySelector('#addSectionLinkRow'))
         }
     }
+    sections = document.querySelectorAll('section');
+    questions = document.querySelectorAll('formQuestion');
 }
 
 async function makeSection(workingSection = {}) {
     var newSection = document.querySelector('#blankSection').content.cloneNode(true);
-    if (typeof sections !== 'undefined') { 
+    if (typeof sections !== 'undefined' && sections.length > 0) { 
         var isAppendedSection = true;
     } else {
         var isAppendedSection = false;
     }
-    if (isappendedSection) {
+    if (isAppendedSection) {
         var sectionId = `section${sections.length}`;
     } else {
         var sectionId = `section${workingSection.order}`;
     }
-    newSection.setAttribute('id', sectionId);
+    newSection.id = sectionId;
     var sectionTitleDiv = newSection.querySelector('.sectionTitle');
     sectionTitleDiv.dataset.target = `${sectionId}Body`;
-    if (workingSection.order === 0 || isappendedSection) {
+    if (workingSection.order === 0 || isAppendedSection) {
         sectionTitleDiv.setAttribute('aria-expanded', 'true');
     }
     sectionTitleDiv.setAttribute('aria-controls', `${sectionId}Body`);
@@ -41,24 +49,28 @@ async function makeSection(workingSection = {}) {
     sectionBody.setAttribute('aria-labelledby', sectionTitleDiv.querySelector(`#${sectionId}Title`));
     var sectionTitleField = sectionBody.querySelector('.sectionTitleField');
     sectionTitleField.setAttribute('id', `${sectionId}TitleField`);
-    if (typeof sections !== 'undefined') {
+    if (isAppendedSection) {
         sectionTitleField.setAttribute('placeholder', 'New Section Title');
     } else {
-        sectionTitleField.setAttribute('value', workingSection.title);
+        sectionTitleField.value = workingSection.title;
     }
-    sectionBody.querySelector('sectionTitleFieldLabel').setAttribute('for', sectionTitlefield.getAttribute('id'));
+    sectionBody.querySelector('.sectionTitleFieldLabel').setAttribute('for', sectionTitleField.getAttribute('id'));
     if (!isAppendedSection && workingSection.questions.length > 0) {
         for (var currentQuestion of workingSection.questions) {
             newSection.querySelector('.questionList').appendChild(await makeQuestion(currentQuestion));
         }
     }
     
-
     return newSection;
 }
 
-async function makeQuestion() {
-    var newQuestion;
+async function makeQuestion(workingQuestion) {
+    var newQuestion = document.querySelector('#blankQuestion').content.cloneNode(true);
+    if (typeof questions !== 'undefined' && questions.length > 0) { 
+        var isAppendedSection = true;
+    } else {
+        var isAppendedSection = false;
+    }
     return newQuestion;
 }
 
@@ -72,18 +84,83 @@ async function makeFollowUpSection() {
     return newFollowUpSection;
 }
 
-await drawForm(currentForm);
-
 function updateSectionTitle(e) {
     e.target.closest('.formSection').querySelector('h3').textContent = e.target.value;
 }
 
-var sections = document.querySelectorAll('.formSection');
-var questions = document.querySelectorAll('.formQuestion');
-var addQuestionLinks = document.querySelectorAll('.addQuestionLink');
-var addOptionLinks = document.querySelectorAll('.addOptionLink');
-var addSectionLink = document.querySelector('.addSectionLink');
-var questionDeleteButtons = document.querySelectorAll('.questionDeleteButton');
+
+async function pageInit() {
+    await drawForm(currentForm);
+
+    var sections = document.querySelectorAll('.formSection');
+    var questions = document.querySelectorAll('.formQuestion');
+    var addQuestionLinks = document.querySelectorAll('.addQuestionLink');
+    var addOptionLinks = document.querySelectorAll('.addOptionLink');
+    var questionDeleteButtons = document.querySelectorAll('.questionDeleteButton');
+
+    addOptionDragListeners();
+    
+    var sortableFormOptions = {
+        group: {name: 'fullForm', pull: false, put: false},
+        handle:'.sectionDragHandle',
+        animation:150,
+        draggable: 'section'
+    };
+
+    var formEditor = new Sortable(fullForm, sortableFormOptions);
+
+    for (var section of sections) {
+
+        var sortableSection = new Sortable(section.querySelector('.questionList'), {
+            group: {
+                name: `sections`,
+                pull: 'sections',
+                put: 'sections',
+            },
+            draggable: '.formQuestion',
+            handle: '.questionDragHandle',
+            animation: 150
+        })
+    
+        addSectionDragListeners(section);
+    }
+
+    for (var question of questions) {
+
+        addQuestionEventListeners(question);
+    
+        var sortableOptions = new Sortable(question.querySelector('.typeOptions'), {
+            group: {
+                name: `questions`,
+                pull: 'questions',
+                put: 'questions'
+            },
+            draggable: '.questionOption',
+            handle: '.optionDragHandle',
+            animation: 150,
+            swapThreshold: .6
+        });
+    }
+    
+    // changing inputs for form options based on input type selected
+    var inputTypeSelectors = document.querySelectorAll('.typeSelector');
+
+    addInputTypeChangeListener(inputTypeSelectors);
+
+    for (var link of addQuestionLinks) {
+        link.addEventListener('click', function(e) {
+            addQuestionLinkListener(e, this);
+        })
+    }
+    /* Add new option to question types that allow it (checkbox, radio, select) */
+    for (var link of addOptionLinks) {
+        addOptionLinkListener(link);
+    }
+    addDeleteButtonListener(questionDeleteButtons);
+}
+
+pageInit();
+
 
 function addOptionDragListeners() {
     var questionOptions = document.querySelectorAll('.questionOption');
@@ -98,17 +175,7 @@ function addOptionDragListeners() {
     }
 }
 
-addOptionDragListeners();
 
-
-var sortableFormOptions = {
-    group: {name: 'fullForm', pull: false, put: false},
-    handle:'.sectionDragHandle',
-    animation:150,
-    draggable: 'section'
-};
-
-var formEditor = new Sortable(fullForm, sortableFormOptions);
 
 function addSectionDragListeners(item) {
     item.ondragstart = function(e) {
@@ -134,22 +201,6 @@ function addSectionDragListeners(item) {
     }
 }
 
-for (var section of sections) {
-
-    var sortableSection = new Sortable(section.querySelector('.questionList'), {
-        group: {
-            name: `sections`,
-            pull: 'sections',
-            put: 'sections',
-        },
-        draggable: '.formQuestion',
-        handle: '.questionDragHandle',
-        animation: 150
-    })
-
-    addSectionDragListeners(section);
-}
-
 function addQuestionEventListeners(item) {
     /* Checking to see if the item being dragged is an option for a question so that
     the question won't collapse if it is */
@@ -173,22 +224,7 @@ function addQuestionEventListeners(item) {
     }
 }
 
-for (var question of questions) {
 
-    addQuestionEventListeners(question);
-
-    var sortableOptions = new Sortable(question.querySelector('.typeOptions'), {
-        group: {
-            name: `questions`,
-            pull: 'questions',
-            put: 'questions'
-        },
-        draggable: '.questionOption',
-        handle: '.optionDragHandle',
-        animation: 150,
-        swapThreshold: .6
-    });
-}
 
 function collapseAllSections(e) {
     if(!e.target.classList.contains('preventCollapse')){
@@ -205,8 +241,6 @@ function toggleCollapse(element) {
     }
 }
 
-// changing inputs for form options based on input type selected
-var inputTypeSelectors = document.querySelectorAll('.typeSelector');
 
 
 function addInputTypeChangeListener(list) {
@@ -216,8 +250,6 @@ function addInputTypeChangeListener(list) {
         })
     }
 }
-
-addInputTypeChangeListener(inputTypeSelectors);
 
 function setAppropriateOptions(e, item) {
     var optionsSection = item.closest('.questionBody').querySelector('.typeOptions');
@@ -260,11 +292,6 @@ function setAppropriateOptions(e, item) {
     }
 }
 
-var typeSelectorOptions = inputTypes.map(function(type) {
-    return `
-        <option value="${type.htmlInputType}">${type.displayName}</option>
-    `
-})
 
 var newQuestions = [];
 function addQuestionLinkListener(e, link) {
@@ -293,12 +320,6 @@ function addQuestionLinkListener(e, link) {
         .append(blankQuestion);
 }
 
-for (var link of addQuestionLinks) {
-    link.addEventListener('click', function(e) {
-        addQuestionLinkListener(e, this);
-    })
-}
-
 function addOptionLinkListener(item) {
     item.addEventListener('click', function(e) {
         e.preventDefault();
@@ -314,11 +335,6 @@ function addOptionLinkListener(item) {
     })
 }
 
-/* Add new option to question types that allow it (checkbox, radio, select) */
-for (var link of addOptionLinks) {
-    addOptionLinkListener(link);
-}
-
 //Delete Question
 function addDeleteButtonListener (list = []) {
     for (var item of list) {
@@ -329,7 +345,7 @@ function addDeleteButtonListener (list = []) {
     }
 }
 
-addDeleteButtonListener(questionDeleteButtons);
+
 
 //TODO: Change event listener for for section title to update title
 

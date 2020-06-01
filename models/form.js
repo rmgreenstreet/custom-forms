@@ -52,6 +52,9 @@ formSchema.method('addDefault', async function () {
             this.sections.push({title: question.sectionTitle, questions: [question._id]})
         }
     }
+    for (let section of this.sections) {
+        section.order = this.sections.indexOf(section);
+    }
     await this.save()
 });
 
