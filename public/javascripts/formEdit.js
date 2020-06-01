@@ -20,57 +20,63 @@ async function drawForm(workingForm) {
 
 async function makeSection(workingSection = {}) {
     var newSection = document.querySelector('#blankSection').content.cloneNode(true);
-    if (typeof sections !== 'undefined' && sections.length > 0) { 
-        var isAppendedSection = true;
-    } else {
-        var isAppendedSection = false;
-    }
-    if (isAppendedSection) {
+    var sectionTitleDiv = newSection.querySelector('.sectionTitle');
+    var sectionBody = newSection.querySelector('.sectionBody');
+    var sectionTitleField = sectionBody.querySelector('.sectionTitleField');
+
+    /* check whether this is a new section added with the link in the form or 
+    part of the initial draw*/
+    if (typeof sections !== 'undefined' && sections.length > 0) {
         var sectionId = `section${sections.length}`;
+        sectionTitleDiv.querySelector('h3').textContent = 'New Section';
+        sectionTitleField.setAttribute('placeholder', 'New Section Title');
+        newSection.querySelector('.collapse').classList.add('show');
+        newSection.querySelector('.questionList').appendChild(await makeQuestion({}));
     } else {
         var sectionId = `section${workingSection.order}`;
-    }
-    newSection.id = sectionId;
-    var sectionTitleDiv = newSection.querySelector('.sectionTitle');
-    sectionTitleDiv.dataset.target = `${sectionId}Body`;
-    if (workingSection.order === 0 || isAppendedSection) {
-        sectionTitleDiv.setAttribute('aria-expanded', 'true');
-    }
-    sectionTitleDiv.setAttribute('aria-controls', `${sectionId}Body`);
-    sectionTitleDiv.querySelector('h3').setAttribute('id', `${sectionId}Title`);
-    if (typeof sections)
-    if (isAppendedSection) {
-        sectionTitleDiv.querySelector('h3').textContent = 'New Section';
-    } else {
         sectionTitleDiv.querySelector('h3').textContent = `Section: ${workingSection.title}`;
-    }
-    var sectionBody = newSection.querySelector('.sectionBody');
-    sectionBody.setAttribute('id', sectionId);
-    sectionBody.setAttribute('aria-labelledby', sectionTitleDiv.querySelector(`#${sectionId}Title`));
-    var sectionTitleField = sectionBody.querySelector('.sectionTitleField');
-    sectionTitleField.setAttribute('id', `${sectionId}TitleField`);
-    if (isAppendedSection) {
-        sectionTitleField.setAttribute('placeholder', 'New Section Title');
-    } else {
         sectionTitleField.value = workingSection.title;
-    }
-    sectionBody.querySelector('.sectionTitleFieldLabel').setAttribute('for', sectionTitleField.getAttribute('id'));
-    if (!isAppendedSection && workingSection.questions.length > 0) {
-        for (var currentQuestion of workingSection.questions) {
-            newSection.querySelector('.questionList').appendChild(await makeQuestion(currentQuestion));
+        if (workingSection.order === 0) {
+            sectionTitleDiv.setAttribute('aria-expanded', 'true');
+            newSection.querySelector('.collapse').classList.add('show');
+        }
+        if (workingSection.questions.length > 0) {
+            for (var currentQuestion of workingSection.questions) {
+                newSection.querySelector('.questionList').appendChild(await makeQuestion(currentQuestion));
+            }
         }
     }
+    newSection.id = sectionId;
+    sectionBody.setAttribute('id', `${sectionId}Body`);
+    sectionBody.setAttribute('aria-labelledby', sectionTitleDiv.querySelector(`#${sectionId}Title`));
+    
+    sectionTitleDiv.dataset.target = `${sectionId}Body`;
+    sectionTitleDiv.setAttribute('aria-controls', `${sectionId}Body`);
+    sectionTitleDiv.querySelector('h3').setAttribute('id', `${sectionId}Title`);
+
+    setElementTitleField(newSection, 'section', sectionId);
     
     return newSection;
 }
 
 async function makeQuestion(workingQuestion) {
     var newQuestion = document.querySelector('#blankQuestion').content.cloneNode(true);
+
     if (typeof questions !== 'undefined' && questions.length > 0) { 
-        var isAppendedSection = true;
+        var isAppendedQuestion = true;
     } else {
-        var isAppendedSection = false;
+        var isAppendedQuestion = false;
     }
+    if (isAppendedQuestion) {
+        var questionId = `section${questions.length}`;
+    } else {
+        var questionId = `section${workingQuestion.order}`;
+    }
+    newQuestion.id = questionId;
+
+    setElementTitleField(newQuestion, 'question', questionId);
+
+
     return newQuestion;
 }
 
@@ -82,6 +88,11 @@ async function makeOption() {
 async function makeFollowUpSection() {
     var newFollowUpSection;
     return newFollowUpSection;
+}
+
+function setElementTitleField(element, elementType, id) {
+    element.querySelector('label').setAttribute('for', `${elementType}${id}TitleLabel`);
+    element.querySelector('input').setAttribute('id', `${elementType}${id}TitleField`);
 }
 
 function updateSectionTitle(e) {
