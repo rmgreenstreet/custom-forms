@@ -6,6 +6,9 @@ const Location = require('../models/location');
 const User = require('../models/user');
 const Form = require('../models/form');
 const inputTypes = require('../models/inputTypes');
+inputTypes.sort((a,b) => {
+  return a.displayName < b.displayName ? -1 : 1
+});
 
 module.exports = {
   async getFormsIndex(req,res,next) {

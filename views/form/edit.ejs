@@ -49,7 +49,7 @@
                     <div class="input-group-prepend">
                         <label for="" class="input-group-text newQuestionTitleLabel">Question Title</label>
                     </div>
-                    <input type="text" name="form[sections][questions][title]" id="newQuestion${newQuestions.indexOf(this)}Title" class="form-control newQuestionTitleField" placeholder="New Question Title">
+                    <input type="text" name="form[sections][questions][title]" id="" class="form-control newQuestionTitleField" placeholder="New Question Title">
                 </div>
                 <div class="questionBody collapse show">
                     <div class="card-text">
@@ -57,7 +57,7 @@
                             <div class="col-md-6">
                                 <div class="input-group mb-2">
                                     <div class="input-group-prepend">
-                                        <label for="newQuestion${newQuestions.indexOf(this)}Type" class="input-group-text newQuestionTypeLabel">Question Type</label>
+                                        <label for="" class="input-group-text questionTypeLabel">Question Type</label>
                                     </div>
                                     <select name="form[sections][questions][inputType]" id="newQuestion${newQuestions.indexOf(this)}Type" class="form-control typeSelector">
                                         
@@ -91,13 +91,21 @@
         </div>
     </template>
 
+    <template id="blankTypeOption">
+
+    </template>
+
     <template id="blankAddOptionLink">
         <div class="row addOptionLinkContainer">
             <div class="col card-text"><a href="" class="addOptionLink"><i class="fas fa-plus"></i> Add Option</a></div>
         </div>
     </template>
 
-    <template id="blankOption">
+    <template id="blankSelectOption">
+        <option value=""></option>
+    </template>
+
+    <template id="blankQuestionOption">
         <div class="input-group mb-2 questionOption draggable preventCollapse">
             <div class="input-group-prepend">
                 <label for="" class="input-group-text optionDragHandle"><i class="fas fa-arrows-alt"></i></label>

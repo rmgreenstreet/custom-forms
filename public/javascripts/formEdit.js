@@ -31,7 +31,7 @@ async function makeSection(workingSection = {}) {
         sectionTitleDiv.querySelector('h3').textContent = 'New Section';
         sectionTitleField.setAttribute('placeholder', 'New Section Title');
         newSection.querySelector('.collapse').classList.add('show');
-        newSection.querySelector('.questionList').appendChild(await makeQuestion({}));
+        newSection.querySelector('.questionList').appendChild(await makeQuestion());
     } else {
         var sectionId = `section${workingSection.order}`;
         sectionTitleDiv.querySelector('h3').textContent = `Section: ${workingSection.title}`;
@@ -46,7 +46,7 @@ async function makeSection(workingSection = {}) {
             }
         }
     }
-    newSection.id = sectionId;
+    newSection.id = `${sectionId}`;
     sectionBody.setAttribute('id', `${sectionId}Body`);
     sectionBody.setAttribute('aria-labelledby', sectionTitleDiv.querySelector(`#${sectionId}Title`));
     
@@ -54,7 +54,7 @@ async function makeSection(workingSection = {}) {
     sectionTitleDiv.setAttribute('aria-controls', `${sectionId}Body`);
     sectionTitleDiv.querySelector('h3').setAttribute('id', `${sectionId}Title`);
 
-    setElementTitleField(newSection, 'section', sectionId);
+    setElementTitleField(newSection, sectionId);
     
     return newSection;
 }
@@ -62,19 +62,30 @@ async function makeSection(workingSection = {}) {
 async function makeQuestion(workingQuestion) {
     var newQuestion = document.querySelector('#blankQuestion').content.cloneNode(true);
 
+    
+    for (var inputType of inputTypes) {
+        var newSelectOption = document.querySelector('#blankSelectOption').content.cloneNode(true);
+        newSelectOption.querySelector('option').setAttribute('value', inputType.htmlInputType);
+        newSelectOption.querySelector('option').textContent = inputType.displayName;
+        if(typeof questions == 'undefined' && inputType.htmlInputType == workingQuestion.inputType) {
+            newSelectOption.querySelector('option').setAttribute('selected','selected');
+        }
+        newQuestion.querySelector('.typeSelector').appendChild(newSelectOption);
+    }
+
     if (typeof questions !== 'undefined' && questions.length > 0) { 
-        var isAppendedQuestion = true;
+        var questionId = `newQuestion${questions.length}`;
+        newQuestion.querySelector('.questionTypeLabel').setAttribute('for', `${questionId}Type`);
+        newQuestion.querySelector('.typeSelector').setAttribute('id', `${questionId}Type`);
     } else {
-        var isAppendedQuestion = false;
+        var questionId = `question${workingQuestion.id}`;
+        newQuestion.querySelector('.questionTypeLabel').setAttribute('for', `${questionId}Type`);
+        newQuestion.querySelector('.typeSelector').setAttribute('id', `${questionId}Type`);
     }
-    if (isAppendedQuestion) {
-        var questionId = `section${questions.length}`;
-    } else {
-        var questionId = `section${workingQuestion.order}`;
-    }
+    
     newQuestion.id = questionId;
 
-    setElementTitleField(newQuestion, 'question', questionId);
+    setElementTitleField(newQuestion, questionId);
 
 
     return newQuestion;
@@ -90,9 +101,9 @@ async function makeFollowUpSection() {
     return newFollowUpSection;
 }
 
-function setElementTitleField(element, elementType, id) {
-    element.querySelector('label').setAttribute('for', `${elementType}${id}TitleLabel`);
-    element.querySelector('input').setAttribute('id', `${elementType}${id}TitleField`);
+function setElementTitleField(element, id) {
+    element.querySelector('label').setAttribute('for', `${id}TitleLabel`);
+    element.querySelector('input').setAttribute('id', `${id}TitleField`);
 }
 
 function updateSectionTitle(e) {
