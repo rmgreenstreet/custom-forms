@@ -61,7 +61,7 @@ async function makeSection(workingSection = {}) {
 
 async function makeQuestion(workingQuestion) {
     var newQuestion = document.querySelector('#blankQuestion').content.cloneNode(true);
-
+    var newAddOptionLink = document.querySelector('#blankAddOptionLink').content.cloneNode(true);
     
     for (var inputType of inputTypes) {
         var newSelectOption = document.querySelector('#blankSelectOption').content.cloneNode(true);
@@ -81,6 +81,25 @@ async function makeQuestion(workingQuestion) {
         var questionId = `question${workingQuestion.id}`;
         newQuestion.querySelector('.questionTypeLabel').setAttribute('for', `${questionId}Type`);
         newQuestion.querySelector('.typeSelector').setAttribute('id', `${questionId}Type`);
+        newQuestion.querySelector('.questionTitleField').value = workingQuestion.title;
+        if (workingQuestion.values.length > 0) {
+            var typeOptions = newQuestion.querySelector('.typeOptions');
+
+            for (var value of workingQuestion.values) {
+                typeOptions.appendChild(await makeOption(value));
+            }
+            typeOptions.appendChild(newAddOptionLink);
+        }
+        if (workingQuestion.isRequired) {
+            newQuestion.querySelector('.isRequiredCheckbox').checked = true;
+        }
+        if (workingQuestion.followUpQuestions.length > 0) {
+            newQuestion.querySelector('.hasFollowUpCheckbox').checked = true;
+            for (var followUp of workingQuestion.followUpQuestions) {
+                // newQuestion.appendChild(await makeFollowUpSection(followUp));
+            }
+        }
+
     }
     
     newQuestion.id = questionId;

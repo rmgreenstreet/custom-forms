@@ -47,9 +47,9 @@
                 </div>
                 <div class="input-group mb-2 questionTitleDiv">
                     <div class="input-group-prepend">
-                        <label for="" class="input-group-text newQuestionTitleLabel">Question Title</label>
+                        <label for="" class="input-group-text questionTitleLabel">Question Title</label>
                     </div>
-                    <input type="text" name="form[sections][questions][title]" id="" class="form-control newQuestionTitleField" placeholder="New Question Title">
+                    <input type="text" name="form[sections][questions][title]" id="" class="form-control questionTitleField" placeholder="Question Title, To Be Shown To Applicants">
                 </div>
                 <div class="questionBody collapse show">
                     <div class="card-text">
@@ -73,11 +73,11 @@
                 <div class="form-row requiredOrFollowUp">
                     <div class="col-6">
                         <div class="form-check form-check-inline">
-                            <input type="checkbox" name="form[sections][questions][isRequired]" id="" class="form-check-input" >
+                            <input type="checkbox" name="form[sections][questions][isRequired]" id="" class="form-check-input isRequiredCheckbox" >
                             <label for="" class="form-check-label">Required?</label>
                         </div>
                         <div class="form-check form-check-inline">
-                            <input type="checkbox" name="form[sections][questions][hasFollowUp]" id="" class="form-check-input" >
+                            <input type="checkbox" name="form[sections][questions][hasFollowUp]" id="" class="form-check-input hasFollowUpCheckbox" >
                             <label for="" class="form-check-label">Follow Up Questions?</label>
                         </div>
                     </div>
@@ -89,10 +89,6 @@
                 </div>
             </div>
         </div>
-    </template>
-
-    <template id="blankTypeOption">
-
     </template>
 
     <template id="blankAddOptionLink">
