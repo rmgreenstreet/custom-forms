@@ -45,11 +45,23 @@
                 <div class="row mb-2">
                     <div class="col text-right"><i class="fas fa-arrows-alt questionDragHandle"></i></div>
                 </div>
-                <div class="input-group mb-2 questionTitleDiv">
-                    <div class="input-group-prepend">
-                        <label for="" class="input-group-text questionTitleLabel">Question Title</label>
+                <div class="form-row">
+                    <div class="col-12 col-md">
+                        <div class="input-group mb-2 questionTitleDiv">
+                            <div class="input-group-prepend">
+                                <label for="" class="input-group-text questionTitleLabel">Question Title</label>
+                            </div>
+                            <input type="text" name="form[sections][questions][title]" id="" class="form-control questionTitleField" placeholder="Question Title, To Be Shown To Applicants">
+                        </div>
                     </div>
-                    <input type="text" name="form[sections][questions][title]" id="" class="form-control questionTitleField" placeholder="Question Title, To Be Shown To Applicants">
+                    <div class="col-12 col-md">
+                        <div class="input-group mb-2 questionIdDiv">
+                            <div class="input-group-prepend">
+                                <label for="" class="input-group-text questionIdLabel">Unique Question ID</label>
+                            </div>
+                            <input type="text" name="form[sections][questions][elementId]" id="" class="form-control questionIdField" required>
+                        </div>
+                    </div>
                 </div>
                 <div class="questionBody collapse show">
                     <div class="card-text">
@@ -59,7 +71,7 @@
                                     <div class="input-group-prepend">
                                         <label for="" class="input-group-text questionTypeLabel">Question Type</label>
                                     </div>
-                                    <select name="form[sections][questions][inputType]" id="newQuestion${newQuestions.indexOf(this)}Type" class="form-control typeSelector">
+                                    <select name="form[sections][questions][inputType]" id="" class="form-control typeSelector">
                                         
                                     </select>
                                 </div>
@@ -107,7 +119,6 @@
                 <label for="" class="input-group-text optionDragHandle"><i class="fas fa-arrows-alt"></i></label>
             </div>
             <input type="text" name="form[sections][questions][values]" id="" class="form-control valueOption" placeholder="New Option">
-            
         </div>
     </template>
     <template id="blankFollowUpQuestions">

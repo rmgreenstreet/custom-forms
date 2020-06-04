@@ -42,7 +42,11 @@ async function makeSection(workingSection = {}) {
         }
         if (workingSection.questions.length > 0) {
             for (var currentQuestion of workingSection.questions) {
-                newSection.querySelector('.questionList').appendChild(await makeQuestion(currentQuestion));
+                if (typeof currentQuestion.parentQuestionElementId !== 'undefined') {
+                    continue;
+                } else {
+                    newSection.querySelector('.questionList').appendChild(await makeQuestion(currentQuestion));
+                }
             }
         }
     }
@@ -60,6 +64,7 @@ async function makeSection(workingSection = {}) {
 }
 
 async function makeQuestion(workingQuestion) {
+
     var newQuestion = document.querySelector('#blankQuestion').content.cloneNode(true);
     var newAddOptionLink = document.querySelector('#blankAddOptionLink').content.cloneNode(true);
     
@@ -78,15 +83,17 @@ async function makeQuestion(workingQuestion) {
         newQuestion.querySelector('.questionTypeLabel').setAttribute('for', `${questionId}Type`);
         newQuestion.querySelector('.typeSelector').setAttribute('id', `${questionId}Type`);
     } else {
-        var questionId = `question${workingQuestion.id}`;
-        newQuestion.querySelector('.questionTypeLabel').setAttribute('for', `${questionId}Type`);
-        newQuestion.querySelector('.typeSelector').setAttribute('id', `${questionId}Type`);
+        // var questionId = `question${workingQuestion._id}`;
+        newQuestion.querySelector('.formQuestion').setAttribute('id', workingQuestion.elementId);
+        newQuestion.querySelector('.questionTypeLabel').setAttribute('for', `${workingQuestion.elementId}Type`);
+        newQuestion.querySelector('.typeSelector').setAttribute('id', `${workingQuestion.elementId}Type`);
         newQuestion.querySelector('.questionTitleField').value = workingQuestion.title;
+        newQuestion.querySelector('.questionIdField').value = workingQuestion.elementId
         if (workingQuestion.values.length > 0) {
             var typeOptions = newQuestion.querySelector('.typeOptions');
-
+            typeOptions.innerHTML = `<h4>Options</h4>`
             for (var value of workingQuestion.values) {
-                typeOptions.appendChild(await makeOption(value));
+                typeOptions.appendChild(await makeOption(value, workingQuestion.values.indexOf(value), workingQuestion.elementId));
             }
             typeOptions.appendChild(newAddOptionLink);
         }
@@ -110,8 +117,13 @@ async function makeQuestion(workingQuestion) {
     return newQuestion;
 }
 
-async function makeOption() {
-    var newOption;
+async function makeOption(optionValue, optionIndex, parentId) {
+    var newOption = document.querySelector('#blankQuestionOption').content.cloneNode(true);
+    var optionId = `${parentId}Option${optionIndex}`;
+    newOption.querySelector('label').setAttribute('for', optionId);
+    newOption.querySelector('input').setAttribute('id', optionId);
+    newOption.querySelector('input').value = optionValue;
+
     return newOption;
 }
 
