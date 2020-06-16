@@ -111,7 +111,7 @@ async function makeQuestion(workingQuestion) {
             for (var followUp of workingQuestion.followUpQuestions) {
                 blankFollowUpSection.querySelector('.followUpSectionBody').appendChild(await makeQuestion(followUp))
             }
-            questionCardBody.appendChild( blankFollowUpSection)
+            questionCardBody.insertBefore(blankFollowUpSection, questionDeleteButtonDiv)
         }
 
     }
