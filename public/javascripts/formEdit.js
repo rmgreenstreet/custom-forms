@@ -66,6 +66,9 @@ async function makeSection(workingSection = {}) {
 async function makeQuestion(workingQuestion) {
 
     var newQuestion = document.querySelector('#blankQuestion').content.cloneNode(true);
+    if (typeof workingQuestion.parentQuestionElementId !== 'undefined') {
+        newQuestion.querySelector('.followUpCheckboxDiv').remove()
+    }
     var newAddOptionLink = document.querySelector('#blankAddOptionLink').content.cloneNode(true);
     
     for (var inputType of inputTypes) {
@@ -102,9 +105,13 @@ async function makeQuestion(workingQuestion) {
         }
         if (workingQuestion.followUpQuestions.length > 0) {
             newQuestion.querySelector('.hasFollowUpCheckbox').checked = true;
+            var questionCardBody = newQuestion.querySelector('.card-body');
+            var questionDeleteButtonDiv = questionCardBody.querySelector('.questionDeleteButtonDiv');
+            var blankFollowUpSection = document.querySelector('#blankFollowUpSection').content.cloneNode(true);
             for (var followUp of workingQuestion.followUpQuestions) {
-                // newQuestion.appendChild(await makeFollowUpSection(followUp));
+                blankFollowUpSection.querySelector('.followUpSectionBody').appendChild(await makeQuestion(followUp))
             }
+            questionCardBody.appendChild( blankFollowUpSection)
         }
 
     }
@@ -128,7 +135,7 @@ async function makeOption(optionValue, optionIndex, parentId) {
 }
 
 async function makeFollowUpSection() {
-    var newFollowUpSection;
+    var newFollowUpSection = document.querySelector('#blankFollowUpSection').content.cloneNode(true);
     return newFollowUpSection;
 }
 
@@ -147,6 +154,7 @@ async function pageInit() {
 
     var sections = document.querySelectorAll('.formSection');
     var questions = document.querySelectorAll('.formQuestion');
+    var followUpSections = document.querySelectorAll('.followUpSection');
     var addQuestionLinks = document.querySelectorAll('.addQuestionLink');
     var addOptionLinks = document.querySelectorAll('.addOptionLink');
     var questionDeleteButtons = document.querySelectorAll('.questionDeleteButton');
@@ -194,6 +202,18 @@ async function pageInit() {
             swapThreshold: .6
         });
     }
+
+    /* tackle later 2020-06-16 */
+    // for (var followUpSection of followUpSections) {
+        
+    //     Sortable.create(followUpSection, {
+    //         group: {
+    //             name: `followUpSections`,
+    //             pull: 'sections',
+    //             put: ['sections', 'followUpSections'],
+    //         }
+    //     });
+    // }
     
     // changing inputs for form options based on input type selected
     var inputTypeSelectors = document.querySelectorAll('.typeSelector');

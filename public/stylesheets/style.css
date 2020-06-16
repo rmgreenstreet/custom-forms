@@ -52,3 +52,7 @@ tr a {
 .sectionDragHandle, .questionDragHandle {
     cursor: pointer;
 }
+
+.followUpSection {
+    background-color: #ccc;
+}

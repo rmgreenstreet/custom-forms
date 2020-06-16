@@ -84,17 +84,17 @@
                 </div>
                 <div class="form-row requiredOrFollowUp">
                     <div class="col-6">
-                        <div class="form-check form-check-inline">
+                        <div class="form-check form-check-inline requiredCheckboxDiv">
                             <input type="checkbox" name="form[sections][questions][isRequired]" id="" class="form-check-input isRequiredCheckbox" >
                             <label for="" class="form-check-label">Required?</label>
                         </div>
-                        <div class="form-check form-check-inline">
+                        <div class="form-check form-check-inline followUpCheckboxDiv">
                             <input type="checkbox" name="form[sections][questions][hasFollowUp]" id="" class="form-check-input hasFollowUpCheckbox" >
                             <label for="" class="form-check-label">Follow Up Questions?</label>
                         </div>
                     </div>
                 </div>
-                <div class="row">
+                <div class="row questionDeleteButtonDiv">
                     <div class="col text-right">
                         <i class="fas fa-trash-alt btn questionDeleteButton"></i>
                     </div>
@@ -121,8 +121,8 @@
             <input type="text" name="form[sections][questions][values]" id="" class="form-control valueOption" placeholder="New Option">
         </div>
     </template>
-    <template id="blankFollowUpQuestions">
-        <div class="form-row mt-3 border rounded followUpQuestions">
+    <template id="blankFollowUpSection">
+        <div class="form-row mt-3 border rounded followUpSection">
             <div class="col">
                 <div class="row">
                     <div class="col-6">
@@ -131,7 +131,7 @@
                     <hr />
                 </div>
                 <div class="row">
-                    <div class="col followUpQuestionsBody">
+                    <div class="col followUpSectionBody">
                     </div>
                 </div>
             </div>

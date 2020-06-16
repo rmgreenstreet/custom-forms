@@ -1,4 +1,5 @@
 Four types of users: Owner, Team Member, Office/Admin, Agent/Employee
+ - User property for 'team', maybe database model for it? Yeah, definitely.
 
 when agent/employee completes form, update a property within their user object
 send three emails, one at creation with link to form (which has their token), one at 24 hours and one at 72 hours after created reminding them to complete the form
@@ -12,3 +13,5 @@ Token expiration???
  - link to form editor
  - Average times from invitation to completion, then completion to setup
  - Stats for setups by Team Member
+
+ Add billing
