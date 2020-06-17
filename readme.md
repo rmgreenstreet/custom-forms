@@ -1,6 +1,6 @@
 # Custom Forms
 
-Trying to solve a problem I had for two years at a previous job: Easily show the same form to multiple users under hundreds of companies, and be able to edit that information in one place rather than having to update hundreds of forms when something needed to change.
+Trying to solve a problem I had for two years at a previous job: Easily show the same form to multiple users under hundreds of companies, and be able to edit that information in one place rather than having to update hundreds of forms one-by-one when something needed to change.
 
 <!-- ## Getting Started
 

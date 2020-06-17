@@ -204,16 +204,19 @@ async function pageInit() {
     }
 
     /* tackle later 2020-06-16 */
-    // for (var followUpSection of followUpSections) {
-        
-    //     Sortable.create(followUpSection, {
-    //         group: {
-    //             name: `followUpSections`,
-    //             pull: 'sections',
-    //             put: ['sections', 'followUpSections'],
-    //         }
-    //     });
-    // }
+    for (var followUpSection of followUpSections) {
+        var newSortableFollowup = Sortable.create(followUpSection.querySelector('.followUpSectionBody'), {
+            group: {
+                name: `followUpSections`,
+                pull: 'sections',
+                put: ['sections', 'followUpSections'],
+            },
+            // draggable: '.formQuestion',
+            // handle: '.questionDragHandle',
+            animation: 150
+        });
+        console.log('pause');
+    }
     
     // changing inputs for form options based on input type selected
     var inputTypeSelectors = document.querySelectorAll('.typeSelector');
