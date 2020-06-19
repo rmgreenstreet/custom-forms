@@ -67,7 +67,8 @@ async function makeQuestion(workingQuestion) {
 
     var newQuestion = document.querySelector('#blankQuestion').content.cloneNode(true);
     if (typeof workingQuestion.parentQuestionElementId !== 'undefined') {
-        newQuestion.querySelector('.followUpCheckboxDiv').remove()
+        newQuestion.querySelector('.followUpCheckboxDiv').remove();
+        newQuestion.querySelector('.formQuestion').classList.add('followUpQuestion')
     }
     var newAddOptionLink = document.querySelector('#blankAddOptionLink').content.cloneNode(true);
     
@@ -168,6 +169,17 @@ async function pageInit() {
         draggable: 'section'
     };
 
+    var sortableFollowUpSectionOptions = {
+        group: {
+            name: `followUpSections`,
+            pull: ['sections', 'followUpSections'],
+            put: ['sections', 'followUpSections'],
+        },
+        draggable: '.followUpQuestion',
+        handle: '.questionDragHandle',
+        animation: 150
+    }
+
     var formEditor = new Sortable(fullForm, sortableFormOptions);
 
     for (var section of sections) {
@@ -205,17 +217,7 @@ async function pageInit() {
 
     /* tackle later 2020-06-16 */
     for (var followUpSection of followUpSections) {
-        var newSortableFollowup = Sortable.create(followUpSection.querySelector('.followUpSectionBody'), {
-            group: {
-                name: `followUpSections`,
-                pull: 'sections',
-                put: ['sections', 'followUpSections'],
-            },
-            // draggable: '.formQuestion',
-            // handle: '.questionDragHandle',
-            animation: 150
-        });
-        console.log('pause');
+        var newSortableFollowup = Sortable.create(followUpSection.querySelector('.followUpSectionBody'), sortableFollowUpSectionOptions);
     }
     
     // changing inputs for form options based on input type selected
@@ -281,8 +283,8 @@ function addQuestionEventListeners(item) {
     /* Checking to see if the item being dragged is an option for a question so that
     the question won't collapse if it is */
     item.ondragstart = function(e) {
-        if (!e.target.classList.contains('questionOption')) {
-            fullForm.style.height = (fullForm.offsetHeight) + 'px';
+        fullForm.style.height = (fullForm.offsetHeight) + 'px';
+        if (e.target == this) {
             this.classList.add('dragging');
             this.querySelector('.collapse').classList.remove('show');
         };
@@ -292,10 +294,24 @@ function addQuestionEventListeners(item) {
         this.querySelector('.collapse').classList.add('show');
         fullForm.style.height='';
     }
+    var addFollowUpSectionTimer;
     item.ondragenter = function(e) {
         var dragging = document.querySelector('.dragging')
         if(dragging.classList.contains('preventCollapse') && dragging !== this) {
             this.querySelector('.collapse').classList.add('show');
+        }
+        if (dragging.classList.contains('formQuestion')) {
+            this.addFollowUpSectionTimer = setTimeout(function (e) {
+                var questionDeleteButtonDiv = this
+                .querySelector('.questionDeleteButtonDiv');
+                var newFollowUpSection = this.querySelector('.card-body').insertBefore(makeFollowUpSection(), questionDeleteButtonDiv);
+                var newSortableFollowUp = Sortable.create(newFollowUpSection, sortableFollowUpSectionOptions);
+            }.bind(this),500)
+        }
+    }
+    item.ondragleave = function(e) {
+        if (typeof this.addFollowUpSectionTimer !== 'undefined') {
+            clearTimeout(this.addFollowUpSectionTimer);
         }
     }
 }
