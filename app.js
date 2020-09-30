@@ -133,12 +133,12 @@ if (app.get('env') !== 'development'){
 
 const { seedDatabase, clearDatabase, seedDefaultQuestions, clearRecentItems} = require('./seeds.js');
 
-async function databaseInit() {
-	await clearRecentItems();	
+async function databaseInit(res) {
+	// await clearRecentItems();	
 	// await clearDatabase();
 	// await seedDefaultQuestions();
 	// await seedDatabase();
-	await User.register({firstName: 'potato', lastName:'head',username:'potatohead', personalEmail:'test@test.com', role:'Owner'},'password');
+	// await User.register({firstName: 'potato', lastName:'head',username:'potatohead', personalEmail:'test@test.com', role:'Owner'},'password');
 }
 
 if (app.get('env') == 'development'){databaseInit();}

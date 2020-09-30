@@ -35,6 +35,7 @@ async function makeSection(workingSection = {}) {
     } else {
         var sectionId = `section${workingSection.order}`;
         sectionTitleDiv.querySelector('h3').textContent = `Section: ${workingSection.title}`;
+        
         sectionTitleField.value = workingSection.title;
         if (workingSection.order === 0) {
             sectionTitleDiv.setAttribute('aria-expanded', 'true');
@@ -55,8 +56,9 @@ async function makeSection(workingSection = {}) {
     sectionBody.setAttribute('aria-labelledby', sectionTitleDiv.querySelector(`#${sectionId}Title`));
     
     sectionTitleDiv.dataset.target = `${sectionId}Body`;
-    sectionTitleDiv.setAttribute('aria-controls', `${sectionId}Body`);
+    sectionTitleDiv.setAttribute('aria-controls', `#${sectionId}Body`);
     sectionTitleDiv.querySelector('h3').setAttribute('id', `${sectionId}Title`);
+    sectionTitleDiv.querySelector('h3').closest('button').setAttribute('data-target', `#${sectionId}Body`);
 
     setElementTitleField(newSection, sectionId);
     
@@ -257,8 +259,8 @@ function addOptionDragListeners() {
 
 function addSectionDragListeners(item) {
     item.ondragstart = function(e) {
-    	fullForm.style.height = (fullForm.offsetHeight) + 'px';
-        collapseAllSections(e);
+        this.classList.add('dragging');
+        // collapseAllSections(e);
     };
 
     item.ondragend = function (e) {
@@ -320,8 +322,12 @@ function addQuestionEventListeners(item) {
 
 function collapseAllSections(e) {
     if(!e.target.classList.contains('preventCollapse')){
+    	// fullForm.style.height = (fullForm.offsetHeight) + 'px';
+        // for (var section of sections) {
+        //     section.querySelector('.collapse').classList.remove('show');
+        // }
         for (var section of sections) {
-            section.querySelector('.collapse').classList.remove('show');
+            section.querySelector('.collapse').collapse();
         }
     }
 }
@@ -445,7 +451,7 @@ var newSections = []
 //Add New section
 addSectionLink.onclick = function(e) {
     e.preventDefault();
-    collapseAllSections(e);
+    // collapseAllSections(e);
     var newSection = {
         sectionNumber: `section${sections.length + 1}`
     }
