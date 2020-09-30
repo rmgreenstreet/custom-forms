@@ -56,7 +56,7 @@ async function makeSection(workingSection = {}) {
     sectionBody.setAttribute('aria-labelledby', sectionTitleDiv.querySelector(`#${sectionId}Title`));
     
     sectionTitleDiv.dataset.target = `${sectionId}Body`;
-    sectionTitleDiv.setAttribute('aria-controls', `#${sectionId}Body`);
+    sectionTitleDiv.setAttribute('aria-controls', `${sectionId}Body`);
     sectionTitleDiv.querySelector('h3').setAttribute('id', `${sectionId}Title`);
     sectionTitleDiv.querySelector('h3').closest('button').setAttribute('data-target', `#${sectionId}Body`);
 
