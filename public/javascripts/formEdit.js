@@ -56,8 +56,9 @@ async function makeSection(workingSection = {}) {
     sectionBody.setAttribute('aria-labelledby', sectionTitleDiv.querySelector(`#${sectionId}Title`));
     
     sectionTitleDiv.dataset.target = `${sectionId}Body`;
-    sectionTitleDiv.setAttribute('aria-controls', `${sectionId}Body`);
     sectionTitleDiv.querySelector('h3').setAttribute('id', `${sectionId}Title`);
+    /* without these two attribute assignments, the collapse of sections will act very strangely */
+    sectionTitleDiv.setAttribute('aria-controls', `${sectionId}Body`);
     sectionTitleDiv.querySelector('h3').closest('button').setAttribute('data-target', `#${sectionId}Body`);
 
     setElementTitleField(newSection, sectionId);
@@ -91,6 +92,7 @@ async function makeQuestion(workingQuestion) {
     } else {
         // var questionId = `question${workingQuestion._id}`;
         newQuestion.querySelector('.formQuestion').setAttribute('id', workingQuestion.elementId);
+        newQuestion.querySelector('.questionBody').setAttribute('id', `${workingQuestion.elementId}Body`);
         newQuestion.querySelector('.questionTypeLabel').setAttribute('for', `${workingQuestion.elementId}Type`);
         newQuestion.querySelector('.typeSelector').setAttribute('id', `${workingQuestion.elementId}Type`);
         newQuestion.querySelector('.questionTitleField').value = workingQuestion.title;
@@ -155,7 +157,7 @@ function updateSectionTitle(e) {
 async function pageInit() {
     await drawForm(currentForm);
 
-    var sections = document.querySelectorAll('.formSection');
+    var sections = $('.formSection');
     var questions = document.querySelectorAll('.formQuestion');
     var followUpSections = document.querySelectorAll('.followUpSection');
     var addQuestionLinks = document.querySelectorAll('.addQuestionLink');
@@ -264,15 +266,16 @@ function addSectionDragListeners(item) {
     };
 
     item.ondragend = function (e) {
-        this.querySelector('.collapse').classList.add('show');
-        fullForm.style.height='';
+        this.classList.remove('dragging');
+        // this.querySelector('.collapse').classList.add('show');
+        // fullForm.style.height='';
     }
 
     item.ondragenter = function(e) {
         for (var section of sections) {
             section.querySelector('.collapse').classList.remove('show');
         }
-        if(document.querySelector('.dragging').classList.contains('preventCollapse')) {
+        if(document.querySelector('.dragging').classList.contains('formQuestion')) {
             this.querySelector('.collapse').classList.add('show');
         }
     }
@@ -285,7 +288,7 @@ function addQuestionEventListeners(item) {
     /* Checking to see if the item being dragged is an option for a question so that
     the question won't collapse if it is */
     item.ondragstart = function(e) {
-        fullForm.style.height = (fullForm.offsetHeight) + 'px';
+        // fullForm.style.height = (fullForm.offsetHeight) + 'px';
         if (e.target == this) {
             this.classList.add('dragging');
             this.querySelector('.collapse').classList.remove('show');
