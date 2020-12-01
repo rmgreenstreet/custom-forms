@@ -14,8 +14,8 @@ async function drawForm(workingForm) {
             fullForm.insertBefore(await makeSection(section), fullForm.querySelector('#addSectionLinkRow'))
         }
     }
-    // sections = document.querySelectorAll('section');
-    // questions = document.querySelectorAll('formQuestion');
+    sections = document.querySelectorAll('section');
+    questions = document.querySelectorAll('formQuestion');
 }
 
 async function makeSection(workingSection = {}) {
@@ -67,7 +67,7 @@ async function makeSection(workingSection = {}) {
 }
 
 async function makeQuestion(workingQuestion) {
-    let questions = document.querySelectorAll('.formQuestion');
+
     var newQuestion = document.querySelector('#blankQuestion').content.cloneNode(true);
     if (typeof workingQuestion.parentQuestionElementId !== 'undefined') {
         newQuestion.querySelector('.followUpCheckboxDiv').remove();
@@ -157,6 +157,7 @@ function updateSectionTitle(e) {
 async function pageInit() {
     await drawForm(currentForm);
 
+    var sections = $('.formSection');
     var questions = document.querySelectorAll('.formQuestion');
     var followUpSections = document.querySelectorAll('.followUpSection');
     var addQuestionLinks = document.querySelectorAll('.addQuestionLink');
@@ -185,7 +186,6 @@ async function pageInit() {
 
     var formEditor = new Sortable(fullForm, sortableFormOptions);
 
-    let sections = document.querySelectorAll('.formSection');
     for (var section of sections) {
 
         var sortableSection = new Sortable(section.querySelector('.questionList'), {
@@ -198,13 +198,13 @@ async function pageInit() {
             handle: '.questionDragHandle',
             animation: 150
         })
-        
-        addSectionEventListeners(section);
+    
+        addSectionDragListeners(section);
     }
 
     for (var question of questions) {
 
-        addQuestionEventListeners(question);
+        // addQuestionEventListeners(question);
     
         var sortableOptions = new Sortable(question.querySelector('.typeOptions'), {
             group: {
@@ -259,38 +259,32 @@ function addOptionDragListeners() {
 
 
 
-function addSectionEventListeners(item) {
-    // var sections = $('.formSection');
-
-    item.querySelector('.sectionTitleRow').onmousedown = function(e) {
-        collapseAllSections(e);
-    }
-
+function addSectionDragListeners(item) {
+    var sections = $('.formSection');
     item.ondragstart = function(e) {
         this.classList.add('dragging');
-        // collapseAllSections(e);
+        $(this).find('.collapse').collapse();
+        collapseAllSections(e);
     };
 
     item.ondragend = function (e) {
         this.classList.remove('dragging');
-        this.querySelector('.collapse').classList.add('show');
+        $(this).find('.collapse').show();
+        // this.querySelector('.collapse').classList.add('show');
         // fullForm.style.height='';
     }
 
-    item.ondragenter = function(e) {
-        collapseAllSections(e)
-        if(document.querySelector('.dragging').classList.contains('formQuestion')) {
-            this.querySelector('.collapse').classList.add('show');
-        }
-    }
-
-    item.ondragleave = function(e) {
-        
-    }
-
-    item.ondrop = function(e) {
-        this.querySelector('.collapse').classList.add('show');
-    }
+    // item.ondragenter = function(e) {
+    //     sections.each(function(i) {
+    //         $(this).find('.collapse').collapse();
+    //     })
+    //     if(document.querySelector('.dragging').classList.contains('formQuestion')) {
+    //         this.querySelector('.collapse').classList.add('show');
+    //     }
+    // }
+    // item.ondrop = function(e) {
+    //     this.querySelector('.collapse').classList.add('show');
+    // }
 }
 
 function addQuestionEventListeners(item) {
@@ -302,16 +296,14 @@ function addQuestionEventListeners(item) {
             this.classList.add('dragging');
             this.querySelector('.collapse').classList.remove('show');
         };
-        e.stopPropagation();
     }
     item.ondragend = function(e) {
         this.classList.remove('dragging');
         this.querySelector('.collapse').classList.add('show');
         fullForm.style.height='';
     }
-    let addFollowUpSectionTimer;
+    var addFollowUpSectionTimer;
     item.ondragenter = function(e) {
-        this.closest('.sectionBody').classList.add('show');
         var dragging = document.querySelector('.dragging')
         if(dragging.classList.contains('preventCollapse') && dragging !== this) {
             this.querySelector('.collapse').classList.add('show');
@@ -336,11 +328,13 @@ function addQuestionEventListeners(item) {
 
 function collapseAllSections(e) {
     if(!e.target.classList.contains('preventCollapse')){
-        // fullForm.style.height = (fullForm.offsetHeight) + 'px';
-        let sections = document.querySelectorAll('.formSection');
-        sections.forEach((section) => {
-            section.querySelector('.sectionBody').classList.remove('show');
-        })
+    	// fullForm.style.height = (fullForm.offsetHeight) + 'px';
+        // for (var section of sections) {
+        //     section.querySelector('.collapse').classList.remove('show');
+        // }
+        for (var section of sections) {
+            section.querySelector('.collapse').collapse();
+        }
     }
 }
 function toggleCollapse(element) {
@@ -463,7 +457,7 @@ var newSections = []
 //Add New section
 addSectionLink.onclick = function(e) {
     e.preventDefault();
-    collapseAllSections(e);
+    // collapseAllSections(e);
     var newSection = {
         sectionNumber: `section${sections.length + 1}`
     }
@@ -484,7 +478,7 @@ addSectionLink.onclick = function(e) {
 
     fullForm.append(blankSection);
     sections = document.querySelectorAll('section');
-    addSectionEventListeners(sections[sections.length - 1])
+    addSectionDragListeners(sections[sections.length - 1])
     var newSectionSortable = new Sortable(sections[sections.length - 1].querySelector('.questionList'), {
         group: {
             name: `section${sectionsIndex}`,
@@ -496,7 +490,7 @@ addSectionLink.onclick = function(e) {
         animation: 150
     })
     sectionsIndex++;
-    addQuestionEventListeners(sections[sections.length - 1].querySelector('.formQuestion'));
+    // addQuestionEventListeners(sections[sections.length - 1].querySelector('.formQuestion'));
     window.scrollBy(0,-100)
 }
 
